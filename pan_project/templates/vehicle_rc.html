@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karnataka RC Advance — Nath Seva One</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0d1b2a;color:#fff;min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:#0f2236;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1e3a52}
+.brand-name{color:#f97316;font-size:1rem;font-weight:600}
+.brand-sub{color:#64748b;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase}
+.topbar-right{display:flex;align-items:center;gap:.85rem}
+.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#052e16;border:1px solid #14532d;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#22c55e;font-weight:600}
+.user-chip{display:flex;align-items:center;gap:.5rem;background:#162d42;border:1px solid #2a4a6a;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff}
+.user-chip span{font-size:.78rem;color:#94a3b8}
+.btn-logout{background:none;border:1px solid #2a4a6a;border-radius:8px;color:#64748b;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block}
+.btn-logout:hover{background:#162d42;color:#94a3b8}
+.main-wrap{display:flex;flex:1}
+.sidebar{width:210px;background:#0f2236;border-right:1px solid #1e3a52;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.2rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.55rem .85rem;border-radius:8px;cursor:pointer;font-size:.82rem;color:#64748b;text-decoration:none;border:none;background:none;font-family:inherit;width:100%}
+.nav-item:hover{background:#162d42;color:#94a3b8}
+.nav-item.active{background:#1e3a52;color:#f97316;font-weight:600}
+.nav-section{font-size:.65rem;color:#334155;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:600}
+.content{flex:1;padding:1.5rem;overflow-y:auto}
+
+/* BREADCRUMB */
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:#64748b;margin-bottom:1.25rem}
+.breadcrumb a{color:#64748b;text-decoration:none}
+.breadcrumb a:hover{color:#94a3b8}
+.breadcrumb span{color:#94a3b8}
+.breadcrumb-sep{color:#334155}
+
+/* PAGE TITLE */
+.page-title{font-size:1rem;font-weight:700;color:#fff;letter-spacing:.05em;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid #1e3a52}
+
+/* MAIN GRID */
+.rc-grid{display:grid;grid-template-columns:420px 1fr;gap:1.25rem;align-items:start}
+
+/* FORM CARD */
+.form-card{background:#fff;border-radius:12px;padding:1.5rem;color:#1e293b}
+.form-label{font-size:.8rem;color:#475569;margin-bottom:.4rem;display:block;font-weight:500}
+.form-input{width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:.65rem .9rem;font-size:.88rem;font-family:'Segoe UI',sans-serif;color:#1e293b;background:#f8fafc;outline:none;text-transform:uppercase;letter-spacing:.08em}
+.form-input:focus{border-color:#3b82f6;background:#fff}
+.form-input::placeholder{text-transform:none;letter-spacing:0;color:#94a3b8}
+.btn-submit{width:100%;margin-top:1rem;background:#22c55e;border:none;border-radius:8px;color:#fff;font-size:.88rem;font-weight:700;padding:.75rem;cursor:pointer;font-family:'Segoe UI',sans-serif;letter-spacing:.05em;transition:background .15s}
+.btn-submit:hover{background:#16a34a}
+.btn-submit:disabled{background:#14532d;color:#4ade80;cursor:not-allowed}
+.payable{text-align:center;margin-top:.6rem;font-size:.78rem;color:#22c55e;font-weight:600}
+
+/* PREVIEW CARD */
+.preview-card{background:#0f2236;border:1px solid #1e3a52;border-radius:12px;overflow:hidden;min-height:300px;display:flex;align-items:center;justify-content:center}
+.preview-placeholder{text-align:center;padding:2rem;color:#334155}
+.preview-placeholder .icon{font-size:2.5rem;margin-bottom:.75rem}
+.preview-placeholder p{font-size:.8rem;line-height:1.6}
+
+/* RC RESULT */
+.rc-result{display:none;width:100%}
+.rc-result.show{display:block}
+.rc-header{background:#1e3a52;padding:.85rem 1.1rem;display:flex;align-items:center;justify-content:space-between}
+.rc-header-title{font-size:.82rem;font-weight:600;color:#60a5fa}
+.rc-reg-no{font-size:1.1rem;font-weight:700;color:#fff;letter-spacing:.08em}
+.rc-body{padding:1rem}
+.rc-row{display:flex;justify-content:space-between;align-items:flex-start;padding:.45rem 0;border-bottom:1px solid #1e3a52;gap:.5rem}
+.rc-row:last-child{border-bottom:none}
+.rc-key{font-size:.7rem;color:#64748b;text-transform:uppercase;letter-spacing:.08em;flex-shrink:0;width:45%}
+.rc-val{font-size:.78rem;color:#e2e8f0;font-weight:500;text-align:right;word-break:break-word}
+.rc-actions{display:flex;gap:.65rem;padding:.85rem 1rem;border-top:1px solid #1e3a52}
+.btn-print{flex:1;background:#f97316;border:none;border-radius:8px;color:#fff;font-size:.78rem;font-weight:600;padding:.55rem;cursor:pointer;font-family:'Segoe UI',sans-serif}
+.btn-print:hover{background:#ea6c0a}
+.btn-download{flex:1;background:#1e3a52;border:none;border-radius:8px;color:#60a5fa;font-size:.78rem;font-weight:600;padding:.55rem;cursor:pointer;font-family:'Segoe UI',sans-serif}
+.btn-download:hover{background:#243f5a}
+
+/* ERROR */
+.err-box{background:#1f0a0a;border:1px solid #7f1d1d;border-radius:8px;padding:.75rem 1rem;margin-top:.75rem;font-size:.8rem;color:#f87171;display:none}
+.err-box.show{display:block}
+
+/* LOADING */
+.loading{display:none;text-align:center;padding:2rem;color:#64748b}
+.loading.show{display:block}
+.spinner{width:32px;height:32px;border:3px solid #1e3a52;border-top-color:#60a5fa;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto .75rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Online Services</div></div>
+  <div class="topbar-right">
+    <div class="wallet-chip">💰 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip">
+      <div class="avatar">{{ retailer.full_name.0|upper }}</div>
+      <span>{{ retailer.user_id }}</span>
+    </div>
+    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="nav-section">Main Menu</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item"><span>🏠</span> Dashboard</a>
+    <a href="{% url 'form' %}" class="nav-item"><span>🪪</span> PAN Services</a>
+    <a href="{% url 'applied_list' %}" class="nav-item"><span>📋</span> Applied List</a>
+    <div class="nav-section" style="margin-top:.5rem">Other</div>
+    <a href="{% url 'wallet' %}" class="nav-item"><span>💰</span> Wallet</a>
+    <a href="#" class="nav-item"><span>📊</span> Reports</a>
+    <a href="#" class="nav-item"><span>⚙️</span> Settings</a>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="{% url 'retailer_dashboard' %}">Dashboard</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>Vehicle Services</span>
+      <span class="breadcrumb-sep">›</span>
+      <span>Karnataka RC Advance</span>
+    </div>
+
+    <div class="page-title">VEHICLE RC: KARNATAKA RC ADVANCE</div>
+
+    <div class="rc-grid">
+      <!-- FORM -->
+      <div class="form-card">
+        <label class="form-label">Enter Vehicle No.</label>
+        <input type="text" class="form-input" id="vehicleInput" placeholder="ENTER VEHICLE NO." maxlength="11" />
+        <div class="err-box" id="errBox">❌ <span id="errMsg">Kuch galat hua, dobara try karein.</span></div>
+        <button class="btn-submit" id="submitBtn" onclick="fetchRC()">SUBMIT</button>
+        <div class="payable">Payable Amt Rs. 25.00/-</div>
+      </div>
+
+      <!-- PREVIEW -->
+      <div class="preview-card" id="previewCard">
+        <div class="preview-placeholder" id="placeholder">
+          <div class="icon">🚗</div>
+          <p>Vehicle number enter karo<br>aur Submit karo RC dekhne ke liye</p>
+        </div>
+
+        <div class="loading" id="loadingDiv">
+          <div class="spinner"></div>
+          <p style="font-size:.8rem">RC fetch ho rahi hai...</p>
+        </div>
+
+        <div class="rc-result" id="rcResult">
+          <div class="rc-header">
+            <div class="rc-header-title">Karnataka RC Advance</div>
+            <div class="rc-reg-no" id="res_regNo">—</div>
+          </div>
+          <div class="rc-body">
+            <div class="rc-row"><span class="rc-key">Owner Name</span><span class="rc-val" id="res_owner">—</span></div>
+            <div class="rc-row"><span class="rc-key">Father / Husband</span><span class="rc-val" id="res_father">—</span></div>
+            <div class="rc-row"><span class="rc-key">Address</span><span class="rc-val" id="res_address">—</span></div>
+            <div class="rc-row"><span class="rc-key">Vehicle Class</span><span class="rc-val" id="res_class">—</span></div>
+            <div class="rc-row"><span class="rc-key">Maker / Model</span><span class="rc-val" id="res_maker">—</span></div>
+            <div class="rc-row"><span class="rc-key">Fuel Type</span><span class="rc-val" id="res_fuel">—</span></div>
+            <div class="rc-row"><span class="rc-key">Colour</span><span class="rc-val" id="res_colour">—</span></div>
+            <div class="rc-row"><span class="rc-key">Engine No.</span><span class="rc-val" id="res_engine">—</span></div>
+            <div class="rc-row"><span class="rc-key">Chassis No.</span><span class="rc-val" id="res_chassis">—</span></div>
+            <div class="rc-row"><span class="rc-key">Registration Date</span><span class="rc-val" id="res_regDate">—</span></div>
+            <div class="rc-row"><span class="rc-key">RC Valid Upto</span><span class="rc-val" id="res_validity">—</span></div>
+            <div class="rc-row"><span class="rc-key">Fitness Upto</span><span class="rc-val" id="res_fitness">—</span></div>
+            <div class="rc-row"><span class="rc-key">Insurance Upto</span><span class="rc-val" id="res_insurance">—</span></div>
+            <div class="rc-row"><span class="rc-key">Financer</span><span class="rc-val" id="res_financer">—</span></div>
+            <div class="rc-row"><span class="rc-key">RTO</span><span class="rc-val" id="res_rto">—</span></div>
+          </div>
+          <div class="rc-actions">
+            <button class="btn-print" onclick="window.print()">🖨️ Print RC</button>
+            <button class="btn-download" id="downloadBtn">⬇️ Download</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+async function fetchRC() {
+  const input = document.getElementById('vehicleInput');
+  const vehicleNo = input.value.trim().toUpperCase().replace(/\s/g,'');
+
+  if (!vehicleNo) {
+    showErr('Vehicle number daalo pehle.');
+    return;
+  }
+  if (vehicleNo.length < 6) {
+    showErr('Valid vehicle number daalo (e.g. KA01AB1234).');
+    return;
+  }
+
+  hideErr();
+  showLoading();
+  document.getElementById('submitBtn').disabled = true;
+
+  try {
+    const res = await fetch('{% url "vehicle_rc_api" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ vehicle_number: vehicleNo })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      showResult(data.rc);
+    } else {
+      hideLoading();
+      showErr(data.error || 'RC nahi mili. Number check karo.');
+    }
+  } catch(e) {
+    hideLoading();
+    showErr('Network error. Dobara try karo.');
+  }
+  document.getElementById('submitBtn').disabled = false;
+}
+
+function showResult(rc) {
+  hideLoading();
+  document.getElementById('placeholder').style.display = 'none';
+  document.getElementById('res_regNo').textContent    = rc.reg_no        || '—';
+  document.getElementById('res_owner').textContent    = rc.owner_name     || '—';
+  document.getElementById('res_father').textContent   = rc.father_name    || '—';
+  document.getElementById('res_address').textContent  = rc.address        || '—';
+  document.getElementById('res_class').textContent    = rc.vehicle_class  || '—';
+  document.getElementById('res_maker').textContent    = rc.maker_model    || '—';
+  document.getElementById('res_fuel').textContent     = rc.fuel_type      || '—';
+  document.getElementById('res_colour').textContent   = rc.colour         || '—';
+  document.getElementById('res_engine').textContent   = rc.engine_no      || '—';
+  document.getElementById('res_chassis').textContent  = rc.chassis_no     || '—';
+  document.getElementById('res_regDate').textContent  = rc.reg_date       || '—';
+  document.getElementById('res_validity').textContent = rc.validity       || '—';
+  document.getElementById('res_fitness').textContent  = rc.fitness_upto   || '—';
+  document.getElementById('res_insurance').textContent= rc.insurance_upto || '—';
+  document.getElementById('res_financer').textContent = rc.financer       || '—';
+  document.getElementById('res_rto').textContent      = rc.rto            || '—';
+  document.getElementById('rcResult').classList.add('show');
+}
+
+function showLoading() {
+  document.getElementById('placeholder').style.display = 'none';
+  document.getElementById('rcResult').classList.remove('show');
+  document.getElementById('loadingDiv').classList.add('show');
+}
+function hideLoading() {
+  document.getElementById('loadingDiv').classList.remove('show');
+}
+function showErr(msg) {
+  document.getElementById('errMsg').textContent = msg;
+  document.getElementById('errBox').classList.add('show');
+}
+function hideErr() {
+  document.getElementById('errBox').classList.remove('show');
+}
+function getCookie(name) {
+  const v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+  return v ? v.pop() : '';
+}
+
+// Enter key submit
+document.getElementById('vehicleInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') fetchRC();
+});
+</script>
+</body>
+</html>

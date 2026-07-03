@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All India DL Print — SM SEVAONE</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f4f5fb;color:#1f2430;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:linear-gradient(90deg,#6a1fb0,#7c3aed);padding:.7rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:.5rem}
+.brand-logo{background:#fff;color:#7c3aed;font-weight:800;font-size:.95rem;padding:.35rem .7rem;border-radius:6px}
+.brand-sub{color:#e9d5ff;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;margin-top:.1rem}
+.topbar-right{display:flex;align-items:center;gap:1rem}
+.icon-btn{background:rgba(255,255,255,.15);border:none;color:#fff;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.95rem}
+.wallet-chip{display:flex;align-items:center;gap:.35rem;background:rgba(255,255,255,.15);border-radius:20px;padding:.35rem .85rem;font-size:.85rem;color:#fff;font-weight:600}
+.user-chip{display:flex;align-items:center;gap:.55rem}
+.avatar{width:34px;height:34px;border-radius:50%;background:#fff;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700}
+.user-meta .u-name{font-size:.82rem;color:#fff;font-weight:600;line-height:1.1}
+.user-meta .u-id{font-size:.68rem;color:#e9d5ff;line-height:1.1}
+
+.main-wrap{display:flex;flex:1}
+.sidebar{width:230px;background:#1b1830;padding:1.1rem .8rem;display:flex;flex-direction:column;gap:.15rem}
+.nav-section{font-size:.62rem;color:#5f5a7a;letter-spacing:.1em;text-transform:uppercase;padding:.9rem .8rem .3rem;font-weight:700}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.55rem .8rem;border-radius:8px;cursor:pointer;font-size:.85rem;color:#b6b2cc;text-decoration:none;border:none;background:none;font-family:inherit;width:100%}
+.nav-item:hover{background:#2a2650;color:#fff}
+.nav-item.active{background:#e11d48;color:#fff;font-weight:600}
+.content{flex:1;padding:1.5rem 2rem}
+
+.crumb{font-size:.95rem;color:#4b5563;margin-bottom:1.1rem;font-weight:600}
+.crumb .sep{color:#c7c9d9;font-weight:400}
+.crumb .cur{color:#9aa0b4;font-weight:400}
+
+.page-title{font-size:1.15rem;font-weight:700;margin-bottom:1rem}
+
+.form-row{display:grid;grid-template-columns:1fr 1.3fr;gap:1.25rem;margin-bottom:1.5rem}
+.form-card{background:#fff;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.form-card label{display:block;font-size:.85rem;font-weight:600;margin-bottom:.4rem;margin-top:1rem}
+.form-card label:first-child{margin-top:0}
+.form-card input{width:100%;padding:.65rem .8rem;border:1px solid #d1d5db;border-radius:8px;font-size:.85rem;font-family:inherit}
+.form-card input:focus{outline:none;border-color:#7c3aed}
+.btn-submit{width:100%;margin-top:1.25rem;background:#22c55e;color:#fff;border:none;padding:.75rem;border-radius:8px;font-size:.9rem;font-weight:700;letter-spacing:.05em;cursor:pointer}
+.btn-submit:hover{background:#16a34a}
+.btn-submit:disabled{background:#9ca3af;cursor:not-allowed}
+.payable{text-align:center;color:#16a34a;font-weight:600;font-size:.85rem;margin-top:.75rem}
+.msg{margin-top:.85rem;padding:.6rem .8rem;border-radius:8px;font-size:.8rem;display:none}
+.msg.err{background:#fee2e2;color:#b91c1c;display:block}
+.msg.ok{background:#dcfce7;color:#15803d;display:block}
+
+.promo-box{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center;position:relative;min-height:260px}
+.promo-box img{width:100%;height:100%;object-fit:cover;opacity:.35}
+.promo-text{position:absolute;text-align:center;font-weight:900;font-size:1.8rem;line-height:1.2;color:#111}
+
+.result-card{background:#fff;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:1.5rem;display:none}
+.result-card h3{font-size:.95rem;margin-bottom:.85rem}
+.result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem 1.5rem;font-size:.82rem}
+.result-grid div span{color:#6b7280}
+.result-grid div b{color:#1f2430}
+
+.table-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead th{text-align:left;padding:.75rem 1rem;background:#e6f4ea;color:#1f2430;font-weight:700}
+tbody td{padding:.75rem 1rem;border-bottom:1px solid #eef0f4;color:#374151}
+tbody tr:last-child td{border-bottom:none}
+.status-pill{padding:.2rem .6rem;border-radius:20px;font-size:.7rem;font-weight:700}
+.status-completed{background:#dcfce7;color:#16a34a}
+.status-pending{background:#fef3c7;color:#92400e}
+.empty-row{text-align:center;color:#6b7280;padding:1.25rem}
+.empty-row a{color:#2563eb;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">SM SEVAONE</div>
+    <div><div class="brand-sub">Online Services</div></div>
+  </div>
+  <div class="topbar-right">
+    <button class="icon-btn">🌙</button>
+    <button class="icon-btn">▦</button>
+    <div class="wallet-chip" id="walletChip">💳 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip">
+      <div class="avatar">{{ retailer.full_name.0|upper }}</div>
+      <div class="user-meta">
+        <div class="u-name">{{ retailer.full_name }}</div>
+        <div class="u-id">{{ retailer.user_id }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item"><span>🏠</span> Dashboard</a>
+    <a href="{% url 'wallet' %}" class="nav-item"><span>💳</span> Wallet</a>
+    <div class="nav-section">Statement</div>
+    <a href="#" class="nav-item"><span>🔁</span> Wallet Transactions</a>
+    <a href="#" class="nav-item"><span>📄</span> Transactions Details</a>
+    <div class="nav-section">Services</div>
+    <a href="#" class="nav-item"><span>🏛️</span> Govt. Services</a>
+    <a href="{% url 'driving_services' %}" class="nav-item active"><span>🖨️</span> Print Services</a>
+    <a href="#" class="nav-item"><span>🧩</span> Other Services</a>
+    <div class="nav-section">Help</div>
+    <a href="#" class="nav-item"><span>👤</span> Profile Settings</a>
+    <a href="#" class="nav-item"><span>💲</span> Pricing</a>
+    <a href="#" class="nav-item"><span>❓</span> FAQ</a>
+    <a href="{% url 'retailer_logout' %}" class="nav-item"><span>↩️</span> Logout</a>
+  </div>
+
+  <div class="content">
+    <div class="crumb">DL Print <span class="sep">|</span> <span class="cur">All India DL Print</span></div>
+    <div class="page-title">All India DL Print</div>
+
+    <div class="form-row">
+      <div class="form-card">
+        <label>DL Number *</label>
+        <input type="text" id="dlNumber" placeholder="Enter DL Number (e.g., KAxxx7xxx9)">
+
+        <label>Date of Birth *</label>
+        <input type="text" id="dob" placeholder="Ex: DD/MM/YYYY">
+
+        <button class="btn-submit" id="submitBtn" onclick="fetchDL()">SUBMIT</button>
+        <div class="payable">Payable Amt Rs. {{ charge }}/-</div>
+        <div class="msg" id="msgBox"></div>
+      </div>
+
+      <div class="promo-box">
+        <div class="promo-text">Services Working<br>Fine</div>
+      </div>
+    </div>
+
+    <div class="result-card" id="resultCard">
+      <h3>DL Details</h3>
+      <div class="result-grid" id="resultGrid"></div>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr><th>Order ID</th><th>Date &amp; Time</th><th>DL Number</th><th>DOB</th><th>Amount</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="appliedBody">
+          {% for app in applications %}
+          <tr>
+            <td>{{ app.order_id }}</td>
+            <td>{{ app.created_at|date:"d M Y, h:i A" }}</td>
+            <td>{{ app.dl_number }}</td>
+            <td>{{ app.dob }}</td>
+            <td>₹{{ app.amount }}</td>
+            <td><span class="status-pill status-{{ app.status }}">{{ app.status|title }}</span></td>
+            <td><a href="#" style="color:#2563eb;text-decoration:none">View</a></td>
+          </tr>
+          {% empty %}
+          <tr id="emptyRow"><td colspan="7" class="empty-row">No applications found. <a href="#" onclick="document.getElementById('dlNumber').focus();return false;">Apply now</a></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="text-align:center;color:#9aa0b4;font-size:.78rem;margin-top:1.5rem">Copyright © 2026. All right reserved.</div>
+  </div>
+</div>
+
+<script>
+function getCookie(name){
+  const v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+  return v ? v.pop() : '';
+}
+
+function showMsg(text, ok){
+  const box = document.getElementById('msgBox');
+  box.textContent = text;
+  box.className = 'msg ' + (ok ? 'ok' : 'err');
+}
+
+async function fetchDL(){
+  const dlNumber = document.getElementById('dlNumber').value.trim();
+  const dob = document.getElementById('dob').value.trim();
+  const btn = document.getElementById('submitBtn');
+
+  if(!dlNumber || !dob){
+    showMsg('DL Number aur Date of Birth dono bharna zaroori hai.', false);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'PROCESSING...';
+  document.getElementById('msgBox').className = 'msg';
+
+  try {
+const resp = await fetch("{% url 'dl_allindia_api' %}", {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({ dl_number: dlNumber, dob: dob }),
+    });
+    const data = await resp.json();
+
+    if(!data.success){
+      showMsg(data.error || 'DL details nahi mil paye.', false);
+      return;
+    }
+
+    showMsg('DL details successfully fetch ho gaye. ₹' + data.amount_deducted + ' deduct hue.', true);
+    document.getElementById('walletChip').textContent = '💳 ₹' + data.wallet_balance;
+
+    const dl = data.dl;
+    const grid = document.getElementById('resultGrid');
+    grid.innerHTML = '';
+    const rows = [
+      ['DL Number', dl.dl_number], ['Name', dl.name], ["Father's Name", dl.father_name],
+      ['DOB', dl.dob], ['Vehicle Class', dl.vehicle_class], ['RTO', dl.rto],
+      ['Issue Date', dl.issue_date], ['NT Validity', dl.validity_nt], ['TR Validity', dl.validity_tr],
+      ['Address', dl.address],
+    ];
+    rows.forEach(([label, val]) => {
+      grid.insertAdjacentHTML('beforeend', `<div><span>${label}:</span> <b>${val || '-'}</b></div>`);
+    });
+    document.getElementById('resultCard').style.display = 'block';
+
+    const emptyRow = document.getElementById('emptyRow');
+    if(emptyRow) emptyRow.remove();
+    const now = new Date().toLocaleString('en-IN', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+    document.getElementById('appliedBody').insertAdjacentHTML('afterbegin', `
+      <tr>
+        <td>${data.order_id}</td>
+        <td>${now}</td>
+        <td>${dlNumber}</td>
+        <td>${dob}</td>
+        <td>₹${data.amount_deducted}</td>
+        <td><span class="status-pill status-completed">Completed</span></td>
+        <td><a href="#" style="color:#2563eb;text-decoration:none">View</a></td>
+      </tr>
+    `);
+
+  } catch(err){
+    showMsg('Kuch galat ho gaya. Dobara try karein.', false);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'SUBMIT';
+  }
+}
+</script>
+
+</body>
+</html>

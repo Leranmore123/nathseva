@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RC Applications — Nath Seva One</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0d1b2a;color:#fff;min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:#0f2236;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1e3a52}
+.brand-name{color:#f97316;font-size:1rem;font-weight:600}
+.brand-sub{color:#64748b;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase}
+.topbar-right{display:flex;align-items:center;gap:.85rem}
+.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#052e16;border:1px solid #14532d;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#22c55e;font-weight:600}
+.user-chip{display:flex;align-items:center;gap:.5rem;background:#162d42;border:1px solid #2a4a6a;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff}
+.user-chip span{font-size:.78rem;color:#94a3b8}
+.btn-logout{background:none;border:1px solid #2a4a6a;border-radius:8px;color:#64748b;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block}
+.main-wrap{display:flex;flex:1}
+.sidebar{width:210px;background:#0f2236;border-right:1px solid #1e3a52;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.2rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.55rem .85rem;border-radius:8px;font-size:.82rem;color:#64748b;text-decoration:none;border:none;background:none;font-family:inherit;width:100%}
+.nav-item:hover{background:#162d42;color:#94a3b8}
+.nav-item.active{background:#1e3a52;color:#f97316;font-weight:600}
+.nav-section{font-size:.65rem;color:#334155;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:600}
+.content{flex:1;padding:1.5rem;overflow-y:auto}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.page-title{font-size:1rem;font-weight:700;color:#fff}
+.btn-new{background:#f97316;border:none;border-radius:8px;color:#fff;font-size:.78rem;font-weight:600;padding:.45rem 1rem;cursor:pointer;text-decoration:none;display:inline-block}
+.btn-new:hover{background:#ea6c0a}
+.table-card{background:#0f2236;border:1px solid #1e3a52;border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+thead th{text-align:left;padding:.65rem 1rem;color:#64748b;font-weight:500;border-bottom:1px solid #1e3a52;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+tbody td{padding:.7rem 1rem;color:#94a3b8;border-bottom:1px solid #1e3a52;vertical-align:middle}
+tbody td:first-child{color:#fff;font-weight:500;font-size:.72rem;font-family:monospace}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#162d42}
+.pill{display:inline-block;padding:.2rem .65rem;border-radius:20px;font-size:.66rem;font-weight:700}
+.pill-success{background:#052e16;color:#22c55e}
+.pill-failed{background:#450a0a;color:#f87171}
+.pill-pending{background:#1e3a52;color:#60a5fa}
+.btn-view{background:#1e3a52;border:none;border-radius:6px;color:#60a5fa;font-size:.72rem;padding:.3rem .7rem;cursor:pointer;font-family:inherit}
+.btn-view:hover{background:#243f5a}
+.empty{text-align:center;padding:2.5rem;color:#334155;font-size:.82rem}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:#64748b;margin-bottom:1rem}
+.breadcrumb a{color:#64748b;text-decoration:none}
+.breadcrumb a:hover{color:#94a3b8}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Online Services</div></div>
+  <div class="topbar-right">
+    <div class="wallet-chip">💰 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip"><div class="avatar">{{ retailer.full_name.0|upper }}</div><span>{{ retailer.user_id }}</span></div>
+    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <div class="nav-section">Main Menu</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item">🏠 Dashboard</a>
+    <a href="{% url 'form' %}" class="nav-item">🪪 PAN Services</a>
+    <a href="{% url 'applied_list' %}" class="nav-item">📋 Applied List</a>
+    <div class="nav-section" style="margin-top:.5rem">Vehicle</div>
+    <a href="{% url 'vehicle_rc_page' %}" class="nav-item">🚗 RC Advance</a>
+    <a href="{% url 'vehicle_rc_list' %}" class="nav-item active">📋 RC History</a>
+    <div class="nav-section" style="margin-top:.5rem">Other</div>
+    <a href="{% url 'wallet' %}" class="nav-item">💰 Wallet</a>
+    <a href="#" class="nav-item">📊 Reports</a>
+    <a href="#" class="nav-item">⚙️ Settings</a>
+  </div>
+
+  <div class="content">
+    <div class="breadcrumb">
+      <a href="{% url 'retailer_dashboard' %}">Dashboard</a>
+      <span>›</span><span>Vehicle Services</span>
+      <span>›</span><span>RC History</span>
+    </div>
+    <div class="page-header">
+      <div class="page-title">🚗 RC Advance Applications</div>
+      <a href="{% url 'vehicle_rc_page' %}" class="btn-new">+ New RC Search</a>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Date & Time</th>
+            <th>Vehicle No.</th>
+            <th>Owner</th>
+            <th>Vehicle</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in applications %}
+          <tr>
+            <td>{{ app.order_id }}</td>
+            <td style="color:#64748b;white-space:nowrap">
+              {{ app.created_at|date:"d-m-Y" }}<br>
+              <span style="font-size:.68rem">{{ app.created_at|time:"H:i:s" }}</span>
+            </td>
+            <td style="font-family:monospace;color:#60a5fa">{{ app.vehicle_number }}</td>
+            <td>{{ app.owner_name|default:"N/A" }}</td>
+            <td>{{ app.maker_model|default:"N/A" }}</td>
+            <td>
+              {% if app.status == 'success' %}
+                <span class="pill pill-success">SUCCESS</span>
+              {% elif app.status == 'failed' %}
+                <span class="pill pill-failed">FAILED</span>
+              {% else %}
+                <span class="pill pill-pending">PENDING</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if app.status == 'success' %}
+              <button class="btn-view" onclick="viewRC('{{ app.order_id }}')">View RC</button>
+              {% else %}
+              <span style="color:#334155;font-size:.72rem">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="empty">Abhi koi RC application nahi hai</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+function viewRC(orderId) {
+  window.location.href = '/vehicle/rc-advance/?order_id=' + orderId;
+}
+</script>
+</body>
+</html>

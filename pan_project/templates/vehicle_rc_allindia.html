@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RC All India PVC — Nath Seva One</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0d1b2a;color:#fff;min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:#0f2236;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1e3a52}
+.brand-name{color:#f97316;font-size:1rem;font-weight:600}
+.brand-sub{color:#64748b;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase}
+.topbar-right{display:flex;align-items:center;gap:.85rem}
+.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#052e16;border:1px solid #14532d;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#22c55e;font-weight:600}
+.user-chip{display:flex;align-items:center;gap:.5rem;background:#162d42;border:1px solid #2a4a6a;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff}
+.user-chip span{font-size:.78rem;color:#94a3b8}
+.btn-logout{background:none;border:1px solid #2a4a6a;border-radius:8px;color:#64748b;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block}
+.main-wrap{display:flex;flex:1}
+.sidebar{width:210px;background:#0f2236;border-right:1px solid #1e3a52;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.2rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.55rem .85rem;border-radius:8px;font-size:.82rem;color:#64748b;text-decoration:none;border:none;background:none;font-family:inherit;width:100%}
+.nav-item:hover{background:#162d42;color:#94a3b8}
+.nav-item.active{background:#1e3a52;color:#f97316;font-weight:600}
+.nav-section{font-size:.65rem;color:#334155;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:600}
+.content{flex:1;padding:1.5rem;overflow-y:auto}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:#64748b;margin-bottom:1rem}
+.breadcrumb a{color:#64748b;text-decoration:none}
+.page-title{font-size:1rem;font-weight:700;color:#fff;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid #1e3a52}
+.rc-grid{display:grid;grid-template-columns:420px 1fr;gap:1.25rem;align-items:start;margin-bottom:1.5rem}
+.form-card{background:#fff;border-radius:12px;padding:1.5rem;color:#1e293b}
+.form-label{font-size:.8rem;color:#475569;margin-bottom:.4rem;display:block;font-weight:500}
+.form-input,.form-select{width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:.6rem .9rem;font-size:.85rem;font-family:'Segoe UI',sans-serif;color:#1e293b;background:#f8fafc;outline:none;margin-bottom:.85rem}
+.form-input{text-transform:uppercase;letter-spacing:.08em}
+.form-input:focus,.form-select:focus{border-color:#3b82f6;background:#fff}
+.form-input::placeholder{text-transform:none;letter-spacing:0;color:#94a3b8}
+.btn-submit{width:100%;background:#22c55e;border:none;border-radius:8px;color:#fff;font-size:.88rem;font-weight:700;padding:.75rem;cursor:pointer;font-family:'Segoe UI',sans-serif;letter-spacing:.05em}
+.btn-submit:hover{background:#16a34a}
+.btn-submit:disabled{background:#14532d;color:#4ade80;cursor:not-allowed}
+.payable{text-align:center;margin-top:.6rem;font-size:.78rem;color:#22c55e;font-weight:600}
+.preview-card{background:#0f2236;border:1px solid #1e3a52;border-radius:12px;min-height:280px;display:flex;align-items:center;justify-content:center}
+.preview-placeholder{text-align:center;padding:2rem;color:#334155}
+.preview-placeholder .icon{font-size:2.5rem;margin-bottom:.75rem}
+.err-box{background:#1f0a0a;border:1px solid #7f1d1d;border-radius:8px;padding:.75rem 1rem;margin-bottom:.75rem;font-size:.8rem;color:#f87171;display:none}
+.err-box.show{display:block}
+.spinner{width:32px;height:32px;border:3px solid #1e3a52;border-top-color:#60a5fa;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto .75rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading{display:none;text-align:center;padding:2rem;color:#64748b;width:100%}
+.loading.show{display:block}
+.success-card{display:none;background:#0f2236;border:1px solid #1e3a52;border-radius:12px;overflow:hidden;width:100%}
+.success-card.show{display:block}
+.sc-header{background:#1e3a52;padding:.85rem 1.1rem;display:flex;justify-content:space-between;align-items:center}
+.sc-reg{font-size:1.1rem;font-weight:700;color:#fff;letter-spacing:.08em}
+.sc-label{font-size:.72rem;color:#60a5fa;font-weight:600}
+.sc-body{padding:1rem}
+.sc-row{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid #1e3a52;gap:.5rem}
+.sc-row:last-child{border-bottom:none}
+.sc-key{font-size:.7rem;color:#64748b;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0;width:45%}
+.sc-val{font-size:.78rem;color:#e2e8f0;font-weight:500;text-align:right}
+.sc-actions{padding:.85rem 1rem;border-top:1px solid #1e3a52;display:flex;gap:.65rem}
+.btn-pdf{flex:1;background:#3b82f6;border:none;border-radius:8px;color:#fff;font-size:.78rem;font-weight:600;padding:.55rem;cursor:pointer;font-family:'Segoe UI',sans-serif}
+.btn-pdf:hover{background:#2563eb}
+
+/* HISTORY TABLE */
+.section-title{font-size:.75rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.75rem}
+.table-card{background:#0f2236;border:1px solid #1e3a52;border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+thead th{text-align:left;padding:.65rem 1rem;color:#64748b;font-weight:500;border-bottom:1px solid #1e3a52;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em}
+tbody td{padding:.7rem 1rem;color:#94a3b8;border-bottom:1px solid #1e3a52;vertical-align:middle}
+tbody td:first-child{color:#fff;font-weight:500}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#162d42}
+.pill{display:inline-block;padding:.2rem .65rem;border-radius:20px;font-size:.66rem;font-weight:700}
+.pill-success{background:#052e16;color:#22c55e}
+.pill-failed{background:#450a0a;color:#f87171}
+.btn-view{background:#1e3a52;border:none;border-radius:6px;color:#60a5fa;font-size:.72rem;padding:.3rem .7rem;cursor:pointer;font-family:inherit}
+.btn-view:hover{background:#243f5a}
+.empty{text-align:center;padding:2rem;color:#334155;font-size:.82rem}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Online Services</div></div>
+  <div class="topbar-right">
+    <div class="wallet-chip" id="walletDisplay">💰 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip"><div class="avatar">{{ retailer.full_name.0|upper }}</div><span>{{ retailer.user_id }}</span></div>
+    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <div class="nav-section">Main Menu</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item">🏠 Dashboard</a>
+    <a href="{% url 'form' %}" class="nav-item">🪪 PAN Services</a>
+    <a href="{% url 'applied_list' %}" class="nav-item">📋 Applied List</a>
+    <div class="nav-section" style="margin-top:.5rem">Vehicle</div>
+    <a href="{% url 'vehicle_rc_page' %}" class="nav-item">🚗 RC Advance</a>
+    <a href="{% url 'vehicle_rc_allindia' %}" class="nav-item active">🪪 RC All India PVC</a>
+    <div class="nav-section" style="margin-top:.5rem">Other</div>
+    <a href="{% url 'wallet' %}" class="nav-item">💰 Wallet</a>
+  </div>
+
+  <div class="content">
+    <div class="breadcrumb">
+      <a href="{% url 'retailer_dashboard' %}">Dashboard</a>
+      <span>›</span><span>Vehicle Services</span>
+      <span>›</span><span>RC All India PVC</span>
+    </div>
+    <div class="page-title">VEHICLE RC: ALL INDIA PVC CARD</div>
+
+    <div class="rc-grid">
+      <div class="form-card">
+        <div class="err-box" id="errBox">❌ <span id="errMsg"></span></div>
+        <label class="form-label">Enter Vehicle No.</label>
+        <input type="text" class="form-input" id="vehicleInput" placeholder="ENTER VEHICLE NO." maxlength="11" />
+        <label class="form-label">Card Background</label>
+        <select class="form-select" id="cardBg">
+          <option>New Background</option>
+          <option>Classic Background</option>
+          <option>Blue Background</option>
+        </select>
+        <label class="form-label">Chip Type</label>
+        <select class="form-select" id="chipType">
+          <option>Chip</option>
+          <option>No Chip</option>
+        </select>
+        <button class="btn-submit" id="submitBtn" onclick="fetchRC()">SUBMIT</button>
+        <div class="payable">Payable Amt Rs. 25.00/-</div>
+      </div>
+
+      <div class="preview-card" id="previewWrap">
+        <div class="preview-placeholder" id="placeholder">
+          <div class="icon">🚗</div>
+          <p>Vehicle number enter karo<br>aur Submit karo RC dekhne ke liye</p>
+        </div>
+        <div class="loading" id="loadingDiv">
+          <div class="spinner"></div>
+          <p style="font-size:.8rem">RC fetch ho rahi hai...</p>
+        </div>
+        <div class="success-card" id="successCard">
+          <div class="sc-header">
+            <div><div class="sc-label">All India PVC RC</div><div class="sc-reg" id="res_regNo">—</div></div>
+          </div>
+          <div class="sc-body">
+            <div class="sc-row"><span class="sc-key">Owner</span><span class="sc-val" id="res_owner">—</span></div>
+            <div class="sc-row"><span class="sc-key">Father/Spouse</span><span class="sc-val" id="res_father">—</span></div>
+            <div class="sc-row"><span class="sc-key">Address</span><span class="sc-val" id="res_address">—</span></div>
+            <div class="sc-row"><span class="sc-key">Vehicle Class</span><span class="sc-val" id="res_class">—</span></div>
+            <div class="sc-row"><span class="sc-key">Maker / Model</span><span class="sc-val" id="res_maker">—</span></div>
+            <div class="sc-row"><span class="sc-key">Fuel</span><span class="sc-val" id="res_fuel">—</span></div>
+            <div class="sc-row"><span class="sc-key">Colour / Body</span><span class="sc-val" id="res_colour">—</span></div>
+            <div class="sc-row"><span class="sc-key">Engine No.</span><span class="sc-val" id="res_engine">—</span></div>
+            <div class="sc-row"><span class="sc-key">Chassis No.</span><span class="sc-val" id="res_chassis">—</span></div>
+            <div class="sc-row"><span class="sc-key">Reg. Date</span><span class="sc-val" id="res_regDate">—</span></div>
+            <div class="sc-row"><span class="sc-key">Valid Upto</span><span class="sc-val" id="res_validity">—</span></div>
+            <div class="sc-row"><span class="sc-key">Financer</span><span class="sc-val" id="res_financer">—</span></div>
+            <div class="sc-row"><span class="sc-key">RTO</span><span class="sc-val" id="res_rto">—</span></div>
+          </div>
+          <div class="sc-actions">
+            <button class="btn-pdf" id="pdfBtn">📄 View PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="section-title">Recent Applications</div>
+    <div class="table-card">
+      <table>
+        <thead><tr><th>Sl. No.</th><th>Date & Time</th><th>Vehicle No.</th><th>Name</th><th>Vehicle Details</th><th>Status</th><th>PVC PDF</th></tr></thead>
+        <tbody>
+          {% for app in history %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td style="color:#64748b;white-space:nowrap">{{ app.created_at|date:"d-m-Y" }}<br><span style="font-size:.68rem">{{ app.created_at|time:"H:i:s" }}</span></td>
+            <td style="font-family:monospace;color:#60a5fa">{{ app.vehicle_number }}</td>
+            <td>{{ app.owner_name|default:"N/A" }}</td>
+            <td style="font-size:.72rem">{{ app.order_id }}</td>
+            <td>
+              {% if app.status == 'success' %}<span class="pill pill-success">SUCCESS</span>
+              {% else %}<span class="pill pill-failed">FAILED</span>{% endif %}
+            </td>
+            <td>
+              {% if app.status == 'success' %}
+              <button class="btn-view" onclick="window.open('{% url 'vehicle_rc_allindia_pdf' app.order_id %}','_blank')">View PDF</button>
+              {% else %}<span style="color:#334155">—</span>{% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="empty">Abhi koi application nahi hai</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentOrderId = null;
+
+async function fetchRC() {
+  const vehicleNo = document.getElementById('vehicleInput').value.trim().toUpperCase().replace(/\s/g,'');
+  if (!vehicleNo) { showErr('Vehicle number daalo.'); return; }
+  hideErr();
+  showLoading();
+  document.getElementById('submitBtn').disabled = true;
+  try {
+    const res = await fetch('{% url "vehicle_rc_allindia_api" %}', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},
+      body: JSON.stringify({
+        vehicle_number: vehicleNo,
+        card_background: document.getElementById('cardBg').value,
+        chip_type: document.getElementById('chipType').value,
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      currentOrderId = data.order_id;
+      showResult(data.rc);
+      if (data.wallet_balance) {
+        document.getElementById('walletDisplay').textContent = '💰 ₹' + data.wallet_balance;
+      }
+    } else {
+      hideLoading();
+      showErr(data.error || 'RC nahi mili.');
+    }
+  } catch(e) {
+    hideLoading();
+    showErr('Network error.');
+  }
+  document.getElementById('submitBtn').disabled = false;
+}
+
+function showResult(rc) {
+  hideLoading();
+  document.getElementById('placeholder').style.display = 'none';
+  document.getElementById('res_regNo').textContent   = rc.reg_no || '—';
+  document.getElementById('res_owner').textContent   = rc.owner_name || '—';
+  document.getElementById('res_father').textContent  = rc.father_name || '—';
+  document.getElementById('res_address').textContent = rc.address || '—';
+  document.getElementById('res_class').textContent   = rc.vehicle_class || '—';
+  document.getElementById('res_maker').textContent   = (rc.maker||'') + ' / ' + (rc.model||'');
+  document.getElementById('res_fuel').textContent    = rc.fuel_type || '—';
+  document.getElementById('res_colour').textContent  = (rc.colour||'') + ' / ' + (rc.body_type||'');
+  document.getElementById('res_engine').textContent  = rc.engine_no || '—';
+  document.getElementById('res_chassis').textContent = rc.chassis_no || '—';
+  document.getElementById('res_regDate').textContent = rc.reg_date || '—';
+  document.getElementById('res_validity').textContent= rc.validity || '—';
+  document.getElementById('res_financer').textContent= rc.financer || '—';
+  document.getElementById('res_rto').textContent     = rc.rto || '—';
+  document.getElementById('successCard').classList.add('show');
+  document.getElementById('pdfBtn').onclick = () => {
+    window.open('/vehicle/rc-allindia/pdf/' + currentOrderId + '/', '_blank');
+  };
+}
+
+function showLoading() {
+  document.getElementById('placeholder').style.display = 'none';
+  document.getElementById('successCard').classList.remove('show');
+  document.getElementById('loadingDiv').classList.add('show');
+}
+function hideLoading() { document.getElementById('loadingDiv').classList.remove('show'); }
+function showErr(msg) { document.getElementById('errMsg').textContent = msg; document.getElementById('errBox').classList.add('show'); }
+function hideErr() { document.getElementById('errBox').classList.remove('show'); }
+function getCookie(name) { const v = document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)'); return v ? v.pop() : ''; }
+document.getElementById('vehicleInput').addEventListener('keydown', e => { if(e.key==='Enter') fetchRC(); });
+</script>
+</body>
+</html>

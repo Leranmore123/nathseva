@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wallet — Nath Seva One</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; background: #f7fafc; color: #0f172a; margin: 0; padding: 24px; }
+.container { max-width: 720px; margin: 24px auto; background: #fff; padding: 28px; border-radius: 10px; box-shadow: 0 6px 18px rgba(15,23,42,0.07); }
+h2 { margin: 0 0 16px; font-size: 1.4rem; font-weight: 700; }
+h3 { margin: 24px 0 8px; font-size: 1.05rem; font-weight: 600; }
+.balance-card { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 16px 20px; margin-bottom: 20px; }
+.balance-label { font-size: 0.8rem; color: #92400e; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.balance-amount { font-size: 2rem; font-weight: 700; color: #c2410c; }
+.form-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.form-row label { font-size: 0.9rem; font-weight: 500; color: #374151; white-space: nowrap; }
+.input { padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 7px; width: 180px; font-size: 0.95rem; transition: border-color 0.15s; }
+.input:focus { outline: none; border-color: #f97316; box-shadow: 0 0 0 3px rgba(249,115,22,0.15); }
+.btn { background: #f97316; color: #fff; padding: 9px 18px; border-radius: 7px; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 600; transition: background 0.15s, transform 0.1s; }
+.btn:hover { background: #ea6c0a; }
+.btn:active { transform: scale(0.98); }
+.btn:disabled { background: #fdba74; cursor: not-allowed; }
+.msg { margin-top: 14px; padding: 10px 14px; border-radius: 7px; font-size: 0.9rem; }
+.msg-success { background: #f0fdf4; border: 1px solid #86efac; color: #166534; }
+.msg-error   { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; }
+#statusMsg { display: none; }
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+thead tr { border-bottom: 2px solid #e2e8f0; }
+th { padding: 8px 6px; text-align: left; color: #64748b; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+tbody tr { border-bottom: 1px solid #f1f5f9; }
+tbody tr:last-child { border-bottom: none; }
+td { padding: 10px 6px; color: #1e293b; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+.badge-credit { background: #dcfce7; color: #166534; }
+.badge-debit { background: #fee2e2; color: #991b1b; }
+.badge-completed { background: #dbeafe; color: #1e40af; }
+.badge-pending { background: #fef9c3; color: #854d0e; }
+.badge-failed { background: #fee2e2; color: #991b1b; }
+.back-link { display: inline-block; margin-top: 22px; color: #f97316; text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+.back-link:hover { text-decoration: underline; }
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>Wallet</h2>
+
+  <div class="balance-card">
+    <div class="balance-label">Current Balance</div>
+    <div class="balance-amount">&#8377;{{ retailer.wallet_balance|default:"0" }}</div>
+  </div>
+
+  <p style="color:#475569;font-size:0.92rem;margin:0 0 16px;">Apne wallet me paise add karne ke liye neeche rakam bharein aur Razorpay se payment karein.</p>
+
+  <form id="walletForm" method="post" onsubmit="return false;">
+    {% csrf_token %}
+    <div class="form-row">
+      <label for="amount">Rakam (&#8377;)</label>
+      <input id="amount" name="amount" class="input" type="number" min="1" step="1" placeholder="e.g. 500" />
+      <button class="btn" id="addBtn" type="button">Add Money</button>
+    </div>
+  </form>
+
+  <div id="statusMsg" class="msg"></div>
+
+  {% if success %}
+    <div class="msg msg-success">{{ success }}</div>
+  {% endif %}
+  {% if error %}
+    <div class="msg msg-error">{{ error }}</div>
+  {% endif %}
+
+  <h3>Recent Transactions</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Amount</th>
+        <th>Provider</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in transactions %}
+      <tr>
+        <td style="white-space:nowrap">{{ t.created_at|date:"d M Y H:i" }}</td>
+        <td>
+          <span class="badge {% if t.tx_type == 'credit' %}badge-credit{% else %}badge-debit{% endif %}">
+            {{ t.tx_type }}
+          </span>
+         </td>
+        <td style="font-weight:600">&#8377;{{ t.amount }}</td>
+        <td style="color:#64748b">{{ t.payment_provider }}</td>
+        <td>
+          <span class="badge {% if t.status == 'completed' %}badge-completed{% elif t.status == 'pending' %}badge-pending{% else %}badge-failed{% endif %}">
+            {{ t.status }}
+          </span>
+         </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" style="padding:18px 6px;color:#94a3b8;text-align:center">
+          No transactions yet.
+         </td>
+       </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a class="back-link" href="{% url 'retailer_dashboard' %}">&#8592; Back to Dashboard</a>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+(function () {
+  function getCsrf() {
+    var el = document.querySelector('[name=csrfmiddlewaretoken]');
+    if (el) return el.value;
+    var m = document.cookie.match(/csrftoken=([^;]+)/);
+    return m ? m[1] : '';
+  }
+
+  function showMsg(text, isError) {
+    var el = document.getElementById('statusMsg');
+    el.className = 'msg ' + (isError ? 'msg-error' : 'msg-success');
+    el.textContent = text;
+    el.style.display = 'block';
+    setTimeout(function() {
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+  }
+
+  function setLoading(loading) {
+    var btn = document.getElementById('addBtn');
+    if (loading) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Processing\u2026';
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = 'Add Money';
+    }
+  }
+
+  document.getElementById('addBtn').addEventListener('click', async function () {
+    var amountEl = document.getElementById('amount');
+    var raw = amountEl.value.trim();
+
+    if (!raw || isNaN(raw) || Number(raw) <= 0) {
+      showMsg('Kripya valid rakam daalein (zero se zyada).', true);
+      amountEl.focus();
+      return;
+    }
+
+    setLoading(true);
+    document.getElementById('statusMsg').style.display = 'none';
+
+    /* Step 1: Create order */
+    var orderData;
+    try {
+      var res = await fetch('{% url "wallet_create_order" %}', {
+        method: 'POST',
+        credentials: 'include',  // FIXED: Changed from 'same-origin' to 'include'
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCsrf()
+        },
+        body: JSON.stringify({ amount: raw })
+      });
+      
+      orderData = await res.json();
+      if (!res.ok) {
+        console.error('Order creation failed:', orderData);
+        var errorMsg = orderData.error || orderData.detail || JSON.stringify(orderData);
+        showMsg('Order creation failed: ' + errorMsg, true);
+        setLoading(false);
+        return;
+      }
+    } catch (err) {
+      console.error('Network error:', err);
+      showMsg('Network error during order creation: ' + err.message, true);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(false);
+
+    /* Step 2: Open Razorpay */
+    var options = {
+      key: orderData.key,
+      amount: orderData.amount,
+      currency: 'INR',
+      name: 'Nath Seva One',
+      description: 'Wallet Top-up',
+      order_id: orderData.order_id,
+      theme: { color: '#f97316' },
+      modal: {
+        ondismiss: function () {
+          showMsg('Payment cancelled. Koi payment nahi ki gayi.', true);
+        }
+      },
+      handler: async function (response) {
+        /* Step 3: Verify payment */
+        setLoading(true);
+        try {
+          var verifyRes = await fetch('{% url "wallet_verify" %}', {
+            method: 'POST',
+            credentials: 'include',  // FIXED: Changed from 'same-origin' to 'include'
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCsrf()
+            },
+            body: JSON.stringify(response)
+          });
+          
+          var verifyData = await verifyRes.json();
+          if (verifyRes.ok && verifyData.status === 'success') {
+            showMsg('Payment successful! \u20b9' + verifyData.added + ' wallet me add ho gaye.', false);
+            setTimeout(function () { 
+              window.location.reload(); 
+            }, 2000);
+          } else {
+            var errorMsg = verifyData.error || verifyData.detail || JSON.stringify(verifyData);
+            showMsg('Verification failed: ' + errorMsg, true);
+          }
+        } catch (err) {
+          console.error('Verification error:', err);
+          showMsg('Network error during verification: ' + err.message, true);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    try {
+      var rzp = new Razorpay(options);
+      rzp.on('payment.failed', function (resp) {
+        console.error('Payment failed:', resp);
+        var errorDesc = resp.error.description || resp.error.code || 'Unknown error';
+        showMsg('Payment failed: ' + errorDesc, true);
+        setLoading(false);
+      });
+      rzp.open();
+    } catch (err) {
+      console.error('Razorpay error:', err);
+      showMsg('Razorpay load error: ' + err.message, true);
+      setLoading(false);
+    }
+  });
+})();
+</script>
+</body>
+</html>

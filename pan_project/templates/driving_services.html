@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Driving Licence Services — SM SEVAONE</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f4f5fb;color:#1f2430;min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{background:#5b2c9e;background:linear-gradient(90deg,#6a1fb0,#7c3aed);padding:.7rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:.5rem}
+.brand-logo{background:#fff;color:#7c3aed;font-weight:800;font-size:.95rem;padding:.35rem .7rem;border-radius:6px;letter-spacing:.02em}
+.brand-sub{color:#e9d5ff;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;margin-top:.1rem}
+.topbar-right{display:flex;align-items:center;gap:1rem}
+.icon-btn{background:rgba(255,255,255,.15);border:none;color:#fff;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.95rem}
+.wallet-chip{display:flex;align-items:center;gap:.35rem;background:rgba(255,255,255,.15);border-radius:20px;padding:.35rem .85rem;font-size:.85rem;color:#fff;font-weight:600}
+.user-chip{display:flex;align-items:center;gap:.55rem}
+.avatar{width:34px;height:34px;border-radius:50%;background:#fff;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700}
+.user-meta .u-name{font-size:.82rem;color:#fff;font-weight:600;line-height:1.1}
+.user-meta .u-id{font-size:.68rem;color:#e9d5ff;line-height:1.1}
+
+/* LAYOUT */
+.main-wrap{display:flex;flex:1}
+.sidebar{width:230px;background:#1b1830;padding:1.1rem .8rem;display:flex;flex-direction:column;gap:.15rem}
+.nav-section{font-size:.62rem;color:#5f5a7a;letter-spacing:.1em;text-transform:uppercase;padding:.9rem .8rem .3rem;font-weight:700}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.55rem .8rem;border-radius:8px;cursor:pointer;font-size:.85rem;color:#b6b2cc;text-decoration:none;border:none;background:none;font-family:inherit;width:100%}
+.nav-item:hover{background:#2a2650;color:#fff}
+.nav-item.active{background:#e11d48;color:#fff;font-weight:600}
+.content{flex:1;padding:1.5rem 2rem}
+
+/* BREADCRUMB */
+.crumb{display:flex;align-items:center;gap:.5rem;font-size:.95rem;color:#4b5563;margin-bottom:1.1rem;font-weight:600}
+.crumb .sep{color:#c7c9d9;font-weight:400}
+.crumb .cur{color:#9aa0b4;font-weight:400}
+
+/* CARD PANEL */
+.panel{background:#fff;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.panel-head{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem}
+.badge-green{background:#dcfce7;color:#16a34a;font-weight:700;font-size:.9rem;padding:.5rem 1.1rem;border-radius:8px}
+.badge-goback{background:#fef3c7;color:#92400e;font-weight:600;font-size:.85rem;padding:.5rem 1.1rem;border-radius:8px;cursor:pointer;border:none;text-decoration:none}
+
+/* SERVICE GRID */
+.svc-row{position:relative;padding-left:2.5rem}
+.downloads-tab{position:absolute;left:0;top:0;bottom:0;width:2rem;background:#16a34a;color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.15em;writing-mode:vertical-rl;text-orientation:mixed;display:flex;align-items:center;justify-content:center;border-radius:6px}
+.svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
+.svc-card{text-align:center;padding:1rem .5rem}
+.svc-icon-circle{width:88px;height:88px;border-radius:50%;margin:0 auto .75rem;display:flex;align-items:center;justify-content:center;font-size:2.2rem;overflow:hidden;border:3px solid #fff;box-shadow:0 0 0 1px #e5e7eb}
+.ic-blue{background:#dbeafe}
+.ic-purple{background:#ede9fe}
+.ic-grey{background:#e5e7eb}
+.svc-title{font-size:.92rem;font-weight:700;color:#16a34a;margin-bottom:.2rem;position:relative;display:inline-block}
+.svc-title.dark{color:#1f2430}
+.new-badge{background:#dc2626;color:#fff;font-size:.55rem;font-weight:700;padding:.15rem .4rem;border-radius:50%;position:absolute;top:-.4rem;right:-1.1rem}
+.pill{display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;font-weight:700;padding:.25rem .7rem;border-radius:20px;margin-top:.3rem}
+.pill-auto{background:#dbeafe;color:#1d4ed8}
+.pill-manual{background:#f3f4f6;color:#374151}
+.eta{font-size:.72rem;color:#374151;margin-top:.5rem;display:flex;align-items:center;justify-content:center;gap:.3rem}
+.svc-card a{text-decoration:none;display:block;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">SM SEVAONE</div>
+    <div><div class="brand-sub">Online Services</div></div>
+  </div>
+  <div class="topbar-right">
+    <button class="icon-btn">🌙</button>
+    <button class="icon-btn">▦</button>
+    <div class="wallet-chip">💳 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip">
+      <div class="avatar">{{ retailer.full_name.0|upper }}</div>
+      <div class="user-meta">
+        <div class="u-name">{{ retailer.full_name }}</div>
+        <div class="u-id">{{ retailer.user_id }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item"><span>🏠</span> Dashboard</a>
+    <a href="{% url 'wallet' %}" class="nav-item"><span>💳</span> Wallet</a>
+    <div class="nav-section">Statement</div>
+    <a href="#" class="nav-item"><span>🔁</span> Wallet Transactions</a>
+    <a href="#" class="nav-item"><span>📄</span> Transactions Details</a>
+    <div class="nav-section">Services</div>
+    <a href="#" class="nav-item"><span>🏛️</span> Govt. Services</a>
+    <a href="{% url 'driving_services' %}" class="nav-item active"><span>🖨️</span> Print Services</a>
+    <a href="#" class="nav-item"><span>🧩</span> Other Services</a>
+    <div class="nav-section">Help</div>
+    <a href="#" class="nav-item"><span>👤</span> Profile Settings</a>
+    <a href="#" class="nav-item"><span>💲</span> Pricing</a>
+    <a href="#" class="nav-item"><span>❓</span> FAQ</a>
+    <a href="{% url 'retailer_logout' %}" class="nav-item"><span>↩️</span> Logout</a>
+  </div>
+
+  <div class="content">
+    <div class="crumb">Driving Licence Services <span class="sep">|</span> <span class="cur">Print Services</span></div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="badge-green">Driving Licence Services</div>
+        <a href="{% url 'retailer_dashboard' %}" class="badge-goback">Go Back</a>
+      </div>
+
+      <div class="svc-row">
+        <div class="downloads-tab">Downloads</div>
+        <div class="svc-grid">
+
+          <div class="svc-card">
+  <a href="{% url 'dl_allindia' %}">
+    <div class="svc-icon-circle ic-blue">🪪</div>
+    <div class="svc-title">DL - All India PVC</div>
+               <div><span class="pill pill-auto">⚡ AUTOMATED</span></div>
+              <div class="eta">Instant / Real-time ✅</div>
+            </a>
+          </div>
+
+          <div class="svc-card">
+  <a href="{% url 'dl_karnataka' %}">
+    <div class="svc-icon-circle ic-purple">🪪</div>
+    <div class="svc-title">DL Karnataka PVC</div>
+                  <div><span class="pill pill-auto">⚡ AUTOMATED</span></div>
+              <div class="eta">Instant / Real-time ✅</div>
+            </a>
+          </div>
+
+          <div class="svc-card">
+            <a href="#">
+              <div class="svc-icon-circle ic-purple">❓</div>
+              <div class="svc-title dark" style="position:relative">Find DL No.<span class="new-badge">NEW</span></div>
+              <div><span class="pill pill-manual">✍️ MANUAL</span></div>
+              <div class="eta">⏳ 4 Hours ಒಳಗೆ Clear ಆಗುತ್ತದೆ ✅</div>
+            </a>
+          </div>
+
+          <div class="svc-card">
+            <a href="#">
+              <div class="svc-icon-circle ic-grey">📱</div>
+              <div class="svc-title dark" style="position:relative">Link DL &lt;&gt; Mobile No.<span class="new-badge">NEW</span></div>
+              <div><span class="pill pill-manual">✍️ MANUAL</span></div>
+              <div class="eta">⏳ 4 Hours ಒಳಗೆ Clear ಆಗುತ್ತದೆ ✅</div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;color:#9aa0b4;font-size:.78rem;margin-top:2rem">Copyright © 2026. All right reserved.</div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Applied List</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
+
+        .header {
+            background: #fff;
+            padding: 15px 30px;
+            border-bottom: 3px solid #e65c00;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header h1 { color: #e65c00; font-size: 20px; font-weight: 700; }
+        .header span { color: #666; font-size: 14px; margin-left: 16px; }
+        .apply-btn {
+            background: #28a745; color: #fff;
+            padding: 10px 22px; border-radius: 6px;
+            text-decoration: none; font-size: 14px; font-weight: 600;
+        }
+
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+
+        .card { background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+
+        .table-controls {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 16px;
+        }
+        .table-controls select, .table-controls input {
+            padding: 7px 12px; border: 1px solid #ddd;
+            border-radius: 6px; font-size: 13px; width: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        thead { background: #f8f9fa; }
+        th { padding: 12px 14px; text-align: left; color: #555; font-weight: 600; border-bottom: 2px solid #eee; }
+        td { padding: 12px 14px; border-bottom: 1px solid #f0f0f0; color: #333; vertical-align: middle; }
+        tr:hover { background: #fafafa; }
+
+        .order-link { color: #1a73e8; text-decoration: none; font-weight: 500; }
+        .order-link:hover { text-decoration: underline; }
+
+        .name-cell .main { font-weight: 500; }
+        .name-cell .sub { color: #888; font-size: 12px; }
+
+        .badge {
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 12px; font-weight: 600;
+        }
+        .badge-completed { background: #e8f5e9; color: #2e7d32; }
+        .badge-pending { background: #fff3e0; color: #e65c00; }
+
+        .amount { color: #1a73e8; font-weight: 600; }
+
+        .action-btns { display: flex; gap: 6px; }
+        .btn-view {
+            padding: 6px 14px; background: #1a73e8;
+            color: #fff; border-radius: 4px;
+            text-decoration: none; font-size: 12px;
+        }
+
+        .pagination {
+            display: flex; justify-content: flex-end;
+            align-items: center; gap: 6px; margin-top: 16px;
+        }
+        .pagination button {
+            padding: 6px 14px; border: 1px solid #ddd;
+            background: #fff; border-radius: 4px;
+            font-size: 13px; cursor: pointer;
+        }
+        .pagination button.active { background: #1a73e8; color: #fff; border-color: #1a73e8; }
+
+        .footer { text-align: center; padding: 20px; color: #aaa; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div>
+        <h1>PAN CARD PRINT : Application <span>| Applied List</span></h1>
+    </div>
+    <a href="/" class="apply-btn">Apply New</a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="table-controls">
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:#555;">
+                Show
+                <select id="perPage" onchange="renderTable()">
+                    <option>10</option>
+                    <option>25</option>
+                    <option>50</option>
+                </select>
+                records
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:#555;">
+                Search: <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="Search...">
+            </div>
+        </div>
+
+        <table id="mainTable">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>PAN Number</th>
+                    <th>Full Name</th>
+                    <th>Date & Time</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;">
+            <div id="showingInfo" style="font-size:13px;color:#666;"></div>
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">Copyright &copy; 2026. All rights reserved.</div>
+
+<script>
+const allData = [
+    {% for app in applications %}
+    {
+        order_id: "{{ app.order_id }}",
+        pan: "{{ app.pan_number }}",
+        full_name: "{{ app.full_name }}",
+        father_name: "{{ app.father_name }}",
+        date: "{{ app.created_at|date:'d-m-Y' }}",
+        time: "{{ app.created_at|date:'H:i:s' }}",
+        amount: "₹{{ app.amount }}",
+        status: "{{ app.status }}"
+    },
+    {% endfor %}
+];
+
+let currentPage = 1;
+
+function renderTable() {
+    let search = document.getElementById("searchInput").value.toLowerCase();
+    let perPage = parseInt(document.getElementById("perPage").value);
+
+    let filtered = allData.filter(r =>
+        r.order_id.toLowerCase().includes(search) ||
+        r.pan.toLowerCase().includes(search) ||
+        r.full_name.toLowerCase().includes(search)
+    );
+
+    let total = filtered.length;
+    let pages = Math.ceil(total / perPage);
+    if (currentPage > pages) currentPage = 1;
+
+    let start = (currentPage - 1) * perPage;
+    let pageData = filtered.slice(start, start + perPage);
+
+    let tbody = document.getElementById("tableBody");
+    tbody.innerHTML = "";
+
+    pageData.forEach(r => {
+        let badgeClass = r.status === "COMPLETED" ? "badge-completed" : "badge-pending";
+        tbody.innerHTML += `
+        <tr>
+            <td><a href="/pan/detail/${r.order_id}/" class="order-link">${r.order_id}</a></td>
+            <td>${r.pan}</td>
+            <td class="name-cell">
+                <div class="main">${r.full_name}</div>
+                <div class="sub">${r.father_name}</div>
+            </td>
+            <td>${r.date}<br><small style="color:#888">${r.time}</small></td>
+            <td class="amount">${r.amount}</td>
+            <td><span class="badge ${badgeClass}">${r.status}</span></td>
+            <td class="action-btns">
+                <a href="/pan/detail/${r.order_id}/" class="btn-view">View</a>
+            </td>
+        </tr>`;
+    });
+
+    document.getElementById("showingInfo").innerText =
+        `Showing ${start + 1} to ${Math.min(start + perPage, total)} of ${total} records`;
+
+    let pag = document.getElementById("pagination");
+    pag.innerHTML = `<button onclick="changePage(${currentPage-1})" ${currentPage===1?'disabled':''}>Prev</button>`;
+    for (let i = 1; i <= pages; i++) {
+        pag.innerHTML += `<button class="${i===currentPage?'active':''}" onclick="changePage(${i})">${i}</button>`;
+    }
+    pag.innerHTML += `<button onclick="changePage(${currentPage+1})" ${currentPage===pages?'disabled':''}>Next</button>`;
+}
+
+function changePage(p) {
+    let perPage = parseInt(document.getElementById("perPage").value);
+    let search = document.getElementById("searchInput").value.toLowerCase();
+    let filtered = allData.filter(r =>
+        r.order_id.toLowerCase().includes(search) ||
+        r.pan.toLowerCase().includes(search) ||
+        r.full_name.toLowerCase().includes(search)
+    );
+    let pages = Math.ceil(filtered.length / perPage);
+    if (p < 1 || p > pages) return;
+    currentPage = p;
+    renderTable();
+}
+
+renderTable();
+</script>
+</body>
+</html>

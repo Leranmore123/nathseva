@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Nath Seva One</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0d1b2a;color:#fff;min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{background:#0f2236;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1e3a52}
+.brand-name{color:#f97316;font-size:1rem;font-weight:600}
+.brand-sub{color:#64748b;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase}
+.topbar-right{display:flex;align-items:center;gap:.85rem}
+.user-chip{display:flex;align-items:center;gap:.5rem;background:#162d42;border:1px solid #2a4a6a;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0}
+.user-chip span{font-size:.78rem;color:#94a3b8}
+.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#052e16;border:1px solid #14532d;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#22c55e;font-weight:600}
+.btn-logout{background:none;border:1px solid #2a4a6a;border-radius:8px;color:#64748b;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block}
+.btn-logout:hover{background:#162d42;color:#94a3b8}
+
+/* LAYOUT */
+.main-wrap{display:flex;flex:1}
+.sidebar{width:210px;background:#0f2236;border-right:1px solid #1e3a52;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.2rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.55rem .85rem;border-radius:8px;cursor:pointer;font-size:.82rem;color:#64748b;text-decoration:none;border:none;background:none;font-family:inherit;width:100%}
+.nav-item:hover{background:#162d42;color:#94a3b8}
+.nav-item.active{background:#1e3a52;color:#f97316;font-weight:600}
+.nav-icon{font-size:1rem}
+.nav-section{font-size:.65rem;color:#334155;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:600}
+.content{flex:1;padding:1.5rem;overflow-y:auto}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:1.5rem}
+.stat-card{background:#0f2236;border:1px solid #1e3a52;border-radius:12px;padding:1rem 1.1rem}
+.st-label{font-size:.68rem;color:#64748b;text-transform:uppercase;letter-spacing:.1em}
+.st-val{font-size:1.5rem;font-weight:700;color:#fff;margin-top:.25rem}
+.st-change{font-size:.72rem;margin-top:.15rem}
+.st-change.up{color:#22c55e}
+.st-change.warn{color:#f97316}
+.st-change.muted{color:#64748b}
+
+/* SECTION */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem}
+.section-title{font-size:.75rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.12em}
+.see-all{font-size:.78rem;color:#f97316;text-decoration:none}
+
+/* SERVICE GRID */
+.service-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:1.5rem}
+.svc-card{background:#0f2236;border:1px solid #1e3a52;border-radius:12px;padding:1.1rem;cursor:pointer;transition:border-color .15s,background .15s;text-decoration:none;display:block}
+.svc-card:hover{border-color:#f97316;background:#162d42}
+.svc-icon{font-size:1.5rem}
+.svc-title{font-size:.88rem;font-weight:600;color:#fff;margin-top:.5rem}
+.svc-desc{font-size:.72rem;color:#64748b;margin-top:.15rem}
+.svc-badge{display:inline-block;background:#422006;color:#f97316;font-size:.62rem;padding:.15rem .5rem;border-radius:20px;margin-top:.35rem}
+.svc-badge.soon{background:#1e293b;color:#64748b}
+.svc-badge.auto{background:#0c2240;color:#60a5fa}
+
+/* TABLE */
+.table-card{background:#0f2236;border:1px solid #1e3a52;border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+thead th{text-align:left;padding:.65rem 1rem;color:#64748b;font-weight:500;border-bottom:1px solid #1e3a52;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
+tbody td{padding:.7rem 1rem;color:#94a3b8;border-bottom:1px solid #1e3a52}
+tbody td:first-child{color:#fff;font-weight:500}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#162d42}
+.pill{display:inline-block;padding:.18rem .65rem;border-radius:20px;font-size:.68rem;font-weight:600}
+.pill.done{background:#052e16;color:#22c55e}
+.pill.pending{background:#422006;color:#f97316}
+.pill.processing{background:#1e3a52;color:#60a5fa}
+
+/* VEHICLE OVERLAY */
+.veh-overlay{display:none;position:fixed;inset:0;background:#0d1b2a;z-index:100;flex-direction:column}
+.veh-overlay.show{display:flex}
+.veh-topbar{background:#0f2236;padding:.9rem 1.75rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid #1e3a52}
+.veh-back-btn{background:none;border:1px solid #2a4a6a;border-radius:8px;color:#94a3b8;font-size:.8rem;padding:.35rem .85rem;cursor:pointer;font-family:inherit}
+.veh-back-btn:hover{background:#162d42}
+.veh-page-title{font-size:1rem;font-weight:600;color:#fff}
+.veh-body{flex:1;padding:1.75rem;overflow-y:auto}
+.veh-section-badge{display:inline-block;background:#1e3a52;color:#60a5fa;font-size:.78rem;font-weight:600;padding:.3rem .85rem;border-radius:20px;margin-bottom:.85rem}
+.veh-desc{font-size:.82rem;color:#64748b;margin-bottom:1.5rem;line-height:1.6;max-width:700px}
+.veh-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem}
+.veh-card{background:#0f2236;border:1px solid #1e3a52;border-radius:12px;padding:1.25rem;cursor:pointer;transition:border-color .15s,background .15s;position:relative}
+.veh-card:hover{border-color:#60a5fa;background:#162d42}
+.veh-card-img{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.75rem;margin-bottom:.75rem}
+.img-green{background:#0a2e1a;border:2px solid #14532d}
+.img-yellow{background:#1f1500;border:2px solid #713f12}
+.img-purple{background:#1a0a2e;border:2px solid #3b1d6b}
+.veh-card-title{font-size:.88rem;font-weight:600;color:#fff;line-height:1.35}
+.veh-card-badge{display:inline-block;margin-top:.4rem;font-size:.62rem;font-weight:600;padding:.15rem .55rem;border-radius:20px}
+.badge-auto{background:#0c2240;color:#60a5fa}
+.badge-manual{background:#1e293b;color:#94a3b8}
+.veh-card-eta{font-size:.66rem;color:#64748b;margin-top:.25rem}
+.veh-card-arrow{position:absolute;top:1rem;right:1rem;color:#1e3a52;font-size:.9rem;font-weight:600}
+.veh-card:hover .veh-card-arrow{color:#60a5fa}
+</style>
+</head>
+<body>
+
+<!-- ===================== VEHICLE SERVICES OVERLAY ===================== -->
+<div class="veh-overlay" id="vehOverlay">
+  <div class="veh-topbar">
+    <button class="veh-back-btn" onclick="document.getElementById('vehOverlay').classList.remove('show')">← Go Back</button>
+    <div class="veh-page-title">Vehicle Services</div>
+  </div>
+  <div class="veh-body">
+    <div class="veh-section-badge">Vehicle Services</div>
+    <div class="veh-desc">Choose the vehicle service you need. Automated services process instantly when API data is available, and manual services continue through the existing workflow.</div>
+    <div class="veh-grid">
+
+      <div class="veh-card" onclick="window.location.href='{% url 'vehicle_rc_page' %}'">
+
+        <div class="veh-card-img img-green">🪪</div>
+        <div class="veh-card-title">Karnataka RC Advance</div>
+        <div><span class="veh-card-badge badge-auto">AUTOMATED</span></div>
+        <div class="veh-card-arrow">→</div>
+      </div>
+
+      <div class="veh-card" onclick="window.location.href='{% url 'vehicle_rc_allindia' %}'">
+  <div class="veh-card-img img-yellow">🪪</div>
+  <div class="veh-card-title">Vehicle RC All India PVC</div>
+  <div><span class="veh-card-badge badge-auto">AUTOMATED</span></div>
+  <div class="veh-card-arrow">→</div>
+</div>
+
+      <div class="veh-card">
+        <div class="veh-card-img img-green">🪪</div>
+        <div class="veh-card-title">Vehicle RC Karnataka PVC</div>
+        <div><span class="veh-card-badge badge-auto">AUTOMATED</span></div>
+        <div class="veh-card-arrow">→</div>
+      </div>
+
+      <div class="veh-card">
+        <div class="veh-card-img img-purple">📱</div>
+        <div class="veh-card-title">Link Mobile No. to Veh. RC</div>
+        <div><span class="veh-card-badge badge-manual">MANUAL</span></div>
+        <div class="veh-card-eta">Expected turnaround: within 4 hours</div>
+        <div class="veh-card-arrow">→</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===================== TOPBAR ===================== -->
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Online Services</div></div>
+  <div class="topbar-right">
+    <div class="wallet-chip">💰 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip">
+      <div class="avatar">{{ retailer.full_name.0|upper }}</div>
+      <span>{{ retailer.user_id }}</span>
+    </div>
+    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
+  </div>
+</div>
+
+<!-- ===================== MAIN ===================== -->
+<div class="main-wrap">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="nav-section">Main Menu</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item active"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="{% url 'form' %}" class="nav-item"><span class="nav-icon">🪪</span> PAN Services</a>
+    <a href="{% url 'applied_list' %}" class="nav-item"><span class="nav-icon">📋</span> Applied List</a>
+    <div class="nav-section" style="margin-top:.5rem">Other</div>
+    <a href="{% url 'wallet' %}" class="nav-item"><span class="nav-icon">💰</span> Wallet</a>
+    <a href="#" class="nav-item"><span class="nav-icon">📊</span> Reports</a>
+    <a href="#" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- Greeting -->
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:1.2rem;font-weight:600;color:#fff">Namaskar, {{ retailer.full_name }} 👋</div>
+      <div style="font-size:.82rem;color:#64748b;margin-top:.2rem">Aaj ke kaam shuru karein</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="st-label">Total Applications</div>
+        <div class="st-val">{{ total_apps }}</div>
+        <div class="st-change muted">All time</div>
+      </div>
+      <div class="stat-card">
+        <div class="st-label">Wallet Balance</div>
+        <div class="st-val">₹{{ retailer.wallet_balance }}</div>
+        <a href="{% url 'wallet' %}" class="st-change warn" style="color:inherit;text-decoration:none">Add money →</a>
+      </div>
+      <div class="stat-card">
+        <div class="st-label">Pending Prints</div>
+        <div class="st-val">{{ recent_apps|length }}</div>
+        <div class="st-change muted">Recent entries</div>
+      </div>
+      <div class="stat-card">
+        <div class="st-label">Account Status</div>
+        <div class="st-val" style="font-size:1rem;margin-top:.4rem">
+          {% if retailer.is_verified %}
+          <span style="color:#22c55e">✅ Verified</span>
+          {% else %}
+          <span style="color:#f97316">⏳ Pending</span>
+          {% endif %}
+        </div>
+        <div class="st-change muted">{{ retailer.shop_name }}</div>
+      </div>
+    </div>
+
+    <!-- Services -->
+    <div class="section-header">
+      <div class="section-title">Services</div>
+    </div>
+    <div class="service-grid">
+
+      <a href="#" class="svc-card">
+        <div class="svc-icon">🍚</div>
+        <div class="svc-title">Ration Card Services</div>
+        <div class="svc-desc">New, correction & linking</div>
+        <span class="svc-badge">Category</span>
+      </a>
+
+      <a href="#" class="svc-card">
+        <div class="svc-icon">🗳️</div>
+        <div class="svc-title">Voter Services</div>
+        <div class="svc-desc">Registration & correction</div>
+        <span class="svc-badge">Category</span>
+      </a>
+
+      <a href="{% url 'driving_services' %}" class="svc-card">
+  <div class="svc-icon">🚗</div>
+  <div class="svc-title">DL Services</div>
+  <div class="svc-desc">Driving licence print & update</div>
+  <span class="svc-badge">Category</span>
+</a>
+      <!-- VEHICLE SERVICES — overlay trigger -->
+      <div class="svc-card" onclick="document.getElementById('vehOverlay').classList.add('show')">
+        <div class="svc-icon">🏍️</div>
+        <div class="svc-title">Vehicle Services</div>
+        <div class="svc-desc">RC, PVC & mobile linking</div>
+        <span class="svc-badge">Category</span>
+      </div>
+
+      <a href="{% url 'form' %}" class="svc-card">
+        <div class="svc-icon">🪪</div>
+        <div class="svc-title">PAN Services</div>
+        <div class="svc-desc">e-PAN print with photo & signature overlay</div>
+        <span class="svc-badge">Category</span>
+      </a>
+
+      <a href="{% url 'applied_list' %}" class="svc-card">
+        <div class="svc-icon">📋</div>
+        <div class="svc-title">Applied List</div>
+        <div class="svc-desc">All PAN applications dekho aur manage karo</div>
+      </a>
+
+      <a href="#" class="svc-card">
+        <div class="svc-icon">🔵</div>
+        <div class="svc-title">Aadhaar Services</div>
+        <div class="svc-desc">New enrollment & correction requests</div>
+        <span class="svc-badge soon">Coming Soon</span>
+      </a>
+
+      <a href="#" class="svc-card">
+        <div class="svc-icon">📱</div>
+        <div class="svc-title">Mobile Recharge</div>
+        <div class="svc-desc">Prepaid & postpaid recharge</div>
+        <span class="svc-badge soon">Coming Soon</span>
+      </a>
+
+      <a href="#" class="svc-card">
+        <div class="svc-icon">🏦</div>
+        <div class="svc-title">BBPS / Bill Pay</div>
+        <div class="svc-desc">Electricity, gas, water bills</div>
+        <span class="svc-badge soon">Coming Soon</span>
+      </a>
+
+      <a href="#" class="svc-card">
+        <div class="svc-icon">💸</div>
+        <div class="svc-title">Money Transfer</div>
+        <div class="svc-desc">IMPS/NEFT to any bank account</div>
+        <span class="svc-badge soon">Coming Soon</span>
+      </a>
+
+    </div>
+
+    <!-- Recent Applications -->
+    <div class="section-header">
+      <div class="section-title">Recent PAN Applications</div>
+      <a href="{% url 'applied_list' %}" class="see-all">Sab dekho →</a>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr><th>Name</th><th>PAN Number</th><th>Order ID</th><th>Date</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          {% for app in recent_apps %}
+          <tr>
+            <td>{{ app.full_name }}</td>
+            <td style="font-family:monospace;color:#60a5fa">{{ app.pan_number }}</td>
+            <td>{{ app.order_id }}</td>
+            <td style="color:#64748b">{{ app.created_at|date:"d M Y" }}</td>
+            <td>
+              <a href="{% url 'pan_print' app.order_id %}" style="color:#f97316;text-decoration:none;font-size:.78rem">Print →</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" style="text-align:center;color:#334155;padding:1.5rem">Abhi koi application nahi hai</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

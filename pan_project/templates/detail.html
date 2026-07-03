@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Application Details</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
+
+        .header {
+            background: #fff;
+            padding: 15px 30px;
+            border-bottom: 3px solid #e65c00;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .header h1 { color: #e65c00; font-size: 20px; font-weight: 700; }
+        .back-btn {
+            color: #1a73e8; text-decoration: none; font-size: 14px;
+        }
+
+        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+
+        .card {
+            background: #fff; border-radius: 10px;
+            padding: 28px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        .card h2 {
+            font-size: 15px; font-weight: 600; color: #333;
+            margin-bottom: 20px; padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .info-item label { font-size: 12px; color: #888; display: block; margin-bottom: 4px; }
+        .info-item span { font-size: 14px; color: #333; font-weight: 500; }
+
+        .badge {
+            padding: 4px 14px; border-radius: 20px;
+            font-size: 12px; font-weight: 600; display: inline-block;
+        }
+        .badge-completed { background: #e8f5e9; color: #2e7d32; }
+
+        .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .doc-item label { font-size: 12px; color: #888; display: block; margin-bottom: 8px; }
+        .doc-item img {
+            width: 100%; max-height: 160px; object-fit: contain;
+            border: 1px solid #eee; border-radius: 8px; padding: 8px;
+        }
+        .doc-item .no-file { color: #aaa; font-size: 13px; }
+
+        .order-id-badge {
+            background: #e3f2fd; color: #1a73e8;
+            padding: 6px 14px; border-radius: 6px;
+            font-size: 14px; font-weight: 600; display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .footer { text-align: center; padding: 20px; color: #aaa; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Application Details - {{ app.order_id }}</h1>
+    <a href="{% url 'applied_list' %}" class="back-btn">← Applied List</a>
+</div>
+
+<div class="container">
+    <!-- detail.html ke andar, .container ke top mein add karo -->
+<div style="text-align:right;margin-bottom:16px;">
+    <a href="/print/{{ app.order_id }}/" target="_blank"
+       style="background:#e65c00;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none;font-weight:600;font-size:14px;">
+        🖨️ Print e-PAN
+    </a>
+</div>
+
+    <div class="card">
+        <h2>Order Information</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Order ID</label>
+                <span>{{ app.order_id }}</span>
+            </div>
+            <div class="info-item">
+                <label>Status</label>
+                <span class="badge badge-completed">{{ app.status }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Personal Information</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>PAN Number</label>
+                <span>{{ app.pan_number }}</span>
+            </div>
+            <div class="info-item">
+                <label>Full Name</label>
+                <span>{{ app.full_name }}</span>
+            </div>
+            <div class="info-item">
+                <label>Father's Name</label>
+                <span>{{ app.father_name }}</span>
+            </div>
+            <div class="info-item">
+                <label>Date of Birth</label>
+                <span>{{ app.dob }}</span>
+            </div>
+            <div class="info-item">
+                <label>Gender</label>
+                <span>{{ app.gender }}</span>
+            </div>
+            <div class="info-item">
+                <label>Amount</label>
+                <span>₹{{ app.amount }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Application Details</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Application Date</label>
+                <span>{{ app.created_at|date:"d-m-Y" }}</span>
+            </div>
+            <div class="info-item">
+                <label>Application Time</label>
+                <span>{{ app.created_at|date:"H:i:s" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Uploaded Files</h2>
+        <div class="doc-grid">
+            <div class="doc-item">
+                <label>Signature</label>
+                {% if app.signature %}
+                    <img src="{{ app.signature.url }}" alt="Signature">
+                {% else %}
+                    <p class="no-file">File not found</p>
+                {% endif %}
+            </div>
+            <div class="doc-item">
+                <label>Photo</label>
+                {% if app.photo %}
+                    <img src="{{ app.photo.url }}" alt="Photo">
+                {% else %}
+                    <p class="no-file">File not found</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="footer">Copyright &copy; 2026. All rights reserved.</div>
+
+</body>
+</html>

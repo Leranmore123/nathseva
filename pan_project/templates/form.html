@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PAN Card Print Application</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100vh; }
+
+        .header {
+            background: #fff;
+            padding: 15px 30px;
+            border-bottom: 3px solid #e65c00;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header h1 { color: #e65c00; font-size: 20px; font-weight: 700; }
+        .header a { color: #1a73e8; text-decoration: none; font-size: 14px; }
+
+        .container { max-width: 700px; margin: 30px auto; padding: 0 20px; }
+
+        /* Wallet balance bar */
+        .wallet-bar {
+            background: #fff;
+            border-radius: 10px;
+            padding: 14px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .wallet-bar .bal-left { display: flex; align-items: center; gap: 10px; }
+        .wallet-icon { font-size: 22px; }
+        .bal-label { font-size: 12px; color: #888; font-weight: 500; }
+        .bal-amount { font-size: 20px; font-weight: 700; color: #1a73e8; }
+        .bal-amount.low { color: #e53935; }
+        .charge-note { font-size: 12px; color: #666; background: #f5f5f5; padding: 5px 12px; border-radius: 20px; }
+        .add-wallet-link {
+            font-size: 13px;
+            color: #e65c00;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid #e65c00;
+            padding: 5px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .add-wallet-link:hover { background: #e65c00; color: #fff; }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        .card h2 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 500; }
+        .form-group label span { color: red; }
+
+        .pan-row { display: flex; gap: 10px; }
+        .pan-row input { flex: 1; }
+
+        input, select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #333;
+            outline: none;
+            transition: border 0.2s;
+        }
+        input:focus, select:focus { border-color: #1a73e8; }
+        input[readonly] { background: #f9f9f9; color: #444; }
+
+        .fetch-btn {
+            padding: 10px 20px;
+            background: #1a73e8;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .fetch-btn:hover { background: #1557b0; }
+        .fetch-btn:disabled { background: #aaa; cursor: not-allowed; }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        .upload-box {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border 0.2s;
+            position: relative;
+        }
+        .upload-box:hover { border-color: #1a73e8; }
+        .upload-box input[type="file"] {
+            position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+        }
+        .upload-box .icon { font-size: 28px; margin-bottom: 6px; }
+        .upload-box p { font-size: 13px; color: #888; }
+        .upload-box .preview {
+            width: 80px; height: 80px; object-fit: cover;
+            border-radius: 6px; margin: 8px auto 0; display: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 13px;
+            background: #e65c00;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .submit-btn:hover { background: #c44f00; }
+        .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+
+        .error { color: red; font-size: 12px; margin-top: 5px; display: none; }
+
+        /* Insufficient balance alert */
+        .balance-alert {
+            background: #fff3e0;
+            border: 1px solid #ffb74d;
+            border-radius: 8px;
+            padding: 14px 16px;
+            display: none;
+            margin-bottom: 12px;
+        }
+        .balance-alert .alert-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #e65100;
+            margin-bottom: 4px;
+        }
+        .balance-alert .alert-body {
+            font-size: 13px;
+            color: #bf360c;
+        }
+        .balance-alert a {
+            color: #e65c00;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        .success-msg {
+            background: #e8f5e9; color: #2e7d32;
+            padding: 14px; border-radius: 8px;
+            font-size: 14px; text-align: center;
+            display: none; margin-top: 16px;
+        }
+        .success-msg .new-balance {
+            font-size: 12px;
+            color: #388e3c;
+            margin-top: 6px;
+        }
+
+        .fetching { color: #1a73e8; font-size: 12px; margin-top: 4px; display: none; }
+
+        .back-button-wrapper { margin-bottom: 20px; text-align: left; }
+        .back-nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f0f2f5;
+            border: 1px solid #ccc;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .back-nav-btn:hover { background: #e0e2e6; border-color: #aaa; color: #000; }
+        .back-nav-btn:active { transform: scale(0.97); }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>PAN CARD PRINT : Application</h1>
+    <a href="{% url 'applied_list' %}">Applied List →</a>
+</div>
+
+<div class="container">
+
+    <div class="back-button-wrapper">
+        <button class="back-nav-btn" onclick="goBack()">← Back</button>
+    </div>
+
+    <!-- ✅ Wallet Balance Bar -->
+    <div class="wallet-bar">
+        <div class="bal-left">
+            <span class="wallet-icon">💳</span>
+            <div>
+                <div class="bal-label">Wallet Balance</div>
+                <div class="bal-amount {% if retailer.wallet_balance < 15 %}low{% endif %}" id="walletBalanceDisplay">
+                    ₹{{ retailer.wallet_balance|default:"0" }}
+                </div>
+            </div>
+        </div>
+        <span class="charge-note">₹15 per application</span>
+        <a href="{% url 'wallet' %}" class="add-wallet-link">+ Add Money</a>
+    </div>
+
+    <!-- ✅ Insufficient Balance Alert (shown via JS) -->
+    <div class="balance-alert" id="balanceAlert">
+        <div class="alert-title">⚠️ Wallet Balance Kam Hai</div>
+        <div class="alert-body" id="balanceAlertText">
+            Application submit karne ke liye ₹15 chahiye.
+            <br><a href="{% url 'wallet' %}">Yahan click karke wallet me paise add karein →</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>PAN Information</h2>
+        <div class="form-group">
+            <label>PAN Number <span>*</span></label>
+            <div class="pan-row">
+                <input type="text" id="pan_number" placeholder="Enter PAN Number" maxlength="10" style="text-transform:uppercase">
+                <button class="fetch-btn" onclick="fetchPAN()" id="fetchBtn">Fetch</button>
+            </div>
+            <div class="fetching" id="fetching">Fetching details...</div>
+            <div class="error" id="pan_error">Invalid PAN number.</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Personal Information</h2>
+        <div class="form-group">
+            <label>Full Name <span>*</span></label>
+            <input type="text" id="full_name" placeholder="Full Name">
+            <div class="error" id="name_error">Full Name is required.</div>
+        </div>
+        <div class="form-group">
+            <label>Father's Name <span>*</span></label>
+            <input type="text" id="father_name" placeholder="Father's Name">
+            <div class="error" id="father_error">Father's Name is required.</div>
+        </div>
+        <div class="two-col">
+            <div class="form-group">
+                <label>Date of Birth <span>*</span></label>
+                <input type="date" id="dob">
+                <div class="error" id="dob_error">DOB is required.</div>
+            </div>
+            <div class="form-group">
+                <label>Gender <span>*</span></label>
+                <select id="gender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+                <div class="error" id="gender_error">Gender is required.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Document Upload</h2>
+        <div class="two-col">
+            <div class="form-group">
+                <label>Upload Signature <span>*</span></label>
+                <div class="upload-box" id="sig_box">
+                    <input type="file" id="signature" accept="image/jpg,image/jpeg,image/png" onchange="previewFile(this, 'sig_preview')">
+                    <div class="icon">✍️</div>
+                    <p>Click to upload<br><small>JPG, JPEG, PNG (Max 2MB)</small></p>
+                    <img class="preview" id="sig_preview">
+                </div>
+                <div class="error" id="sig_error">Signature is required.</div>
+            </div>
+            <div class="form-group">
+                <label>Upload Photo <span>*</span></label>
+                <div class="upload-box" id="photo_box">
+                    <input type="file" id="photo" accept="image/jpg,image/jpeg,image/png" onchange="previewFile(this, 'photo_preview')">
+                    <div class="icon">🖼️</div>
+                    <p>Click to upload<br><small>JPG, JPEG, PNG (Max 2MB)</small></p>
+                    <img class="preview" id="photo_preview">
+                </div>
+                <div class="error" id="photo_error">Photo is required.</div>
+            </div>
+        </div>
+    </div>
+
+    <button class="submit-btn" onclick="submitForm()" id="submitBtn">
+        Submit Application — ₹15 will be deducted
+    </button>
+    <div class="success-msg" id="success_msg"></div>
+
+</div>
+
+<script>
+// Current balance from Django (to check client-side before even hitting API)
+var currentBalance = parseFloat("{{ retailer.wallet_balance|default:'0' }}");
+var CHARGE = 15.00;
+
+function goBack() {
+    if (window.history.length > 1) {
+        window.history.back();
+    } else {
+        window.location.href = "{% url 'applied_list' %}";
+    }
+}
+
+function fetchPAN() {
+    let pan = document.getElementById("pan_number").value.trim().toUpperCase();
+    document.getElementById("pan_number").value = pan;
+    document.getElementById("pan_error").style.display = "none";
+
+    if (pan.length !== 10) {
+        document.getElementById("pan_error").style.display = "block";
+        return;
+    }
+
+    document.getElementById("fetchBtn").disabled = true;
+    document.getElementById("fetching").style.display = "block";
+
+    fetch("/api/verify-pan/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pan: pan })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("fetchBtn").disabled = false;
+        document.getElementById("fetching").style.display = "none";
+
+        if (data.success && data.data) {
+            let d = data.data;
+            document.getElementById("full_name").value   = d.full_name   || "";
+            document.getElementById("father_name").value = d.father_name || "";
+            if (d.dob) {
+                let parts = d.dob.split("/");
+                if (parts.length === 3) {
+                    document.getElementById("dob").value = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                } else {
+                    document.getElementById("dob").value = d.dob;
+                }
+            }
+            document.getElementById("gender").value = d.gender === "M" ? "Male" : d.gender === "F" ? "Female" : d.gender || "";
+        } else {
+            document.getElementById("pan_error").innerText = data.message || "PAN fetch failed.";
+            document.getElementById("pan_error").style.display = "block";
+        }
+    })
+    .catch(() => {
+        document.getElementById("fetchBtn").disabled = false;
+        document.getElementById("fetching").style.display = "none";
+        document.getElementById("pan_error").innerText = "Network error.";
+        document.getElementById("pan_error").style.display = "block";
+    });
+}
+
+function previewFile(input, previewId) {
+    let file = input.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+        alert("File size exceeds 2MB. Please choose a smaller image.");
+        input.value = "";
+        let img = document.getElementById(previewId);
+        img.style.display = "none";
+        img.src = "";
+        return;
+    }
+    let reader = new FileReader();
+    reader.onload = e => {
+        let img = document.getElementById(previewId);
+        img.src = e.target.result;
+        img.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+}
+
+function validate() {
+    let valid = true;
+    let fields = [
+        { id: "full_name",   err: "name_error"   },
+        { id: "father_name", err: "father_error"  },
+        { id: "dob",         err: "dob_error"     },
+        { id: "gender",      err: "gender_error"  },
+    ];
+    fields.forEach(f => {
+        let val = document.getElementById(f.id).value.trim();
+        document.getElementById(f.err).style.display = val ? "none" : "block";
+        if (!val) valid = false;
+    });
+    if (!document.getElementById("signature").files[0]) {
+        document.getElementById("sig_error").style.display = "block"; valid = false;
+    } else { document.getElementById("sig_error").style.display = "none"; }
+    if (!document.getElementById("photo").files[0]) {
+        document.getElementById("photo_error").style.display = "block"; valid = false;
+    } else { document.getElementById("photo_error").style.display = "none"; }
+    return valid;
+}
+
+function showBalanceAlert(message) {
+    var alert = document.getElementById("balanceAlert");
+    document.getElementById("balanceAlertText").innerHTML =
+        message + '<br><a href="{% url "wallet" %}">Yahan click karke wallet me paise add karein →</a>';
+    alert.style.display = "block";
+    alert.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function submitForm() {
+    // ✅ Client-side balance check — instant feedback
+    if (currentBalance < CHARGE) {
+        showBalanceAlert(
+            `⚠️ Wallet balance ₹${currentBalance.toFixed(2)} hai, lekin ₹${CHARGE} chahiye.`
+        );
+        return;
+    }
+
+    if (!validate()) return;
+
+    // Hide any previous balance alert
+    document.getElementById("balanceAlert").style.display = "none";
+
+    var btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+
+    let formData = new FormData();
+    formData.append("pan_number",  document.getElementById("pan_number").value.trim().toUpperCase());
+    formData.append("full_name",   document.getElementById("full_name").value.trim());
+    formData.append("father_name", document.getElementById("father_name").value.trim());
+    formData.append("dob",         document.getElementById("dob").value);
+    formData.append("gender",      document.getElementById("gender").value);
+    formData.append("signature",   document.getElementById("signature").files[0]);
+    formData.append("photo",       document.getElementById("photo").files[0]);
+
+    fetch("/api/submit-application/", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.textContent = "Submit Application — ₹15 will be deducted";
+
+        if (data.status === "success") {
+            // ✅ Update local balance display
+            currentBalance = parseFloat(data.wallet_balance);
+            var balEl = document.getElementById("walletBalanceDisplay");
+            balEl.textContent = "₹" + currentBalance.toFixed(2);
+            balEl.className = "bal-amount" + (currentBalance < 15 ? " low" : "");
+
+            let msg = document.getElementById("success_msg");
+            msg.innerHTML = `
+                ✅ Application submitted! Order ID: <strong>${data.order_id}</strong>
+                &nbsp; <a href="{% url 'applied_list' %}">View List</a>
+                <div class="new-balance">₹${data.amount_deducted} wallet se deduct ho gaye. Remaining balance: ₹${currentBalance.toFixed(2)}</div>
+            `;
+            msg.style.display = "block";
+            window.scrollTo(0, document.body.scrollHeight);
+
+        } else if (data.status === "insufficient_balance") {
+            // ✅ Server-side balance check response
+            currentBalance = parseFloat(data.balance || "0");
+            showBalanceAlert(data.message);
+
+        } else if (data.redirect) {
+            // Session expired
+            alert("Session expire ho gayi. Dobara login karein.");
+            window.location.href = data.redirect;
+
+        } else {
+            alert("Error: " + (data.message || "Unknown error"));
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.textContent = "Submit Application — ₹15 will be deducted";
+        console.error("Submission error:", err);
+        alert("Network error occurred. Please try again.");
+    });
+}
+</script>
+</body>
+</html>

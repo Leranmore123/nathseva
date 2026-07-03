@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>{{ rc.reg_no }}</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.pvc-wrap{display:flex;gap:8px;width:860px}
+.pvc-left,.pvc-right{border:2px solid #2563eb;border-radius:8px;overflow:hidden;flex:1;display:flex;flex-direction:column}
+.pvc-header{background:#dbeafe;padding:8px 10px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #93c5fd}
+.pvc-header img{width:36px;height:36px}
+.pvc-header-text{font-size:10px;font-weight:700;color:#1e3a8a;line-height:1.3}
+.pvc-badges{display:flex;gap:4px;margin-left:auto}
+.badge{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff}
+.badge-nt{background:#f59e0b}
+.badge-ka{background:#2563eb}
+.pvc-body{padding:8px 10px;font-size:9px;color:#1e293b;flex:1}
+.pvc-row{display:flex;margin-bottom:5px;gap:4px}
+.pvc-label{color:#64748b;font-size:8px;display:block;margin-bottom:1px}
+.pvc-val{font-size:9px;font-weight:600;color:#0f172a}
+
+/* CHIP — metallic / textured look */
+.pvc-chip{
+  width:42px;height:30px;
+  background:linear-gradient(135deg,#fde68a 0%,#f59e0b 40%,#d97706 100%);
+  border-radius:4px;border:1px solid #b45309;
+  margin:4px 8px 4px 0;flex-shrink:0;
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.5);
+  position:relative;
+  overflow:hidden;
+}
+.pvc-chip::before{
+  content:"";position:absolute;inset:4px;
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,.15) 3px 4px),
+    repeating-linear-gradient(90deg, transparent 0 5px, rgba(0,0,0,.1) 5px 6px);
+  border-radius:2px;
+}
+
+.qr-box{width:70px;height:70px;flex-shrink:0;margin-right:8px;display:flex;align-items:center;justify-content:center}
+.pvc-right-header{background:#dbeafe;padding:8px 10px;border-bottom:1px solid #93c5fd;font-size:9px;font-weight:700;color:#1e3a8a}
+.pvc-right-body{padding:8px 10px;font-size:9px;flex:1}
+.pvc-right-row{display:flex;justify-content:space-between;margin-bottom:4px;border-bottom:1px solid #f1f5f9;padding-bottom:3px}
+.pvc-right-row:last-child{border-bottom:none}
+.pvc-rkey{color:#64748b;font-size:8px;flex:1}
+.pvc-rval{font-size:8.5px;font-weight:600;color:#0f172a;text-align:right;flex:1}
+.vertical-text{writing-mode:vertical-rl;text-orientation:mixed;font-size:7px;color:#64748b;transform:rotate(180deg);white-space:nowrap;padding:0 2px}
+
+.pvc-footnote{font-size:5.5px;color:#cbd5e1;text-align:center;padding:2px;border-top:1px dashed #e2e8f0}
+
+@media print{
+  body{min-height:unset;padding:0;display:block}
+  .no-print{display:none}
+}
+</style>
+</head>
+<body>
+
+<div>
+  <div style="text-align:center;margin-bottom:16px" class="no-print">
+    <button onclick="window.print()" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:.6rem 1.5rem;font-size:.85rem;cursor:pointer;margin-right:8px">🖨️ Print</button>
+    <button onclick="window.close()" style="background:#64748b;color:#fff;border:none;border-radius:8px;padding:.6rem 1rem;font-size:.85rem;cursor:pointer">✕ Close</button>
+  </div>
+
+  <div class="pvc-wrap">
+    <!-- LEFT PANEL -->
+    <div class="pvc-left">
+      <div class="pvc-header">
+        <div style="width:36px;height:36px;background:#f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px">🏛️</div>
+        <div class="pvc-header-text">Indian Union Vehicle Registration Certificate<br>Issued by Government of Karnataka</div>
+        <div class="pvc-badges">
+          <div class="badge badge-nt">NT</div>
+          <div class="badge badge-ka">KA</div>
+        </div>
+      </div>
+      <div class="pvc-body">
+        <div class="pvc-row" style="justify-content:space-between">
+          <div><span class="pvc-label">Regn. No</span><span class="pvc-val" style="font-size:11px">{{ rc.reg_no }}</span></div>
+          <div><span class="pvc-label">Date of Regn.</span><span class="pvc-val">{{ rc.reg_date }}</span></div>
+          <div><span class="pvc-label">Regn. Validity</span><span class="pvc-val">{{ rc.validity }}</span></div>
+          <div><span class="pvc-label">Owner Serial</span><span class="pvc-val">{{ rc.owner_serial|default:"1" }} ℹ</span></div>
+        </div>
+        <div style="margin-bottom:4px"><span class="pvc-label">Chassis Number</span><span class="pvc-val">{{ rc.chassis_no }}</span></div>
+        <div style="margin-bottom:6px"><span class="pvc-label">Engine / Motor Number</span><span class="pvc-val">{{ rc.engine_no }}</span></div>
+        <div class="pvc-row" style="align-items:flex-start">
+          <div class="pvc-chip"></div>
+          <div style="flex:1">
+            <div style="margin-bottom:4px"><span class="pvc-label">Owner Name</span><span class="pvc-val" style="font-size:10px">{{ rc.owner_name }}</span></div>
+            <div><span class="pvc-label">Son / Daughter / Wife of (In case of Individual Owner)</span><span class="pvc-val">{{ rc.father_name }}</span></div>
+          </div>
+          <div class="vertical-text">Card Issue Date {{ rc.reg_date }}</div>
+        </div>
+        <div class="pvc-row" style="margin-top:4px">
+          <div style="flex:1"><span class="pvc-label">Fuel</span><span class="pvc-val">{{ rc.fuel_type }}</span></div>
+        </div>
+        <div class="pvc-row">
+          <div style="flex:1"><span class="pvc-label">Emission Norms</span><span class="pvc-val">{{ rc.emission|default:"BHARAT STAGE VI" }}</span></div>
+          <div style="flex:2"><span class="pvc-label">Address</span><span class="pvc-val">{{ rc.address }}</span></div>
+        </div>
+      </div>
+      <div class="pvc-footnote">Printed via Nath Seva One — RTO database lookup</div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="pvc-right">
+      <div class="pvc-right-header" style="display:flex;align-items:center;justify-content:space-between">
+        <div class="pvc-badges" style="margin-left:0;margin-right:8px">
+          <div class="badge badge-nt">NT</div>
+          <div class="badge badge-ka">KA</div>
+        </div>
+        <span>VEHICLE CLASS : {{ rc.vehicle_class }}</span>
+      </div>
+      <div class="pvc-right-body">
+        <div class="pvc-row" style="align-items:flex-start;margin-bottom:6px">
+          <div style="flex:1">
+            <div class="pvc-right-row"><span class="pvc-rkey">Regn. Number</span><span class="pvc-rval" style="font-size:10px;font-weight:700">{{ rc.reg_no }}</span></div>
+            <div class="pvc-right-row"><span class="pvc-rkey">Maker:</span><span class="pvc-rval">{{ rc.maker }}</span></div>
+            <div class="pvc-right-row" style="border:none;margin-bottom:2px"><span class="pvc-rkey">Model:</span></div>
+            <div style="font-size:8.5px;font-weight:600;color:#0f172a;margin-bottom:4px">{{ rc.model }}</div>
+            <div class="pvc-right-row"><span class="pvc-rkey">Color:</span><span class="pvc-rval">{{ rc.colour }}</span><span class="pvc-rkey" style="margin-left:4px">/ Body Type</span><span class="pvc-rval">{{ rc.body_type }}</span></div>
+            <div class="pvc-right-row"><span class="pvc-rkey">Seating (in all) Capacity</span><span class="pvc-rval">{{ rc.seating|default:"—" }}</span></div>
+          </div>
+          <div class="qr-box" id="qrcode"></div>
+        </div>
+        <div class="pvc-right-row"><span class="pvc-rkey">Unladen Weight (Kg)</span><span class="pvc-rval">{{ rc.unladen_weight|default:"—" }}</span></div>
+        <div class="pvc-right-row"><span class="pvc-rkey">Month - Year of Mfg.</span><span class="pvc-rval">{{ rc.mfg_date|default:"—" }}</span></div>
+        <div class="pvc-right-row"><span class="pvc-rkey">Cubic Cap./ Horse Power (BHP/Kw) / Wheel Base(mm)</span></div>
+        <div class="pvc-right-row"><span class="pvc-rval">{{ rc.cubic_cap|default:"—" }}</span><span class="pvc-rval"></span><span class="pvc-rval">{{ rc.wheel_base|default:"—" }}</span></div>
+        <div class="pvc-right-row"><span class="pvc-rkey">No of Cylinders : {{ rc.cylinders|default:"—" }}</span></div>
+        <div class="pvc-right-row">
+          <span class="pvc-rkey">Financier<br><span style="font-weight:600;color:#0f172a;font-size:8.5px">{{ rc.financer|default:"—" }}</span></span>
+          <span class="pvc-rkey" style="text-align:right">Registration Authority<br><span style="font-weight:600;color:#0f172a;font-size:8.5px">{{ rc.rto }}</span></span>
+        </div>
+      </div>
+      <div class="pvc-footnote">Printed via Nath Seva One — RTO database lookup</div>
+    </div>
+  </div>
+</div>
+
+<script>
+new QRCode(document.getElementById("qrcode"), {
+  text: "{{ rc.reg_no }}|{{ rc.chassis_no }}|{{ rc.engine_no }}",
+  width: 70,
+  height: 70,
+  colorDark: "#1e293b",
+  colorLight: "#ffffff",
+  correctLevel: QRCode.CorrectLevel.M
+});
+</script>
+
+</body>
+</html>
