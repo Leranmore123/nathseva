@@ -46,17 +46,17 @@
     display: flex;
     gap: 16px;
     background: white;
-    padding: 16px;
+    padding: 20px;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   }
 
-  /* PVC Card Standard Ratio Dimensions: 85.6mm x 54mm */
+  /* PVC Card Standard Ratio Dimensions: 85.6mm x 54mm (~435px x 275px) */
   .rc-card {
-    width: 428px;
-    height: 270px;
-    border: 1.5px solid #475569;
-    border-radius: 14px;
+    width: 440px;
+    height: 275px;
+    border: 1px solid #334155;
+    border-radius: 12px;
     position: relative;
     background: #ffffff;
     overflow: hidden;
@@ -64,7 +64,8 @@
 
   /* FRONT SIDE - EXACT IMAGE 1 BACKGROUND */
   .rc-front {
-    background: url("{% static 'images/rc_front.png' %}") no-repeat center / cover;
+    background: url("{% static 'images/rc_front.png' %}") no-repeat center / 100% 100%;
+    border: none;
   }
 
   /* BACK SIDE - EXACT IMAGE 2 LAYOUT */
@@ -74,6 +75,8 @@
     flex-direction: column;
     justify-content: space-between;
     background: #ffffff;
+    border: 1px solid #475569;
+    border-radius: 12px;
   }
 
   .back-title-row {
@@ -90,7 +93,7 @@
     font-family: Arial, sans-serif;
   }
   .form-title {
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: bold;
     text-align: right;
     color: #000000;
@@ -99,31 +102,55 @@
 
   .back-details {
     margin-top: 2px;
-    font-size: 9.5px;
+    font-size: 8.5px;
     color: #000000;
-    line-height: 1.35;
+    line-height: 1.3;
   }
 
   .detail-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1px;
+    margin-bottom: 1.5px;
+  }
+
+  .field-col-left {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .field-col-right {
+    display: flex;
+    align-items: center;
+    min-width: 140px;
+    white-space: nowrap;
   }
 
   .field-label {
     font-weight: 700;
     color: #000000;
     display: inline-block;
-    min-width: 95px;
+    min-width: 76px;
+  }
+  .field-colon {
+    font-weight: 700;
+    color: #000000;
+    margin-right: 4px;
   }
   .field-val {
     font-weight: 800;
     color: #000000;
     text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .section-space {
-    margin-top: 10px;
+    margin-top: 8px;
   }
 
   .back-bottom-grid {
@@ -135,10 +162,10 @@
 
   .authority-box {
     text-align: center;
-    font-size: 9.5px;
+    font-size: 9px;
     font-weight: bold;
     color: #000000;
-    line-height: 1.25;
+    line-height: 1.2;
   }
   .signature-img {
     height: 22px;
@@ -162,7 +189,7 @@
 
   <div class="rc-card-container">
     
-    <!-- FRONT SIDE (IMAGE 1 BACKGROUND) -->
+    <!-- FRONT SIDE (EXACT IMAGE 1 BACKGROUND) -->
     <div class="rc-card rc-front"></div>
 
     <!-- BACK SIDE (EXACT IMAGE 2 FORM-23A LAYOUT) -->
@@ -170,51 +197,51 @@
       <div>
         <div class="back-title-row">
           <div class="reg-no-title">REG NO : {{ rc.reg_no }}</div>
-          <div class="form-title">FORM-23A<br><span style="font-weight:normal;font-size:8.5px">(See Rule 48)</span></div>
+          <div class="form-title">FORM-23A<br><span style="font-weight:normal;font-size:8px">(See Rule 48)</span></div>
         </div>
 
         <div class="back-details">
           <div class="detail-row">
-            <div><span class="field-label">REG DATE</span><span class="field-label">: </span><span class="field-val">{{ rc.reg_date }}</span></div>
-            <div style="min-width: 130px;"><span class="field-label" style="min-width:55px;">O.SL.NO</span><span class="field-label">: </span><span class="field-val">{{ rc.owner_serial|default:"1" }}</span></div>
+            <div class="field-col-left"><span class="field-label">REG DATE</span><span class="field-colon">:</span><span class="field-val">{{ rc.reg_date }}</span></div>
+            <div class="field-col-right"><span class="field-label" style="min-width:52px;">O.SL.NO</span><span class="field-colon">:</span><span class="field-val">{{ rc.owner_serial|default:"1" }}</span></div>
           </div>
           <div class="detail-row">
-            <div><span class="field-label">CHASSIS NO</span><span class="field-label">: </span><span class="field-val">{{ rc.chassis_no }}</span></div>
-            <div style="min-width: 130px;"><span class="field-label" style="min-width:55px;">COLOUR</span><span class="field-label">: </span><span class="field-val">{{ rc.colour|default:"Black And Accent" }}</span></div>
+            <div class="field-col-left"><span class="field-label">CHASSIS NO</span><span class="field-colon">:</span><span class="field-val">{{ rc.chassis_no }}</span></div>
+            <div class="field-col-right"><span class="field-label" style="min-width:52px;">COLOUR</span><span class="field-colon">:</span><span class="field-val">{{ rc.colour|default:"Black And Accent" }}</span></div>
           </div>
           <div class="detail-row">
-            <div><span class="field-label">ENGINE NO</span><span class="field-label">: </span><span class="field-val">{{ rc.engine_no }}</span></div>
+            <div class="field-col-left"><span class="field-label">ENGINE NO</span><span class="field-colon">:</span><span class="field-val">{{ rc.engine_no }}</span></div>
           </div>
           <div class="detail-row">
-            <div><span class="field-label">MFR</span><span class="field-label">: </span><span class="field-val">{{ rc.maker|default:rc.maker_model|default:"Hero Motocorp" }}</span></div>
+            <div class="field-col-left"><span class="field-label">MFR</span><span class="field-colon">:</span><span class="field-val">{{ rc.maker|default:rc.maker_model|default:"Hero Motocorp" }}</span></div>
           </div>
           <div class="detail-row">
-            <div><span class="field-label">OWNER NAME</span><span class="field-label">: </span><span class="field-val">{{ rc.owner_name }}</span></div>
+            <div class="field-col-left"><span class="field-label">OWNER NAME</span><span class="field-colon">:</span><span class="field-val">{{ rc.owner_name }}</span></div>
           </div>
           <div class="detail-row">
-            <div><span class="field-label">S/W/D OF</span><span class="field-label">: </span><span class="field-val">{{ rc.father_name|default:"Appa" }}</span></div>
+            <div class="field-col-left"><span class="field-label">S/W/D OF</span><span class="field-colon">:</span><span class="field-val">{{ rc.father_name|default:"Appa" }}</span></div>
           </div>
           <div class="detail-row">
-            <div><span class="field-label">ADDRESS</span><span class="field-label">: </span><span class="field-val">{{ rc.address }}</span></div>
+            <div class="field-col-left"><span class="field-label">ADDRESS</span><span class="field-colon">:</span><span class="field-val">{{ rc.address }}</span></div>
           </div>
 
           <div class="section-space">
             <div class="detail-row">
-              <div><span class="field-label">MODEL</span><span class="field-label">: </span><span class="field-val">{{ rc.model|default:rc.maker_model|default:"Splendor+ Black And Accentss" }}</span></div>
+              <div class="field-col-left"><span class="field-label">MODEL</span><span class="field-colon">:</span><span class="field-val">{{ rc.model|default:rc.maker_model|default:"Splendor+ Black And Accentss" }}</span></div>
             </div>
             <div class="detail-row">
-              <div><span class="field-label">MFG DATE</span><span class="field-label">: </span><span class="field-val">{{ rc.mfg_date|default:"3/2022" }}</span></div>
+              <div class="field-col-left"><span class="field-label">MFG DATE</span><span class="field-colon">:</span><span class="field-val">{{ rc.mfg_date|default:"3/2022" }}</span></div>
             </div>
             <div class="detail-row">
-              <div><span class="field-label">FUEL</span><span class="field-label">: </span><span class="field-val">{{ rc.fuel_type|default:"Petrol" }}</span></div>
-              <div style="min-width: 110px;"><span class="field-label" style="min-width:55px;">SEATING</span><span class="field-label">: </span><span class="field-val">{{ rc.seating|default:"2" }}</span></div>
+              <div class="field-col-left"><span class="field-label">FUEL</span><span class="field-colon">:</span><span class="field-val">{{ rc.fuel_type|default:"Petrol" }}</span></div>
+              <div class="field-col-right" style="min-width:115px;"><span class="field-label" style="min-width:52px;">SEATING</span><span class="field-colon">:</span><span class="field-val">{{ rc.seating|default:"2" }}</span></div>
             </div>
             <div class="detail-row">
-              <div><span class="field-label">REF/RC UPTO</span><span class="field-label">: </span><span class="field-val">{{ rc.validity }}</span></div>
-              <div style="min-width: 110px;"><span class="field-label" style="min-width:55px;">CC</span><span class="field-label">: </span><span class="field-val">{{ rc.cubic_cap|default:"97.0" }}</span></div>
+              <div class="field-col-left"><span class="field-label">REF/RC UPTO</span><span class="field-colon">:</span><span class="field-val">{{ rc.validity }}</span></div>
+              <div class="field-col-right" style="min-width:115px;"><span class="field-label" style="min-width:52px;">CC</span><span class="field-colon">:</span><span class="field-val">{{ rc.cubic_cap|default:"97.0" }}</span></div>
             </div>
             <div class="detail-row">
-              <div><span class="field-label">TAX UPTO</span><span class="field-label">: </span><span class="field-val">{{ rc.tax_upto|default:rc.validity }}</span></div>
+              <div class="field-col-left"><span class="field-label">TAX UPTO</span><span class="field-colon">:</span><span class="field-val">{{ rc.tax_upto|default:rc.validity }}</span></div>
             </div>
           </div>
         </div>
