@@ -95,12 +95,12 @@ def vehicle_rc_api(request):
                 return JsonResponse({'success': False, 'error': 'SurePass token configure nahi hai.'})
 
             resp = requests.post(
-                'https://kyc-api.surepass.app/api/v1/rc/rc-full',
+                'https://kyc-api.surepass.app/api/v1/rc/rc-v2',
                 headers={
                     'Authorization': f'Bearer {SUREPASS_TOKEN}',
                     'Content-Type': 'application/json'
                 },
-                json={'id_number': vehicle_number},
+                json={'id_number': vehicle_number, 'enrich': False},
                 timeout=20
             )
             result = resp.json()
@@ -108,22 +108,22 @@ def vehicle_rc_api(request):
         if result.get('success') and result.get('data'):
             d = result['data']
             rc = {
-                'reg_no':         d.get('registration_number', ''),
+                'reg_no':         d.get('rc_number') or d.get('registration_number', ''),
                 'owner_name':     d.get('owner_name', ''),
                 'father_name':    d.get('father_name', ''),
-                'address':        d.get('permanent_address', ''),
-                'vehicle_class':  d.get('vehicle_class', ''),
-                'maker_model':    f"{d.get('maker_description','')} / {d.get('model','')}",
+                'address':        d.get('permanent_address') or d.get('present_address', ''),
+                'vehicle_class':  d.get('vehicle_category_description') or d.get('vehicle_category', ''),
+                'maker_model':    f"{d.get('maker_description','')} / {d.get('maker_model','')}",
                 'fuel_type':      d.get('fuel_type', ''),
                 'colour':         d.get('color', ''),
-                'engine_no':      d.get('engine_number', ''),
-                'chassis_no':     d.get('chassis_number', ''),
+                'engine_no':      d.get('vehicle_engine_number') or d.get('engine_number', ''),
+                'chassis_no':     d.get('vehicle_chasi_number') or d.get('chassis_number', ''),
                 'reg_date':       d.get('registration_date', ''),
-                'validity':       d.get('registration_valid_upto', ''),
-                'fitness_upto':   d.get('fitness_upto', ''),
+                'validity':       d.get('fit_up_to') or d.get('registration_valid_upto', ''),
+                'fitness_upto':   d.get('fit_up_to', ''),
                 'insurance_upto': d.get('insurance_upto', ''),
                 'financer':       d.get('financer', ''),
-                'rto':            d.get('office_name', ''),
+                'rto':            d.get('registered_at') or d.get('office_name', ''),
             }
 
             with transaction.atomic():
@@ -272,9 +272,9 @@ def vehicle_rc_allindia_api(request):
                 rc_app.save()
                 return JsonResponse({'success': False, 'error': 'SurePass token configure nahi hai.'})
             resp = requests.post(
-                'https://kyc-api.surepass.app/api/v1/rc/rc-full',
+                'https://kyc-api.surepass.app/api/v1/rc/rc-v2',
                 headers={'Authorization': f'Bearer {SUREPASS_TOKEN}', 'Content-Type': 'application/json'},
-                json={'id_number': vehicle_number},
+                json={'id_number': vehicle_number, 'enrich': False},
                 timeout=20
             )
             result = resp.json()
@@ -282,32 +282,32 @@ def vehicle_rc_allindia_api(request):
         if result.get('success') and result.get('data'):
             d = result['data']
             rc = {
-                'reg_no':          d.get('registration_number', ''),
+                'reg_no':          d.get('rc_number') or d.get('registration_number', ''),
                 'owner_name':      d.get('owner_name', ''),
                 'father_name':     d.get('father_name', ''),
-                'address':         d.get('permanent_address', ''),
-                'vehicle_class':   d.get('vehicle_class', ''),
+                'address':         d.get('permanent_address') or d.get('present_address', ''),
+                'vehicle_class':   d.get('vehicle_category_description') or d.get('vehicle_category', ''),
                 'maker':           d.get('maker_description', ''),
-                'model':           d.get('model', ''),
+                'model':           d.get('maker_model') or d.get('model', ''),
                 'fuel_type':       d.get('fuel_type', ''),
                 'colour':          d.get('color', ''),
                 'body_type':       d.get('body_type', ''),
-                'engine_no':       d.get('engine_number', ''),
-                'chassis_no':      d.get('chassis_number', ''),
+                'engine_no':       d.get('vehicle_engine_number') or d.get('engine_number', ''),
+                'chassis_no':      d.get('vehicle_chasi_number') or d.get('chassis_number', ''),
                 'reg_date':        d.get('registration_date', ''),
-                'validity':        d.get('registration_valid_upto', ''),
-                'fitness_upto':    d.get('fitness_upto', ''),
+                'validity':        d.get('fit_up_to') or d.get('registration_valid_upto', ''),
+                'fitness_upto':    d.get('fit_up_to', ''),
                 'insurance_upto':  d.get('insurance_upto', ''),
                 'financer':        d.get('financer', ''),
-                'rto':             d.get('office_name', ''),
-                'seating':         d.get('seating_capacity', ''),
+                'rto':             d.get('registered_at') or d.get('office_name', ''),
+                'seating':         d.get('seat_capacity') or d.get('seating_capacity', ''),
                 'unladen_weight':  d.get('unladen_weight', ''),
                 'cubic_cap':       d.get('cubic_capacity', ''),
-                'cylinders':       d.get('no_of_cylinders', ''),
-                'wheel_base':      d.get('wheel_base', ''),
-                'mfg_date':        d.get('mfg_month_year', ''),
-                'emission':        d.get('emission_norms', ''),
-                'owner_serial':    d.get('owner_serial', '1'),
+                'cylinders':       d.get('no_cylinders') or d.get('no_of_cylinders', ''),
+                'wheel_base':      d.get('wheelbase') or d.get('wheel_base', ''),
+                'mfg_date':        d.get('manufacturing_date_formatted') or d.get('manufacturing_date', ''),
+                'emission':        d.get('norms_type', ''),
+                'owner_serial':    d.get('owner_number') or d.get('owner_serial', '1'),
                 'norms_type':      d.get('norms_type', 'NT'),
                 'state_code':      d.get('state_code', 'KA'),
                 'card_background': card_background,
