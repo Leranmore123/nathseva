@@ -133,7 +133,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 API_KEY = os.getenv('OCR_LIVE_API_KEY') or os.getenv('API_KEY') or ''
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'pan_project' / 'static']
+STATIC_ROOT = BASE_DIR / 'static'
+_static_dir = BASE_DIR / 'pan_project' / 'static'
+if _static_dir.exists():
+    STATICFILES_DIRS = [_static_dir]
+else:
+    STATICFILES_DIRS = []
 
 # 
 # settings.py - Add this anywhere in the file (preferably near the bottom)
