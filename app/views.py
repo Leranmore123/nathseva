@@ -1,4 +1,4 @@
-﻿from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password
 from django.db import IntegrityError, transaction
 from decimal import Decimal, InvalidOperation
@@ -11,12 +11,13 @@ import hmac
 import hashlib
 import logging
 import json
+import re
 
 from .models import Retailer, PaymentRequest, PANApplication, WalletTransaction
 
 logger = logging.getLogger(__name__)
 
-# â‚¹15 charge per PAN application
+# ₹15 charge per PAN application
 PAN_APPLICATION_CHARGE = Decimal('15.00')
 
 
@@ -126,7 +127,7 @@ def retailer_logout(request):
 
 
 # ---------------------------------------------------------------------------
-# Dashboard â€” sirf us retailer ki applications
+# Dashboard — sirf us retailer ki applications
 # ---------------------------------------------------------------------------
 
 def retailer_dashboard(request):
@@ -134,7 +135,7 @@ def retailer_dashboard(request):
     if not retailer:
         return redirect('retailer_login')
 
-    # âœ… Sirf is retailer ki applications
+    # ✅ Sirf is retailer ki applications
     total_apps  = PANApplication.objects.filter(retailer=retailer).count()
     recent_apps = PANApplication.objects.filter(retailer=retailer).order_by('-created_at')[:5]
 
@@ -150,7 +151,7 @@ def retailer_dashboard(request):
 # ---------------------------------------------------------------------------
 
 def form(request):
-    # âœ… Login check â€” bina login ke form nahi dikhega
+    # ✅ Login check — bina login ke form nahi dikhega
     retailer = _get_retailer_from_session(request)
     if not retailer:
         return redirect('retailer_login')
@@ -158,7 +159,7 @@ def form(request):
 
 
 def applied_list(request):
-    # âœ… Sirf us retailer ki list
+    # ✅ Sirf us retailer ki list
     retailer = _get_retailer_from_session(request)
     if not retailer:
         return redirect('retailer_login')
@@ -176,7 +177,7 @@ def detail(request, order_id):
         return redirect('retailer_login')
 
     try:
-        # âœ… Ownership check â€” dusre retailer ka order nahi dekh sakta
+        # ✅ Ownership check — dusre retailer ka order nahi dekh sakta
         app_obj = PANApplication.objects.get(order_id=order_id, retailer=retailer)
     except PANApplication.DoesNotExist:
         return render(request, 'detail.html', {'error': 'Application not found.'})
@@ -190,7 +191,7 @@ def pan_print(request, order_id):
         return redirect('retailer_login')
 
     try:
-        # âœ… Ownership check
+        # ✅ Ownership check
         app_obj = PANApplication.objects.get(order_id=order_id, retailer=retailer)
     except PANApplication.DoesNotExist:
         return render(request, 'pan_print.html', {'error': 'PAN application not found.'})
@@ -212,27 +213,68 @@ def verify_pan(request):
     if not pan or len(pan) != 10:
         return JsonResponse({'success': False, 'message': 'Invalid PAN number'}, status=400)
 
-    import re
     if not re.match(r'^[A-Z]{5}[0-9]{4}[A-Z]$', pan):
         return JsonResponse({'success': False, 'message': 'PAN format invalid'}, status=400)
 
-    return JsonResponse({
-        'success': True,
-        'data': {
-            'full_name':   '',
-            'father_name': '',
-            'dob':         '',
-            'gender':      '',
-        }
-    })
+    surepass_token = getattr(settings, 'SUREPASS_TOKEN', '').strip()
+    if not surepass_token:
+        return JsonResponse({'success': False, 'message': 'SurePass token configure nahi hai.'}, status=500)
 
+    last_error = None
 
+    try:
+        response = requests.post(
+            'https://kyc-api.surepass.app/api/v1/pan/pan-comprehensive',
+            headers={
+                'Authorization': f'Bearer {surepass_token}',
+                'Content-Type': 'application/json',
+            },
+            json={'id_number': pan},
+            timeout=20,
+        )
+        logger.info(f'SurePass raw response: status={response.status_code}, body={response.text[:500]}')
+
+        if response.status_code >= 500:
+            last_error = f'SurePass server error: {response.status_code}'
+        else:
+            result = response.json()
+            if result.get('success'):
+                data = result.get('data', {})
+                gender_raw = str(data.get('gender') or '').upper()
+                gender_val = 'Male' if gender_raw in ['M', 'MALE'] else ('Female' if gender_raw in ['F', 'FEMALE'] else gender_raw)
+                
+                # Format DOB if needed
+                dob_val = data.get('dob') or ''
+
+                return JsonResponse({
+                    'success': True,
+                    'data': {
+                        'full_name': data.get('full_name') or '',
+                        'first_name': data.get('first_name') or '',
+                        'last_name': data.get('last_name') or '',
+                        'father_name': data.get('father_name') or '',
+                        'dob': dob_val,
+                        'gender': gender_val,
+                        'category': data.get('category') or '',
+                        'address': data.get('full_address') or '',
+                        'aadhaar_linked': data.get('aadhaar_linked', False),
+                    }
+                })
+            last_error = result.get('message', 'PAN details nahi mile.')
+
+    except requests.Timeout:
+        last_error = 'API timeout. Dobara try karo.'
+    except Exception as exc:
+        logger.error('SurePass PAN verification failed: %s', exc)
+        last_error = 'SurePass API fail ho gayi.'
+
+    return JsonResponse({'success': False, 'message': last_error or 'PAN details nahi mile.'}, status=400)
 @csrf_exempt
 def submit_application(request):
     if request.method != 'POST':
         return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)
 
-    # âœ… Session se retailer lo â€” login zaroori hai
+    # ✅ Session se retailer lo — login zaroori hai
     retailer = _get_retailer_from_session(request)
     if not retailer:
         return JsonResponse({
@@ -241,13 +283,13 @@ def submit_application(request):
             'redirect': '/login/'
         }, status=401)
 
-    # âœ… Wallet balance check â€” â‚¹15 chahiye
+    # ✅ Wallet balance check — ₹15 chahiye
     current_balance = retailer.wallet_balance or Decimal('0')
     if current_balance < PAN_APPLICATION_CHARGE:
         shortage = PAN_APPLICATION_CHARGE - current_balance
         return JsonResponse({
             'status':  'insufficient_balance',
-            'message': f'Wallet balance kam hai. â‚¹{PAN_APPLICATION_CHARGE} chahiye, aapke paas sirf â‚¹{current_balance} hain. Kripya â‚¹{shortage} ya zyada add karein.',
+            'message': f'Wallet balance kam hai. ₹{PAN_APPLICATION_CHARGE} chahiye, aapke paas sirf ₹{current_balance} hain. Kripya ₹{shortage} ya zyada add karein.',
             'balance': str(current_balance),
             'required': str(PAN_APPLICATION_CHARGE),
         }, status=402)
@@ -264,7 +306,7 @@ def submit_application(request):
         return JsonResponse({'status': 'error', 'message': 'Sabhi fields bharna zaroori hain.'}, status=400)
 
     try:
-        # âœ… Atomic: application create + wallet deduct ek saath
+        # ✅ Atomic: application create + wallet deduct ek saath
         with transaction.atomic():
             app_obj = PANApplication.objects.create(
                 retailer=retailer,
@@ -278,7 +320,7 @@ def submit_application(request):
                 amount=PAN_APPLICATION_CHARGE,
             )
 
-            # Wallet se â‚¹15 deduct
+            # Wallet se ₹15 deduct
             retailer.wallet_balance = current_balance - PAN_APPLICATION_CHARGE
             retailer.save(update_fields=['wallet_balance'])
 
@@ -289,7 +331,7 @@ def submit_application(request):
                 tx_type='debit',
                 status='completed',
                 payment_provider='internal',
-                note=f'PAN application charge â€” Order ID: {app_obj.order_id}',
+                note=f'PAN application charge — Order ID: {app_obj.order_id}',
             )
 
     except Exception as exc:
@@ -344,7 +386,7 @@ def retailer_wallet(request):
 
 
 # ---------------------------------------------------------------------------
-# Razorpay â€” create order
+# Razorpay — create order
 # ---------------------------------------------------------------------------
 
 @csrf_exempt
@@ -423,7 +465,7 @@ def create_razorpay_order(request):
 
 
 # ---------------------------------------------------------------------------
-# Razorpay â€” verify payment
+# Razorpay — verify payment
 # ---------------------------------------------------------------------------
 
 @csrf_exempt
@@ -551,7 +593,7 @@ def vehicle_rc_api(request):
         SUREPASS_TOKEN = settings.SUREPASS_TOKEN
 
         response = requests.post(
-            "https://kyc-api.surepass.io/api/v1/rc/rc-advance",
+            "https://sandbox.surepass.io/api/v1/rc/rc-advance",
             headers={
                 "Authorization": f"Bearer {SUREPASS_TOKEN}",
                 "Content-Type": "application/json"
@@ -648,7 +690,7 @@ DL_ALLINDIA_CHARGE = Decimal('25.00')
 
 
 # -----------------------------
-# Driving Licence Services — listing page (Image 1)
+# Driving Licence Services � listing page (Image 1)
 # -----------------------------
 def driving_services(request):
     retailer = _get_retailer_from_session(request)
@@ -706,13 +748,13 @@ def dl_allindia_api(request):
         shortage = DL_ALLINDIA_CHARGE - current_balance
         return JsonResponse({
             'success': False,
-            'error': f'Wallet balance kam hai. ₹{DL_ALLINDIA_CHARGE} chahiye, aapke paas ₹{current_balance} hain. ₹{shortage} add karein.'
+            'error': f'Wallet balance kam hai. ?{DL_ALLINDIA_CHARGE} chahiye, aapke paas ?{current_balance} hain. ?{shortage} add karein.'
         }, status=402)
 
     SUREPASS_TOKEN = settings.SUREPASS_TOKEN
     try:
         response = requests.post(
-            "https://kyc-api.surepass.io/api/v1/driving-license/driving-license",
+            "https://sandbox.surepass.io/api/v1/driving-license/driving-license",
             headers={
                 "Authorization": f"Bearer {SUREPASS_TOKEN}",
                 "Content-Type": "application/json",
@@ -769,7 +811,7 @@ def dl_allindia_api(request):
                 tx_type='debit',
                 status='completed',
                 payment_provider='internal',
-                note=f'DL All India PVC charge — Order ID: {order_id}',
+                note=f'DL All India PVC charge � Order ID: {order_id}',
             )
     except Exception as e:
         return JsonResponse({'success': False, 'error': f'Application save nahi hui: {e}'}, status=500)
@@ -829,7 +871,7 @@ def dl_karnataka_api(request):
     SUREPASS_TOKEN = settings.SUREPASS_TOKEN
     try:
         response = requests.post(
-            "https://kyc-api.surepass.io/api/v1/driving-license/driving-license",
+            "https://sandbox.surepass.io/api/v1/driving-license/driving-license",
             headers={"Authorization": f"Bearer {SUREPASS_TOKEN}", "Content-Type": "application/json"},
             json={"id_number": dl_number, "dob": dob_api},
             timeout=20,
@@ -838,7 +880,7 @@ def dl_karnataka_api(request):
     except Exception as e:
         result = {"success": False, "message": str(e)}
 
-    # ❌ API fail — record log hoga status=failed, amount ₹0, koi deduction nahi
+    # ? API fail � record log hoga status=failed, amount ?0, koi deduction nahi
     if not result.get("success"):
         DLKarnatakaApplication.objects.create(
             retailer=retailer, order_id=order_id, dl_number=dl_number, dob=dob,
@@ -850,12 +892,12 @@ def dl_karnataka_api(request):
             'order_id': order_id,
         })
 
-    # ✅ API success — wallet check yahan karenge (fail hua toh charge hi nahi hoga)
+    # ? API success � wallet check yahan karenge (fail hua toh charge hi nahi hoga)
     if current_balance < DL_KARNATAKA_CHARGE:
         shortage = DL_KARNATAKA_CHARGE - current_balance
         return JsonResponse({
             'success': False,
-            'error': f'Wallet balance kam hai. ₹{DL_KARNATAKA_CHARGE} chahiye, ₹{shortage} aur add karein.'
+            'error': f'Wallet balance kam hai. ?{DL_KARNATAKA_CHARGE} chahiye, ?{shortage} aur add karein.'
         }, status=402)
 
     data = result.get("data", {})
@@ -883,7 +925,7 @@ def dl_karnataka_api(request):
             WalletTransaction.objects.create(
                 retailer=retailer, amount=DL_KARNATAKA_CHARGE, tx_type='debit',
                 status='completed', payment_provider='internal',
-                note=f'DL Karnataka PVC charge — Order ID: {order_id}',
+                note=f'DL Karnataka PVC charge � Order ID: {order_id}',
             )
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)

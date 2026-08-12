@@ -1,4 +1,4 @@
-﻿import json
+import json
 import uuid
 import requests
 from decimal import Decimal
@@ -95,7 +95,7 @@ def vehicle_rc_api(request):
                 return JsonResponse({'success': False, 'error': 'SurePass token configure nahi hai.'})
 
             resp = requests.post(
-                'https://kyc-api.surepass.io/api/v1/rc/rc-advance',
+                'https://sandbox.surepass.io/api/v1/rc/rc-advance',
                 headers={
                     'Authorization': f'Bearer {SUREPASS_TOKEN}',
                     'Content-Type': 'application/json'
@@ -144,7 +144,7 @@ def vehicle_rc_api(request):
                     tx_type='debit',
                     status='completed',
                     payment_provider='internal',
-                    note=f'RC Advance — {vehicle_number} — {order_id}',
+                    note=f'RC Advance � {vehicle_number} � {order_id}',
                 )
 
             return JsonResponse({
@@ -272,7 +272,7 @@ def vehicle_rc_allindia_api(request):
                 rc_app.save()
                 return JsonResponse({'success': False, 'error': 'SurePass token configure nahi hai.'})
             resp = requests.post(
-                'https://kyc-api.surepass.io/api/v1/rc/rc-advance',
+                'https://sandbox.surepass.io/api/v1/rc/rc-advance',
                 headers={'Authorization': f'Bearer {SUREPASS_TOKEN}', 'Content-Type': 'application/json'},
                 json={'id_number': vehicle_number},
                 timeout=20
@@ -332,7 +332,7 @@ def vehicle_rc_allindia_api(request):
                     tx_type='debit',
                     status='completed',
                     payment_provider='internal',
-                    note=f'RC All India PVC — {vehicle_number} — {order_id}',
+                    note=f'RC All India PVC � {vehicle_number} � {order_id}',
                 )
 
             return JsonResponse({

@@ -25,7 +25,7 @@
       width: 210mm;
       height: 297mm;
       position: relative;
-      background: url("https://www.pksevaone.com/retailer/dlcard/pan.png") no-repeat center / cover;
+      background: url("https://www.grameensevakendra.com/admin/dist/pan.png") no-repeat center / cover;
       padding: 10mm;
       overflow: hidden;
       box-shadow: 0 12px 32px rgba(0,0,0,0.18);
@@ -160,26 +160,24 @@
     <div class="code" style="top:54mm; left:92mm; font-size: 22px;">{{ app.pan_number }}</div>
 
     <!-- Signature - Bottom -->
-    <div class="signature-container" style="top:260mm; left:52mm; width:60px; height:110px;">
+    <div class="signature-container" style="top:271mm; left:48mm; width:80px; height:25px;">
       {% if app.signature %}
-        <img src="{{ app.signature.url }}" alt="signature" style="width:50px; height:105px; object-fit:contain;"
-             onerror="this.parentElement.innerHTML='<div class=\'no-signature\' style=\'width:60px;height:45px;\'>Signature Error</div>'">
+        <img src="{{ app.signature.url }}" alt="signature" style="width:80px; height:21px; display:block;"
+             onerror="this.parentElement.innerHTML='<div class=\'no-signature\' style=\'width:80px;height:25px;\'>Signature Error</div>'">
       {% else %}
-        <div class="no-signature" style="width:60px;height:45px;">No Sig</div>
+        <div class="no-signature" style="width:80px;height:25px;">No Sig</div>
       {% endif %}
     </div>
     
     <!-- Signature - Top -->
-    <div class="signature-container"
-     style="top:194mm; left:76mm; width:85px; height:32px;">
-  {% if app.signature %}
-    <img src="{{ app.signature.url }}"
-         alt="signature"
-         style="width:85px;height:32px;object-fit:contain;object-position:center;">
-  {% else %}
-    <div class="no-signature" style="width:85px;height:32px;">No Sig</div>
-  {% endif %}
-</div>
+    <div class="signature-container" style="top:161mm; left:80mm; width:80px; height:25px;">
+      {% if app.signature %}
+        <img src="{{ app.signature.url }}" alt="signature" style="width:80px; height:25px; display:block;"
+             onerror="this.parentElement.innerHTML='<div class=\'no-signature\' style=\'width:80px;height:25px;\'>Signature Error</div>'">
+      {% else %}
+        <div class="no-signature" style="width:80px;height:32px;">No Sig</div>
+      {% endif %}
+    </div>
   </div>
 </body>
 </html>
