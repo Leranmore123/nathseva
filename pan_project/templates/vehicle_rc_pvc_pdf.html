@@ -186,7 +186,7 @@
             <div><span class="field-label">ENGINE NO</span><span class="field-label">: </span><span class="field-val">{{ rc.engine_no }}</span></div>
           </div>
           <div class="detail-row">
-            <div><span class="field-label">MFR</span><span class="field-label">: </span><span class="field-val">{{ rc.maker|default:"Hero Motocorp" }}</span></div>
+            <div><span class="field-label">MFR</span><span class="field-label">: </span><span class="field-val">{{ rc.maker|default:rc.maker_model|default:"Hero Motocorp" }}</span></div>
           </div>
           <div class="detail-row">
             <div><span class="field-label">OWNER NAME</span><span class="field-label">: </span><span class="field-val">{{ rc.owner_name }}</span></div>
@@ -200,13 +200,13 @@
 
           <div class="section-space">
             <div class="detail-row">
-              <div><span class="field-label">MODEL</span><span class="field-label">: </span><span class="field-val">{{ rc.model }}</span></div>
+              <div><span class="field-label">MODEL</span><span class="field-label">: </span><span class="field-val">{{ rc.model|default:rc.maker_model|default:"Splendor+ Black And Accentss" }}</span></div>
             </div>
             <div class="detail-row">
-              <div><span class="field-label">MFG DATE</span><span class="field-label">: </span><span class="field-val">{{ rc.mfg_date }}</span></div>
+              <div><span class="field-label">MFG DATE</span><span class="field-label">: </span><span class="field-val">{{ rc.mfg_date|default:"3/2022" }}</span></div>
             </div>
             <div class="detail-row">
-              <div><span class="field-label">FUEL</span><span class="field-label">: </span><span class="field-val">{{ rc.fuel_type }}</span></div>
+              <div><span class="field-label">FUEL</span><span class="field-label">: </span><span class="field-val">{{ rc.fuel_type|default:"Petrol" }}</span></div>
               <div style="min-width: 110px;"><span class="field-label" style="min-width:55px;">SEATING</span><span class="field-label">: </span><span class="field-val">{{ rc.seating|default:"2" }}</span></div>
             </div>
             <div class="detail-row">
