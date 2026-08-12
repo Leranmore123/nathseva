@@ -170,7 +170,7 @@ body{font-family:'Segoe UI',sans-serif;background:#0d1b2a;color:#fff;min-height:
             <div class="rc-row"><span class="rc-key">RTO</span><span class="rc-val" id="res_rto">—</span></div>
           </div>
           <div class="rc-actions">
-            <button class="btn-print" onclick="if(currentOrderId){ window.open('/vehicle/rc/pdf/' + currentOrderId, '_blank'); } else { window.print(); }">🖨️ Print PVC Card</button>
+            <button class="btn-print" id="printPvcBtn" onclick="openPvcCard()">🖨️ Print PVC Card</button>
           </div>
         </div>
       </div>
@@ -263,6 +263,14 @@ function hideErr() {
 function getCookie(name) {
   const v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
   return v ? v.pop() : '';
+}
+
+function openPvcCard() {
+  if (currentOrderId) {
+    window.open('/vehicle/rc/pdf/' + currentOrderId, '_blank');
+  } else {
+    alert('Pehle Vehicle Number search karke Submit karein.');
+  }
 }
 
 // Enter key submit
