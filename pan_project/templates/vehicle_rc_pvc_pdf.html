@@ -1,154 +1,391 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>{{ rc.reg_no }}</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RC PVC Card Print - {{ rc.reg_no }}</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100vh;padding:20px}
-.pvc-wrap{display:flex;gap:8px;width:860px}
-.pvc-left,.pvc-right{border:2px solid #2563eb;border-radius:8px;overflow:hidden;flex:1;display:flex;flex-direction:column}
-.pvc-header{background:#dbeafe;padding:8px 10px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #93c5fd}
-.pvc-header img{width:36px;height:36px}
-.pvc-header-text{font-size:10px;font-weight:700;color:#1e3a8a;line-height:1.3}
-.pvc-badges{display:flex;gap:4px;margin-left:auto}
-.badge{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff}
-.badge-nt{background:#f59e0b}
-.badge-ka{background:#2563eb}
-.pvc-body{padding:8px 10px;font-size:9px;color:#1e293b;flex:1}
-.pvc-row{display:flex;margin-bottom:5px;gap:4px}
-.pvc-label{color:#64748b;font-size:8px;display:block;margin-bottom:1px}
-.pvc-val{font-size:9px;font-weight:600;color:#0f172a}
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    background: #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .controls {
+    margin-bottom: 20px;
+  }
+  .btn {
+    background: #007cba;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .btn:hover { background: #005a87; }
 
-/* CHIP — metallic / textured look */
-.pvc-chip{
-  width:42px;height:30px;
-  background:linear-gradient(135deg,#fde68a 0%,#f59e0b 40%,#d97706 100%);
-  border-radius:4px;border:1px solid #b45309;
-  margin:4px 8px 4px 0;flex-shrink:0;
-  box-shadow:inset 0 1px 2px rgba(255,255,255,.5);
-  position:relative;
-  overflow:hidden;
-}
-.pvc-chip::before{
-  content:"";position:absolute;inset:4px;
-  background-image:
-    repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,.15) 3px 4px),
-    repeating-linear-gradient(90deg, transparent 0 5px, rgba(0,0,0,.1) 5px 6px);
-  border-radius:2px;
-}
+  .rc-card-container {
+    display: flex;
+    gap: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  }
 
-.qr-box{width:70px;height:70px;flex-shrink:0;margin-right:8px;display:flex;align-items:center;justify-content:center}
-.pvc-right-header{background:#dbeafe;padding:8px 10px;border-bottom:1px solid #93c5fd;font-size:9px;font-weight:700;color:#1e3a8a}
-.pvc-right-body{padding:8px 10px;font-size:9px;flex:1}
-.pvc-right-row{display:flex;justify-content:space-between;margin-bottom:4px;border-bottom:1px solid #f1f5f9;padding-bottom:3px}
-.pvc-right-row:last-child{border-bottom:none}
-.pvc-rkey{color:#64748b;font-size:8px;flex:1}
-.pvc-rval{font-size:8.5px;font-weight:600;color:#0f172a;text-align:right;flex:1}
-.vertical-text{writing-mode:vertical-rl;text-orientation:mixed;font-size:7px;color:#64748b;transform:rotate(180deg);white-space:nowrap;padding:0 2px}
+  /* PVC Card Standard Ratio Dimensions: 85.6mm x 54mm */
+  .rc-card {
+    width: 428px; /* ~85.6mm scaled */
+    height: 270px; /* ~54mm scaled */
+    border: 2px solid #64748b;
+    border-radius: 12px;
+    position: relative;
+    background: #ffffff;
+    overflow: hidden;
+  }
 
-.pvc-footnote{font-size:5.5px;color:#cbd5e1;text-align:center;padding:2px;border-top:1px dashed #e2e8f0}
+  /* FRONT SIDE */
+  .rc-front {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0;
+  }
 
-@media print{
-  body{min-height:unset;padding:0;display:block}
-  .no-print{display:none}
-}
+  .front-header {
+    background: #006400;
+    color: white;
+    padding: 4px 8px;
+    text-align: center;
+    border-bottom: 2px solid #ffd700;
+  }
+  .header-kannada {
+    font-size: 13px;
+    font-weight: bold;
+    color: #ffd700;
+    line-height: 1.1;
+  }
+  .header-english {
+    font-size: 14px;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 1px;
+  }
+  .header-sub {
+    font-size: 11px;
+    font-weight: bold;
+    color: #ffff00;
+    letter-spacing: 0.5px;
+    text-decoration: underline;
+  }
+
+  .front-body {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, #f8fafc 0%, #e2e8f0 100%);
+  }
+
+  /* Watermark Image */
+  .building-watermark {
+    position: absolute;
+    width: 220px;
+    height: auto;
+    opacity: 0.85;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .chip-box {
+    position: absolute;
+    top: 25px;
+    left: 20px;
+    width: 44px;
+    height: 32px;
+    background: linear-gradient(135deg, #fce055 0%, #dfac16 50%, #c68b08 100%);
+    border: 1px solid #9a6800;
+    border-radius: 5px;
+    z-index: 2;
+    box-shadow: inset 0 0 2px rgba(0,0,0,0.4);
+  }
+  .chip-box::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    border: 1px solid rgba(0,0,0,0.25);
+    border-radius: 2px;
+  }
+
+  .flag-box {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 45px;
+    height: 30px;
+    z-index: 2;
+    border: 1px solid #ccc;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .emblem-left {
+    position: absolute;
+    bottom: 35px;
+    left: 15px;
+    width: 32px;
+    height: auto;
+    z-index: 2;
+  }
+
+  .emblem-right {
+    position: absolute;
+    bottom: 35px;
+    right: 15px;
+    width: 38px;
+    height: auto;
+    z-index: 2;
+  }
+
+  .front-footer {
+    position: relative;
+    z-index: 2;
+    background: #ffffff;
+    text-align: center;
+    padding: 4px 0;
+    border-top: 1px solid #cbd5e1;
+  }
+  .footer-kannada {
+    font-size: 10px;
+    font-weight: bold;
+    color: #1e293b;
+  }
+  .footer-english {
+    font-size: 11px;
+    font-weight: bold;
+    color: #0f172a;
+    letter-spacing: 1px;
+  }
+  .blue-stripe {
+    height: 6px;
+    background: repeating-linear-gradient(90deg, #1d4ed8 0 8px, #ffffff 8px 12px);
+    margin-top: 2px;
+  }
+
+  /* BACK SIDE */
+  .rc-back {
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #ffffff;
+  }
+
+  .back-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1.5px solid #000;
+    padding-bottom: 3px;
+  }
+  .reg-no-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: #000;
+    letter-spacing: 0.5px;
+  }
+  .form-title {
+    font-size: 10px;
+    font-weight: bold;
+    text-align: right;
+    color: #000;
+  }
+
+  .back-details {
+    margin-top: 4px;
+    font-size: 9.5px;
+    color: #000;
+    line-height: 1.3;
+  }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5px;
+  }
+
+  .field-label {
+    font-weight: 700;
+    color: #000;
+  }
+  .field-val {
+    font-weight: 800;
+    color: #000;
+    text-transform: uppercase;
+  }
+
+  .back-bottom-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 4px;
+  }
+
+  .authority-box {
+    text-align: right;
+    font-size: 9px;
+    font-weight: bold;
+    color: #000;
+  }
+  .signature-img {
+    height: 22px;
+    display: block;
+    margin-left: auto;
+    margin-bottom: 2px;
+  }
+
+  @media print {
+    .controls { display: none !important; }
+    body { background: transparent; padding: 0; min-height: auto; }
+    .rc-card-container { box-shadow: none; padding: 0; }
+  }
 </style>
 </head>
 <body>
 
-<div>
-  <div style="text-align:center;margin-bottom:16px" class="no-print">
-    <button onclick="window.print()" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:.6rem 1.5rem;font-size:.85rem;cursor:pointer;margin-right:8px">🖨️ Print</button>
-    <button onclick="window.close()" style="background:#64748b;color:#fff;border:none;border-radius:8px;padding:.6rem 1rem;font-size:.85rem;cursor:pointer">✕ Close</button>
+  <div class="controls">
+    <button class="btn" onclick="window.print()">🖨️ Print PVC Card</button>
+    <button class="btn" onclick="window.close()" style="background:#64748b; margin-left:10px;">✕ Close</button>
   </div>
 
-  <div class="pvc-wrap">
-    <!-- LEFT PANEL -->
-    <div class="pvc-left">
-      <div class="pvc-header">
-        <div style="width:36px;height:36px;background:#f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px">🏛️</div>
-        <div class="pvc-header-text">Indian Union Vehicle Registration Certificate<br>Issued by Government of Karnataka</div>
-        <div class="pvc-badges">
-          <div class="badge badge-nt">NT</div>
-          <div class="badge badge-ka">KA</div>
-        </div>
+  <div class="rc-card-container">
+    
+    <!-- FRONT SIDE -->
+    <div class="rc-card rc-front">
+      <div class="front-header">
+        <div class="header-kannada">ಕರ್ನಾಟಕ ರಾಜ್ಯ</div>
+        <div class="header-english">KARNATAKA STATE</div>
+        <div class="header-sub">CERTIFICATE OF REGISTRATION</div>
       </div>
-      <div class="pvc-body">
-        <div class="pvc-row" style="justify-content:space-between">
-          <div><span class="pvc-label">Regn. No</span><span class="pvc-val" style="font-size:11px">{{ rc.reg_no }}</span></div>
-          <div><span class="pvc-label">Date of Regn.</span><span class="pvc-val">{{ rc.reg_date }}</span></div>
-          <div><span class="pvc-label">Regn. Validity</span><span class="pvc-val">{{ rc.validity }}</span></div>
-          <div><span class="pvc-label">Owner Serial</span><span class="pvc-val">{{ rc.owner_serial|default:"1" }} ℹ</span></div>
-        </div>
-        <div style="margin-bottom:4px"><span class="pvc-label">Chassis Number</span><span class="pvc-val">{{ rc.chassis_no }}</span></div>
-        <div style="margin-bottom:6px"><span class="pvc-label">Engine / Motor Number</span><span class="pvc-val">{{ rc.engine_no }}</span></div>
-        <div class="pvc-row" style="align-items:flex-start">
-          <div class="pvc-chip"></div>
-          <div style="flex:1">
-            <div style="margin-bottom:4px"><span class="pvc-label">Owner Name</span><span class="pvc-val" style="font-size:10px">{{ rc.owner_name }}</span></div>
-            <div><span class="pvc-label">Son / Daughter / Wife of (In case of Individual Owner)</span><span class="pvc-val">{{ rc.father_name }}</span></div>
-          </div>
-          <div class="vertical-text">Card Issue Date {{ rc.reg_date }}</div>
-        </div>
-        <div class="pvc-row" style="margin-top:4px">
-          <div style="flex:1"><span class="pvc-label">Fuel</span><span class="pvc-val">{{ rc.fuel_type }}</span></div>
-        </div>
-        <div class="pvc-row">
-          <div style="flex:1"><span class="pvc-label">Emission Norms</span><span class="pvc-val">{{ rc.emission|default:"BHARAT STAGE VI" }}</span></div>
-          <div style="flex:2"><span class="pvc-label">Address</span><span class="pvc-val">{{ rc.address }}</span></div>
-        </div>
+
+      <div class="front-body">
+        <div class="chip-box"></div>
+        
+        <!-- Indian Flag -->
+        <svg class="flag-box" viewBox="0 0 900 600">
+          <rect width="900" height="200" fill="#FF9933"/>
+          <rect y="200" width="900" height="200" fill="#FFFFFF"/>
+          <rect y="400" width="900" height="200" fill="#138808"/>
+          <circle cx="450" cy="300" r="90" fill="none" stroke="#000080" stroke-width="10"/>
+        </svg>
+
+        <!-- Center Watermark Illustration -->
+        <img class="building-watermark" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Vidhana_soudha.jpg/440px-Vidhana_soudha.jpg" alt="Vidhana Soudha" onerror="this.style.display='none'">
+
+        <!-- Ashoka Emblem Left -->
+        <img class="emblem-left" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/200px-Emblem_of_India.svg.png" alt="Emblem" onerror="this.style.display='none'">
+
+        <!-- Karnataka Emblem Right -->
+        <img class="emblem-right" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Seal_of_Karnataka.svg/200px-Seal_of_Karnataka.svg.png" alt="Karnataka Seal" onerror="this.style.display='none'">
       </div>
-      <div class="pvc-footnote">Printed via Nath Seva One — RTO database lookup</div>
+
+      <div class="front-footer">
+        <div class="footer-kannada">ಸಾರಿಗೆ ಇಲಾಖೆ</div>
+        <div class="footer-english">TRANSPORT DEPARTMENT</div>
+        <div class="blue-stripe"></div>
+      </div>
     </div>
 
-    <!-- RIGHT PANEL -->
-    <div class="pvc-right">
-      <div class="pvc-right-header" style="display:flex;align-items:center;justify-content:space-between">
-        <div class="pvc-badges" style="margin-left:0;margin-right:8px">
-          <div class="badge badge-nt">NT</div>
-          <div class="badge badge-ka">KA</div>
+    <!-- BACK SIDE -->
+    <div class="rc-card rc-back">
+      <div>
+        <div class="back-title-row">
+          <div class="reg-no-title">REG NO : {{ rc.reg_no }}</div>
+          <div class="form-title">FORM-23A<br><span style="font-weight:normal;font-size:8px">(See Rule 48)</span></div>
         </div>
-        <span>VEHICLE CLASS : {{ rc.vehicle_class }}</span>
-      </div>
-      <div class="pvc-right-body">
-        <div class="pvc-row" style="align-items:flex-start;margin-bottom:6px">
-          <div style="flex:1">
-            <div class="pvc-right-row"><span class="pvc-rkey">Regn. Number</span><span class="pvc-rval" style="font-size:10px;font-weight:700">{{ rc.reg_no }}</span></div>
-            <div class="pvc-right-row"><span class="pvc-rkey">Maker:</span><span class="pvc-rval">{{ rc.maker }}</span></div>
-            <div class="pvc-right-row" style="border:none;margin-bottom:2px"><span class="pvc-rkey">Model:</span></div>
-            <div style="font-size:8.5px;font-weight:600;color:#0f172a;margin-bottom:4px">{{ rc.model }}</div>
-            <div class="pvc-right-row"><span class="pvc-rkey">Color:</span><span class="pvc-rval">{{ rc.colour }}</span><span class="pvc-rkey" style="margin-left:4px">/ Body Type</span><span class="pvc-rval">{{ rc.body_type }}</span></div>
-            <div class="pvc-right-row"><span class="pvc-rkey">Seating (in all) Capacity</span><span class="pvc-rval">{{ rc.seating|default:"—" }}</span></div>
+
+        <div class="back-details">
+          <div class="detail-row">
+            <div><span class="field-label">REG DATE : </span><span class="field-val">{{ rc.reg_date }}</span></div>
+            <div><span class="field-label">O.SL.NO : </span><span class="field-val">{{ rc.owner_serial|default:"1" }}</span></div>
           </div>
-          <div class="qr-box" id="qrcode"></div>
-        </div>
-        <div class="pvc-right-row"><span class="pvc-rkey">Unladen Weight (Kg)</span><span class="pvc-rval">{{ rc.unladen_weight|default:"—" }}</span></div>
-        <div class="pvc-right-row"><span class="pvc-rkey">Month - Year of Mfg.</span><span class="pvc-rval">{{ rc.mfg_date|default:"—" }}</span></div>
-        <div class="pvc-right-row"><span class="pvc-rkey">Cubic Cap./ Horse Power (BHP/Kw) / Wheel Base(mm)</span></div>
-        <div class="pvc-right-row"><span class="pvc-rval">{{ rc.cubic_cap|default:"—" }}</span><span class="pvc-rval"></span><span class="pvc-rval">{{ rc.wheel_base|default:"—" }}</span></div>
-        <div class="pvc-right-row"><span class="pvc-rkey">No of Cylinders : {{ rc.cylinders|default:"—" }}</span></div>
-        <div class="pvc-right-row">
-          <span class="pvc-rkey">Financier<br><span style="font-weight:600;color:#0f172a;font-size:8.5px">{{ rc.financer|default:"—" }}</span></span>
-          <span class="pvc-rkey" style="text-align:right">Registration Authority<br><span style="font-weight:600;color:#0f172a;font-size:8.5px">{{ rc.rto }}</span></span>
+          <div class="detail-row">
+            <div><span class="field-label">CHASSIS NO : </span><span class="field-val">{{ rc.chassis_no }}</span></div>
+            <div><span class="field-label">COLOUR : </span><span class="field-val">{{ rc.colour|default:"Black And Accent" }}</span></div>
+          </div>
+          <div class="detail-row">
+            <div><span class="field-label">ENGINE NO : </span><span class="field-val">{{ rc.engine_no }}</span></div>
+          </div>
+          <div class="detail-row">
+            <div><span class="field-label">MFR : </span><span class="field-val">{{ rc.maker }}</span></div>
+          </div>
+          <div class="detail-row">
+            <div><span class="field-label">OWNER NAME : </span><span class="field-val">{{ rc.owner_name }}</span></div>
+          </div>
+          <div class="detail-row">
+            <div><span class="field-label">S/W/D OF : </span><span class="field-val">{{ rc.father_name|default:"Appa" }}</span></div>
+          </div>
+          <div class="detail-row">
+            <div><span class="field-label">ADDRESS : </span><span class="field-val">{{ rc.address }}</span></div>
+          </div>
+
+          <div style="margin-top: 4px; border-top: 1px dashed #cbd5e1; padding-top: 3px;">
+            <div class="detail-row">
+              <div><span class="field-label">MODEL : </span><span class="field-val">{{ rc.model }}</span></div>
+            </div>
+            <div class="detail-row">
+              <div><span class="field-label">MFG DATE : </span><span class="field-val">{{ rc.mfg_date }}</span></div>
+            </div>
+            <div class="detail-row">
+              <div><span class="field-label">FUEL : </span><span class="field-val">{{ rc.fuel_type }}</span></div>
+              <div style="margin-right: 40px;"><span class="field-label">SEATING : </span><span class="field-val">{{ rc.seating|default:"2" }}</span></div>
+            </div>
+            <div class="detail-row">
+              <div><span class="field-label">REF/RC UPTO : </span><span class="field-val">{{ rc.validity }}</span></div>
+              <div style="margin-right: 40px;"><span class="field-label">CC : </span><span class="field-val">{{ rc.cubic_cap|default:"97.0" }}</span></div>
+            </div>
+            <div class="detail-row">
+              <div><span class="field-label">TAX UPTO : </span><span class="field-val">{{ rc.tax_upto|default:rc.validity }}</span></div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="pvc-footnote">Printed via Nath Seva One — RTO database lookup</div>
+
+      <div class="back-bottom-grid">
+        <div></div>
+        <div class="authority-box">
+          <svg class="signature-img" viewBox="0 0 100 30">
+            <path d="M 10,20 Q 30,5 50,20 T 90,10" fill="none" stroke="#000080" stroke-width="2"/>
+          </svg>
+          <div>Registering Authority</div>
+          <div>{{ rc.rto|default:"Chikkodi Rto, Karnataka" }}</div>
+        </div>
+      </div>
     </div>
+
   </div>
-</div>
-
-<script>
-new QRCode(document.getElementById("qrcode"), {
-  text: "{{ rc.reg_no }}|{{ rc.chassis_no }}|{{ rc.engine_no }}",
-  width: 70,
-  height: 70,
-  colorDark: "#1e293b",
-  colorLight: "#ffffff",
-  correctLevel: QRCode.CorrectLevel.M
-});
-</script>
 
 </body>
 </html>
