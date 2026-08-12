@@ -14,6 +14,7 @@ import json
 import re
 
 from .models import Retailer, PaymentRequest, PANApplication, WalletTransaction
+from .vehicle_views import vehicle_rc_allindia_pdf
 
 logger = logging.getLogger(__name__)
 
