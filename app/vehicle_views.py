@@ -95,7 +95,7 @@ def vehicle_rc_api(request):
                 return JsonResponse({'success': False, 'error': 'SurePass token configure nahi hai.'})
 
             resp = requests.post(
-                'https://sandbox.surepass.io/api/v1/rc/rc-advance',
+                'https://kyc-api.surepass.app/api/v1/rc/rc-full',
                 headers={
                     'Authorization': f'Bearer {SUREPASS_TOKEN}',
                     'Content-Type': 'application/json'
@@ -272,7 +272,7 @@ def vehicle_rc_allindia_api(request):
                 rc_app.save()
                 return JsonResponse({'success': False, 'error': 'SurePass token configure nahi hai.'})
             resp = requests.post(
-                'https://sandbox.surepass.io/api/v1/rc/rc-advance',
+                'https://kyc-api.surepass.app/api/v1/rc/rc-full',
                 headers={'Authorization': f'Bearer {SUREPASS_TOKEN}', 'Content-Type': 'application/json'},
                 json={'id_number': vehicle_number},
                 timeout=20

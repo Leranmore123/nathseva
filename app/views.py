@@ -593,7 +593,7 @@ def vehicle_rc_api(request):
         SUREPASS_TOKEN = settings.SUREPASS_TOKEN
 
         response = requests.post(
-            "https://sandbox.surepass.io/api/v1/rc/rc-advance",
+            "https://kyc-api.surepass.app/api/v1/rc/rc-full",
             headers={
                 "Authorization": f"Bearer {SUREPASS_TOKEN}",
                 "Content-Type": "application/json"
