@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free AI Background Remover — Nath Seva One</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:#ffffff;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.brand-name{color:#f97316;font-size:1.1rem;font-weight:700}
+.brand-sub{color:#64748b;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:.85rem}
+.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#16a34a;font-weight:700}
+.user-chip{display:flex;align-items:center;gap:.5rem;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff}
+.user-chip span{font-size:.78rem;color:#334155;font-weight:600}
+.btn-logout{background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;color:#475569;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s}
+.btn-logout:hover{background:#f1f5f9;color:#0f172a}
+
+.main-wrap{display:flex;flex:1}
+.sidebar{width:220px;background:#ffffff;border-right:1px solid #e2e8f0;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.25rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:8px;font-size:.85rem;color:#475569;text-decoration:none;border:none;background:none;font-family:inherit;width:100%;transition:all 0.15s ease}
+.nav-item:hover{background:#f1f5f9;color:#0f172a}
+.nav-item.active{background:#fff7ed;color:#ea580c;font-weight:600;border:1px solid #ffedd5}
+.nav-section{font-size:.65rem;color:#94a3b8;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:700}
+.content{flex:1;padding:1.75rem;overflow-y:auto;background:#f8fafc}
+
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:#64748b;margin-bottom:1rem}
+.breadcrumb a{color:#64748b;text-decoration:none}
+.breadcrumb a:hover{color:#0f172a}
+
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.page-title{font-size:1.1rem;font-weight:700;color:#0f172a}
+
+.form-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:1.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.03);margin-bottom:1.5rem}
+
+.tool-drop{border:2px dashed #cbd5e1;border-radius:14px;padding:2.5rem 1.5rem;text-align:center;color:#64748b;cursor:pointer;transition:all .2s;background:#f8fafc}
+.tool-drop:hover,.tool-drop.drag{border-color:#7c3aed;color:#6d28d9;background:#f5f3ff}
+.tool-drop-icon{font-size:2.5rem;margin-bottom:.5rem;color:#7c3aed}
+
+.checker{background-image:linear-gradient(45deg,#cbd5e1 25%,transparent 25%),linear-gradient(-45deg,#cbd5e1 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#cbd5e1 75%),linear-gradient(-45deg,transparent 75%,#cbd5e1 75%);background-size:18px 18px;background-position:0 0,0 9px,9px -9px,-9px 0;border:1px solid #e2e8f0;border-radius:8px;padding:1rem}
+#brCanvas{max-width:100%;display:block;margin:auto}
+
+.bg-btn-group{display:flex;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.bg-btn{padding:.4rem .85rem;border:1px solid #cbd5e1;border-radius:6px;background:#ffffff;font-size:.78rem;font-weight:600;color:#475569;cursor:pointer}
+.bg-btn.active{background:#7c3aed;color:#ffffff;border-color:#7c3aed}
+
+.btn-apply{padding:.65rem 1.25rem;background:#7c3aed;color:#ffffff;border:none;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-apply:hover{background:#6d28d9}
+
+.btn-dl{padding:.65rem 1.25rem;background:#16a34a;color:#ffffff;border:none;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-dl:hover{background:#15803d}
+.btn-dl:disabled{background:#cbd5e1;cursor:not-allowed}
+
+.ai-pill{font-size:.7rem;font-weight:700;background:#f3e8ff;color:#7c3aed;border-radius:20px;padding:2px 10px;border:1px solid #e9d5ff}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Free Utility Tools</div></div>
+  <div class="topbar-right">
+    <div class="wallet-chip">💰 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip"><div class="avatar">{{ retailer.full_name.0|upper }}</div><span>{{ retailer.user_id }}</span></div>
+    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <div class="nav-section">Main Menu</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="{% url 'form' %}" class="nav-item"><span class="nav-icon">🪪</span> PAN Services</a>
+    <a href="{% url 'applied_list' %}" class="nav-item"><span class="nav-icon">📋</span> Applied List</a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Services</div>
+    <a href="{% url 'other_services' %}" class="nav-item"><span class="nav-icon">🪪</span> Other Services</a>
+    <a href="{% url 'free_tools' %}" class="nav-item active">
+      <span class="nav-icon">🎁</span> Free Tools 
+      <span style="background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0;padding:1px 6px;border-radius:10px;font-size:.65rem;font-weight:700;margin-left:auto">FREE</span>
+    </a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Account & Help</div>
+    <a href="{% url 'wallet' %}" class="nav-item"><span class="nav-icon">💰</span> Wallet</a>
+    <a href="{% url 'profile' %}" class="nav-item"><span class="nav-icon">👤</span> Profile Settings</a>
+    <a href="#" class="nav-item"><span class="nav-icon">📊</span> Reports</a>
+    <a href="#" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+  </div>
+
+  <div class="content">
+    <div class="breadcrumb">
+      <a href="{% url 'retailer_dashboard' %}">Dashboard</a>
+      <span>/</span>
+      <a href="{% url 'free_tools' %}">Free Tools</a>
+      <span>/</span>
+      <span>AI Background Remover</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title">🪄 Free AI Background Remover <span class="ai-pill">Google MediaPipe AI</span></div>
+      <span style="background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0;padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:700">100% FREE • Zero Server Upload</span>
+    </div>
+
+    <div class="form-card">
+      <h3 style="font-size:1rem;font-weight:700;color:#7c3aed;margin-bottom:.35rem">Automatic AI Background Eraser</h3>
+      <p style="font-size:.8rem;color:#64748b;margin-bottom:1.25rem">Upload a photo to automatically remove background using browser AI. Best for passport photos & people portraits.</p>
+
+      <div id="brDrop" class="tool-drop">
+        <div class="tool-drop-icon">🪄</div>
+        <div style="font-weight:700;color:#0f172a;font-size:.95rem">Click to select photo or drag & drop here</div>
+        <div style="font-size:.78rem;color:#94a3b8;margin-top:.25rem">Supported formats: JPG, JPEG, PNG</div>
+      </div>
+      <input type="file" id="brFile" accept="image/*" style="display:none">
+
+      <div id="brEditor" style="display:none;grid-template-columns:1.4fr 1fr;gap:1.5rem;margin-top:1.25rem">
+        <div>
+          <div class="checker"><canvas id="brCanvas"></canvas></div>
+          <div id="brProg" style="display:none;margin-top:.75rem;font-size:.82rem;color:#7c3aed;font-weight:600">
+            ⏳ <span id="brProgTxt">Loading AI model & removing background...</span>
+          </div>
+        </div>
+        <div>
+          <label style="font-size:.82rem;font-weight:600;color:#334155;display:block;margin-bottom:.5rem">Fill Replacement Background</label>
+          <div class="bg-btn-group" id="brBg">
+            <button type="button" class="bg-btn active" data-bg="">Transparent</button>
+            <button type="button" class="bg-btn" data-bg="#ffffff">White</button>
+            <button type="button" class="bg-btn" data-bg="#e9f2ff">Light Blue</button>
+            <button type="button" class="bg-btn" data-bg="#dc3545">Red</button>
+          </div>
+
+          <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+            <button id="brApply" class="btn-apply">🪄 Remove with AI</button>
+            <button id="brDl" class="btn-dl" disabled>📥 Download PNG</button>
+          </div>
+          <small style="display:block;margin-top:1rem;color:#94a3b8;font-size:.75rem">Runs 100% client-side inside your browser via MediaPipe AI engine.</small>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
+<script>
+(function(){
+  var drop = document.getElementById('brDrop'), input = document.getElementById('brFile');
+  var editor = document.getElementById('brEditor'), canvas = document.getElementById('brCanvas'), ctx = canvas.getContext('2d');
+  var dlBtn = document.getElementById('brDl'), applyBtn = document.getElementById('brApply');
+  var prog = document.getElementById('brProg'), progTxt = document.getElementById('brProgTxt');
+  var workImg = null, bg = '', cutout = null, segmenter = null, pendingResolve = null;
+
+  drop.addEventListener('click', function(){ input.click(); });
+  input.addEventListener('change', function(e){ if(e.target.files[0]) load(e.target.files[0]); });
+
+  ['dragover', 'dragenter'].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('drag'); });
+  });
+
+  ['dragleave', 'drop'].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('drag'); });
+  });
+
+  drop.addEventListener('drop', function(e){ if(e.dataTransfer.files[0]) load(e.dataTransfer.files[0]); });
+
+  document.getElementById('brBg').addEventListener('click', function(e){
+    var b = e.target.closest('button[data-bg]');
+    if(!b) return;
+    bg = b.dataset.bg;
+    this.querySelectorAll('button').forEach(function(x){ x.classList.remove('active'); });
+    b.classList.add('active');
+    if(cutout) paint();
+  });
+
+  function load(file){
+    if(!/^image\//.test(file.type)){ alert('Please choose an image file.'); return; }
+    cutout = null;
+    dlBtn.disabled = true;
+    var im = new Image();
+    im.onload = function(){
+      var maxW = 1200, scale = Math.min(1, maxW / im.width);
+      var w = Math.round(im.width * scale), h = Math.round(im.height * scale);
+      var c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(im, 0, 0, w, h);
+      workImg = c;
+      canvas.width = w; canvas.height = h;
+      ctx.clearRect(0, 0, w, h);
+      ctx.drawImage(c, 0, 0);
+      editor.style.display = 'grid';
+    };
+    im.src = URL.createObjectURL(file);
+  }
+
+  function getSegmenter(){
+    if(segmenter) return segmenter;
+    segmenter = new SelfieSegmentation({
+      locateFile: function(f){ return 'https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/' + f; }
+    });
+    segmenter.setOptions({ modelSelection: 1 });
+    segmenter.onResults(function(res){
+      if(pendingResolve){ var r = pendingResolve; pendingResolve = null; r(res); }
+    });
+    return segmenter;
+  }
+
+  function segment(imgEl){
+    return new Promise(function(resolve, reject){
+      pendingResolve = resolve;
+      var to = setTimeout(function(){
+        if(pendingResolve){ pendingResolve = null; reject(new Error('AI processing timed out. Check your internet connection and retry.')); }
+      }, 45000);
+      var orig = resolve;
+      pendingResolve = function(res){ clearTimeout(to); orig(res); };
+      try { getSegmenter().send({ image: imgEl }); } catch(e){ clearTimeout(to); reject(e); }
+    });
+  }
+
+  function paint(){
+    if(!cutout) return;
+    var w = cutout.width, h = cutout.height;
+    canvas.width = w; canvas.height = h;
+    ctx.clearRect(0, 0, w, h);
+    if(bg){ ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h); }
+    ctx.drawImage(cutout, 0, 0);
+  }
+
+  applyBtn.addEventListener('click', async function(){
+    if(!workImg){ alert('Choose an image first.'); return; }
+    if(typeof SelfieSegmentation === 'undefined'){ alert('AI engine is still loading. Please wait a moment and retry.'); return; }
+
+    applyBtn.disabled = true;
+    dlBtn.disabled = true;
+    var oldText = applyBtn.innerHTML;
+    applyBtn.innerHTML = '⏳ AI working...';
+    prog.style.display = 'block';
+    progTxt.textContent = 'Loading AI model & removing background...';
+
+    try {
+      var res = await segment(workImg);
+      var w = workImg.width, h = workImg.height;
+      var cut = document.createElement('canvas');
+      cut.width = w; cut.height = h;
+      var cx = cut.getContext('2d');
+      cx.clearRect(0, 0, w, h);
+      cx.drawImage(res.segmentationMask, 0, 0, w, h);
+      cx.globalCompositeOperation = 'source-in';
+      cx.drawImage(workImg, 0, 0, w, h);
+      cx.globalCompositeOperation = 'source-over';
+      cutout = cut;
+      paint();
+      dlBtn.disabled = false;
+    } catch(err){
+      alert('Background removal failed: ' + err.message);
+    }
+    prog.style.display = 'none';
+    applyBtn.disabled = false;
+    applyBtn.innerHTML = oldText;
+  });
+
+  dlBtn.addEventListener('click', function(){
+    if(!cutout) return;
+    var out = document.createElement('canvas');
+    out.width = cutout.width; out.height = cutout.height;
+    var o = out.getContext('2d');
+    if(bg){ o.fillStyle = bg; o.fillRect(0, 0, out.width, out.height); }
+    o.drawImage(cutout, 0, 0);
+    var a = document.createElement('a');
+    a.href = out.toDataURL('image/png');
+    a.download = 'no_bg_' + Date.now() + '.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  });
+})();
+</script>
+</body>
+</html>

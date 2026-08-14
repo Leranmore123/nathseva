@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free PDF to JPG Converter — Nath Seva One</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:#ffffff;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.brand-name{color:#f97316;font-size:1.1rem;font-weight:700}
+.brand-sub{color:#64748b;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:.85rem}
+.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#16a34a;font-weight:700}
+.user-chip{display:flex;align-items:center;gap:.5rem;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff}
+.user-chip span{font-size:.78rem;color:#334155;font-weight:600}
+.btn-logout{background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;color:#475569;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s}
+.btn-logout:hover{background:#f1f5f9;color:#0f172a}
+
+.main-wrap{display:flex;flex:1}
+.sidebar{width:220px;background:#ffffff;border-right:1px solid #e2e8f0;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.25rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:8px;font-size:.85rem;color:#475569;text-decoration:none;border:none;background:none;font-family:inherit;width:100%;transition:all 0.15s ease}
+.nav-item:hover{background:#f1f5f9;color:#0f172a}
+.nav-item.active{background:#fff7ed;color:#ea580c;font-weight:600;border:1px solid #ffedd5}
+.nav-section{font-size:.65rem;color:#94a3b8;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:700}
+.content{flex:1;padding:1.75rem;overflow-y:auto;background:#f8fafc}
+
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:#64748b;margin-bottom:1rem}
+.breadcrumb a{color:#64748b;text-decoration:none}
+.breadcrumb a:hover{color:#0f172a}
+
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.page-title{font-size:1.1rem;font-weight:700;color:#0f172a}
+
+.form-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:1.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.03);margin-bottom:1.5rem}
+
+.tool-drop{border:2px dashed #cbd5e1;border-radius:14px;padding:2.5rem 1.5rem;text-align:center;color:#64748b;cursor:pointer;transition:all .2s;background:#f8fafc}
+.tool-drop:hover,.tool-drop.drag{border-color:#e64980;color:#db2777;background:#fdf2f8}
+.tool-drop-icon{font-size:2.5rem;margin-bottom:.5rem;color:#db2777}
+
+#pjPages{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.25rem;margin-top:1.25rem}
+.pj-page{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;background:#ffffff;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.pj-page img{width:100%;display:block;border-bottom:1px solid #f1f5f9}
+.pj-page .p-act{padding:.6rem}
+
+label{font-size:.78rem;font-weight:600;color:#334155;display:block;margin-bottom:.35rem}
+select{width:100%;padding:.55rem .75rem;background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;font-size:.84rem;color:#0f172a;outline:none;font-family:inherit}
+
+.btn-all{padding:.55rem 1.25rem;background:#db2777;color:#ffffff;border:none;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s ease}
+.btn-all:hover{background:#be185d}
+.btn-all:disabled{background:#cbd5e1;cursor:not-allowed}
+
+.btn-dl{width:100%;padding:.4rem .65rem;background:#2563eb;color:#ffffff;border:none;border-radius:6px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-dl:hover{background:#1d4ed8}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Free Utility Tools</div></div>
+  <div class="topbar-right">
+    <div class="wallet-chip">💰 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip"><div class="avatar">{{ retailer.full_name.0|upper }}</div><span>{{ retailer.user_id }}</span></div>
+    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <div class="nav-section">Main Menu</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="{% url 'form' %}" class="nav-item"><span class="nav-icon">🪪</span> PAN Services</a>
+    <a href="{% url 'applied_list' %}" class="nav-item"><span class="nav-icon">📋</span> Applied List</a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Services</div>
+    <a href="{% url 'other_services' %}" class="nav-item"><span class="nav-icon">🪪</span> Other Services</a>
+    <a href="{% url 'free_tools' %}" class="nav-item active">
+      <span class="nav-icon">🎁</span> Free Tools 
+      <span style="background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0;padding:1px 6px;border-radius:10px;font-size:.65rem;font-weight:700;margin-left:auto">FREE</span>
+    </a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Account & Help</div>
+    <a href="{% url 'wallet' %}" class="nav-item"><span class="nav-icon">💰</span> Wallet</a>
+    <a href="{% url 'profile' %}" class="nav-item"><span class="nav-icon">👤</span> Profile Settings</a>
+    <a href="#" class="nav-item"><span class="nav-icon">📊</span> Reports</a>
+    <a href="#" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+  </div>
+
+  <div class="content">
+    <div class="breadcrumb">
+      <a href="{% url 'retailer_dashboard' %}">Dashboard</a>
+      <span>/</span>
+      <a href="{% url 'free_tools' %}">Free Tools</a>
+      <span>/</span>
+      <span>PDF to JPG Converter</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title">📑 Free PDF to JPG Page Converter</div>
+      <span style="background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0;padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:700">100% FREE • Instant Browser Render</span>
+    </div>
+
+    <div class="form-card">
+      <h3 style="font-size:1rem;font-weight:700;color:#db2777;margin-bottom:.35rem">Convert PDF pages into High Quality JPG Images</h3>
+      <p style="font-size:.8rem;color:#64748b;margin-bottom:1.25rem">Upload your PDF document to preview each page and export them individually or all together as JPG files.</p>
+
+      <div id="pjDrop" class="tool-drop">
+        <div class="tool-drop-icon">📄</div>
+        <div style="font-weight:700;color:#0f172a;font-size:.95rem">Click to select PDF document or drag & drop here</div>
+        <div style="font-size:.78rem;color:#94a3b8;margin-top:.25rem">Single PDF document allowed</div>
+      </div>
+      <input type="file" id="pjFile" accept="application/pdf" style="display:none">
+
+      <div style="display:grid;grid-template-columns:220px 1fr;gap:1.25rem;align-items:end;margin-top:1.25rem">
+        <div>
+          <label>Image Render Quality</label>
+          <select id="pjScale">
+            <option value="1.5">Standard Quality (1.5x)</option>
+            <option value="2" selected>High Quality (2.0x)</option>
+            <option value="3">Ultra HD Quality (3.0x)</option>
+          </select>
+        </div>
+        <div>
+          <button id="pjAll" class="btn-all" disabled>📥 DOWNLOAD ALL PAGES (ZIP/JPG)</button>
+        </div>
+      </div>
+
+      <div id="pjStatus" style="margin-top:1rem;font-size:.82rem;font-weight:600;color:#64748b"></div>
+      <div id="pjPages"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(function(){
+  if(window.pdfjsLib){
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+  var drop = document.getElementById('pjDrop'), input = document.getElementById('pjFile');
+  var pagesDiv = document.getElementById('pjPages'), status = document.getElementById('pjStatus'), allBtn = document.getElementById('pjAll');
+  var rendered = [];
+
+  drop.addEventListener('click', function(){ input.click(); });
+  input.addEventListener('change', function(e){ if(e.target.files[0]) handle(e.target.files[0]); });
+
+  ['dragover', 'dragenter'].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('drag'); });
+  });
+
+  ['dragleave', 'drop'].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('drag'); });
+  });
+
+  drop.addEventListener('drop', function(e){ if(e.dataTransfer.files[0]) handle(e.dataTransfer.files[0]); });
+
+  function dl(dataUrl, name){
+    var a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  async function handle(file){
+    if(file.type !== 'application/pdf'){ alert('Please choose a PDF file.'); return; }
+    if(!window.pdfjsLib){ alert('PDF engine still loading, try again in a moment.'); return; }
+
+    pagesDiv.innerHTML = '';
+    rendered = [];
+    allBtn.disabled = true;
+    status.textContent = 'Reading PDF File...';
+
+    var scale = parseFloat(document.getElementById('pjScale').value) || 2;
+
+    try {
+      var buf = await file.arrayBuffer();
+      var pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+
+      for(var n = 1; n <= pdf.numPages; n++){
+        status.textContent = 'Rendering page ' + n + ' of ' + pdf.numPages + '...';
+        var page = await pdf.getPage(n);
+        var vp = page.getViewport({ scale: scale });
+
+        var cv = document.createElement('canvas');
+        cv.width = vp.width;
+        cv.height = vp.height;
+        var ctx = cv.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, cv.width, cv.height);
+
+        await page.render({ canvasContext: ctx, viewport: vp }).promise;
+        var url = cv.toDataURL('image/jpeg', 0.92);
+        rendered.push(url);
+
+        var name = 'page_' + n + '.jpg';
+        var box = document.createElement('div');
+        box.className = 'pj-page';
+        box.innerHTML = '<img src="' + url + '"><div class="p-act"><button class="btn-dl" data-u="' + (rendered.length - 1) + '" data-n="' + name + '">📥 Download Page ' + n + '</button></div>';
+        pagesDiv.appendChild(box);
+      }
+
+      status.textContent = pdf.numPages + ' Page(s) Rendered Successfully.';
+      allBtn.disabled = false;
+    } catch(err){
+      status.textContent = '';
+      alert('Could not read PDF: ' + err.message);
+    }
+  }
+
+  pagesDiv.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-u]');
+    if(!b) return;
+    dl(rendered[+b.dataset.u], b.dataset.n);
+  });
+
+  allBtn.addEventListener('click', function(){
+    rendered.forEach(function(u, i){
+      setTimeout(function(){
+        dl(u, 'page_' + (i + 1) + '.jpg');
+      }, i * 250);
+    });
+  });
+})();
+</script>
+</body>
+</html>

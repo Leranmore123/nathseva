@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Resume Maker — Nath Seva One</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:#ffffff;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.brand-name{color:#f97316;font-size:1.1rem;font-weight:700}
+.brand-sub{color:#64748b;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:.85rem}
+.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#16a34a;font-weight:700}
+.user-chip{display:flex;align-items:center;gap:.5rem;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff}
+.user-chip span{font-size:.78rem;color:#334155;font-weight:600}
+.btn-logout{background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;color:#475569;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s}
+.btn-logout:hover{background:#f1f5f9;color:#0f172a}
+
+.main-wrap{display:flex;flex:1}
+.sidebar{width:220px;background:#ffffff;border-right:1px solid #e2e8f0;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.25rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:8px;font-size:.85rem;color:#475569;text-decoration:none;border:none;background:none;font-family:inherit;width:100%;transition:all 0.15s ease}
+.nav-item:hover{background:#f1f5f9;color:#0f172a}
+.nav-item.active{background:#fff7ed;color:#ea580c;font-weight:600;border:1px solid #ffedd5}
+.nav-section{font-size:.65rem;color:#94a3b8;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:700}
+.content{flex:1;padding:1.75rem;overflow-y:auto;background:#f8fafc}
+
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:#64748b;margin-bottom:1rem}
+.breadcrumb a{color:#64748b;text-decoration:none}
+.breadcrumb a:hover{color:#0f172a}
+
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.page-title{font-size:1.1rem;font-weight:700;color:#0f172a}
+
+.rz-layout{display:grid;grid-template-columns:420px 1fr;gap:1.5rem;align-items:start}
+
+.form-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,0.03)}
+.card-title{font-size:.88rem;font-weight:700;color:#ea580c;margin-bottom:1rem;padding-bottom:.4rem;border-bottom:1px solid #fff7ed}
+
+.form-group{margin-bottom:.85rem}
+.rz-label{font-size:.76rem;font-weight:600;color:#334155;display:block;margin-bottom:.3rem}
+.rz-label small{color:#94a3b8;font-weight:400}
+
+input[type=text],textarea{width:100%;padding:.55rem .75rem;background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;font-size:.82rem;color:#0f172a;outline:none;font-family:inherit;transition:all 0.15s ease}
+input:focus,textarea:focus{border-color:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,0.1)}
+
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+
+.btn-print{width:100%;padding:.75rem;background:#ea580c;color:#ffffff;border:none;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s ease;margin-top:.75rem}
+.btn-print:hover{background:#c2410c}
+
+/* PAPER PREVIEW */
+.paper-card{background:#cbd5e1;border-radius:12px;padding:1.5rem;display:flex;justify-content:center;overflow-x:auto}
+#rzPaper{background:#ffffff;color:#0f172a;width:100%;max-width:794px;min-height:1000px;padding:40px 45px;box-shadow:0 4px 20px rgba(0,0,0,0.15);font-family:'Segoe UI',system-ui,sans-serif}
+#rzPaper h1{font-size:26px;font-weight:800;color:#0f2027;margin-bottom:2px}
+#rzPaper .rz-title{font-size:14px;color:#ea580c;font-weight:700;margin-bottom:6px}
+#rzPaper .rz-contact{font-size:12px;color:#64748b;margin-bottom:18px;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+#rzPaper h2{font-size:14px;text-transform:uppercase;letter-spacing:.8px;color:#ea580c;border-bottom:2px solid #ea580c;padding-bottom:3px;margin:18px 0 10px;font-weight:700}
+#rzPaper .rz-item{margin-bottom:10px}
+#rzPaper .rz-item b{font-size:13.5px;color:#0f172a}
+#rzPaper .rz-item .meta{font-size:12px;color:#64748b}
+#rzPaper p{font-size:12.5px;line-height:1.5;color:#334155;white-space:pre-wrap}
+#rzPaper .rz-skills span{display:inline-block;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:12px;padding:2px 10px;font-size:11.5px;color:#334155;font-weight:600;margin:0 6px 6px 0}
+
+@media print{
+  body *{visibility:hidden !important}
+  #rzPaper,#rzPaper *{visibility:visible !important}
+  #rzPaper{position:absolute;left:0;top:0;box-shadow:none;max-width:none;width:100%;padding:24px 30px}
+  @page{size:A4;margin:12mm}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Free Utility Tools</div></div>
+  <div class="topbar-right">
+    <div class="wallet-chip">💰 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip"><div class="avatar">{{ retailer.full_name.0|upper }}</div><span>{{ retailer.user_id }}</span></div>
+    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <div class="nav-section">Main Menu</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="{% url 'form' %}" class="nav-item"><span class="nav-icon">🪪</span> PAN Services</a>
+    <a href="{% url 'applied_list' %}" class="nav-item"><span class="nav-icon">📋</span> Applied List</a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Services</div>
+    <a href="{% url 'other_services' %}" class="nav-item"><span class="nav-icon">🪪</span> Other Services</a>
+    <a href="{% url 'free_tools' %}" class="nav-item active">
+      <span class="nav-icon">🎁</span> Free Tools 
+      <span style="background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0;padding:1px 6px;border-radius:10px;font-size:.65rem;font-weight:700;margin-left:auto">FREE</span>
+    </a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Account & Help</div>
+    <a href="{% url 'wallet' %}" class="nav-item"><span class="nav-icon">💰</span> Wallet</a>
+    <a href="{% url 'profile' %}" class="nav-item"><span class="nav-icon">👤</span> Profile Settings</a>
+    <a href="#" class="nav-item"><span class="nav-icon">📊</span> Reports</a>
+    <a href="#" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+  </div>
+
+  <div class="content">
+    <div class="breadcrumb">
+      <a href="{% url 'retailer_dashboard' %}">Dashboard</a>
+      <span>/</span>
+      <a href="{% url 'free_tools' %}">Free Tools</a>
+      <span>/</span>
+      <span>Free Resume Maker</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title">📄 Free Resume Maker PDF Generator</div>
+      <span style="background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0;padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:700">100% FREE • Instant Browser Print</span>
+    </div>
+
+    <div class="rz-layout">
+      
+      <!-- LEFT FORM -->
+      <div class="form-card">
+        <div class="card-title">✍️ Fill Resume Details</div>
+        
+        <div class="form-group">
+          <label class="rz-label">Full Name</label>
+          <input type="text" id="f_name" placeholder="Enter Full Name">
+        </div>
+        
+        <div class="form-group">
+          <label class="rz-label">Job Title</label>
+          <input type="text" id="f_title" placeholder="e.g. Computer Operator / Data Entry">
+        </div>
+
+        <div class="row-2">
+          <div class="form-group">
+            <label class="rz-label">Phone</label>
+            <input type="text" id="f_phone" placeholder="9876543210">
+          </div>
+          <div class="form-group">
+            <label class="rz-label">Email</label>
+            <input type="text" id="f_email" placeholder="user@gmail.com">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="rz-label">Address</label>
+          <input type="text" id="f_addr" placeholder="City, State, Pincode">
+        </div>
+
+        <div class="form-group">
+          <label class="rz-label">Profile / Career Objective</label>
+          <textarea id="f_summary" rows="3" placeholder="Brief summary of your skills and career goals..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="rz-label">Education <small>(one per line: Course, School, Year)</small></label>
+          <textarea id="f_edu" rows="3" placeholder="B.Com, XYZ College, 2022&#10;HSC, ABC School, 2019"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="rz-label">Experience <small>(one per line: Role, Company, Years)</small></label>
+          <textarea id="f_exp" rows="3" placeholder="Data Entry Specialist, ABC Pvt Ltd, 2022-2024&#10;Office Assistant, XYZ Traders, 2021-2022"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="rz-label">Skills <small>(comma separated)</small></label>
+          <input type="text" id="f_skills" placeholder="MS Office, Tally Prime, Typing 40 WPM">
+        </div>
+
+        <div class="form-group">
+          <label class="rz-label">Languages <small>(comma separated)</small></label>
+          <input type="text" id="f_lang" placeholder="Gujarati, Hindi, English">
+        </div>
+
+        <button type="button" id="rzPrint" class="btn-print">📥 DOWNLOAD RESUME PDF</button>
+        <small style="font-size:.72rem;color:#64748b;display:block;margin-top:.4rem;text-align:center">In print dialog, choose <b>"Save as PDF"</b>.</small>
+      </div>
+
+      <!-- RIGHT A4 PAPER PREVIEW -->
+      <div class="paper-card">
+        <div id="rzPaper">
+          <h1 id="p_name">Your Name</h1>
+          <div class="rz-title" id="p_title"></div>
+          <div class="rz-contact" id="p_contact"></div>
+
+          <div id="s_summary" style="display:none">
+            <h2>Profile Summary</h2>
+            <p id="p_summary"></p>
+          </div>
+
+          <div id="s_exp" style="display:none">
+            <h2>Experience</h2>
+            <div id="p_exp"></div>
+          </div>
+
+          <div id="s_edu" style="display:none">
+            <h2>Education</h2>
+            <div id="p_edu"></div>
+          </div>
+
+          <div id="s_skills" style="display:none">
+            <h2>Skills</h2>
+            <div class="rz-skills" id="p_skills"></div>
+          </div>
+
+          <div id="s_lang" style="display:none">
+            <h2>Languages</h2>
+            <div class="rz-skills" id="p_lang"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function esc(s){return (s||'').replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+  function val(id){return document.getElementById(id).value.trim();}
+  function lines(id){return val(id).split('\n').map(function(x){return x.trim();}).filter(Boolean);}
+  function csv(id){return val(id).split(',').map(function(x){return x.trim();}).filter(Boolean);}
+
+  function render(){
+    document.getElementById('p_name').textContent = val('f_name') || 'Your Name';
+    document.getElementById('p_title').textContent = val('f_title');
+    var contact = [val('f_phone'), val('f_email'), val('f_addr')].filter(Boolean).join('  |  ');
+    document.getElementById('p_contact').textContent = contact;
+
+    var sum = val('f_summary');
+    document.getElementById('s_summary').style.display = sum ? 'block' : 'none';
+    document.getElementById('p_summary').textContent = sum;
+
+    function items(arr){
+      return arr.map(function(l){
+        var parts = l.split(',');
+        var role = esc((parts[0]||'').trim());
+        var meta = esc(parts.slice(1).map(function(x){return x.trim();}).filter(Boolean).join(' • '));
+        return '<div class="rz-item"><b>'+role+'</b>'+(meta?'<div class="meta">'+meta+'</div>':'')+'</div>';
+      }).join('');
+    }
+
+    var exp = lines('f_exp');
+    document.getElementById('s_exp').style.display = exp.length ? 'block' : 'none';
+    document.getElementById('p_exp').innerHTML = items(exp);
+
+    var edu = lines('f_edu');
+    document.getElementById('s_edu').style.display = edu.length ? 'block' : 'none';
+    document.getElementById('p_edu').innerHTML = items(edu);
+
+    var sk = csv('f_skills');
+    document.getElementById('s_skills').style.display = sk.length ? 'block' : 'none';
+    document.getElementById('p_skills').innerHTML = sk.map(function(s){return '<span>'+esc(s)+'</span>';}).join('');
+
+    var lg = csv('f_lang');
+    document.getElementById('s_lang').style.display = lg.length ? 'block' : 'none';
+    document.getElementById('p_lang').innerHTML = lg.map(function(s){return '<span>'+esc(s)+'</span>';}).join('');
+  }
+
+  ['f_name','f_title','f_phone','f_email','f_addr','f_summary','f_edu','f_exp','f_skills','f_lang'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', render);
+  });
+  render();
+
+  document.getElementById('rzPrint').addEventListener('click', function(){
+    if(!val('f_name')){ alert('Please enter your name first.'); return; }
+    document.title = 'Resume_' + (val('f_name').replace(/\s+/g,'_')||'resume');
+    window.print();
+  });
+})();
+</script>
+</body>
+</html>

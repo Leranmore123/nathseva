@@ -1,0 +1,338 @@
+<!-- FLOATING THEME SWITCHER BUTTON & PANEL -->
+<button id="sbThemeBtn" title="Theme Settings"><i class="fa-solid fa-gear"></i></button>
+
+<div id="sbThemePanel">
+  <div class="panel-head">
+    <h6><i class="fa-solid fa-palette"></i> Theme & Background Settings</h6>
+    <button id="sbCloseBtn">&times;</button>
+  </div>
+
+  <div class="panel-body">
+    <h6>Page Background Color</h6>
+    <div class="page-bg-swatches">
+      <div class="bg-swatch" data-bg="#f4f6fb" style="background:#f4f6fb" title="Default Slate"></div>
+      <div class="bg-swatch" data-bg="#eef2ff" style="background:#eef2ff" title="Soft Blue"></div>
+      <div class="bg-swatch" data-bg="#ecfdf5" style="background:#ecfdf5" title="Emerald Mint"></div>
+      <div class="bg-swatch" data-bg="#faf5ff" style="background:#faf5ff" title="Purple Tint"></div>
+      <div class="bg-swatch" data-bg="#fff7ed" style="background:#fff7ed" title="Amber Warm"></div>
+      <div class="bg-swatch" data-bg="#0f172a" style="background:#0f172a" title="Dark Slate"></div>
+      <div class="bg-custom-box" title="Custom Background Color">
+        <input type="color" id="bgCustomPicker" value="#f4f6fb">
+        <i class="fa-solid fa-eye-dropper"></i>
+      </div>
+    </div>
+
+    <h6>Sidebar Theme</h6>
+    <div class="sb-swatches">
+      <div class="sb-swatch" data-sb-swatch="ocean" title="Ocean"></div>
+      <div class="sb-swatch" data-sb-swatch="royal" title="Royal"></div>
+      <div class="sb-swatch" data-sb-swatch="sunset" title="Sunset"></div>
+      <div class="sb-swatch" data-sb-swatch="emerald" title="Emerald"></div>
+      <div class="sb-swatch" data-sb-swatch="midnight" title="Midnight"></div>
+      <div class="sb-swatch" data-sb-swatch="brand" title="Brand"></div>
+      <div class="sb-swatch" data-sb-swatch="teal" title="Teal"></div>
+      <div class="sb-swatch" data-sb-swatch="rose" title="Rose"></div>
+      <div class="sb-swatch" data-sb-swatch="indigo" title="Indigo"></div>
+      <div class="sb-swatch" data-sb-swatch="slate" title="Slate"></div>
+      <div class="sb-swatch" data-sb-swatch="light" title="Light"></div>
+    </div>
+
+    <h6>Accent / Topbar Color</h6>
+    <div class="sb-accents">
+      <div class="sb-accent" data-accent="orange" title="Orange"></div>
+      <div class="sb-accent" data-accent="blue" title="Blue"></div>
+      <div class="sb-accent" data-accent="green" title="Green"></div>
+      <div class="sb-accent" data-accent="purple" title="Purple"></div>
+      <div class="sb-accent" data-accent="pink" title="Pink"></div>
+      <div class="sb-accent" data-accent="red" title="Red"></div>
+    </div>
+
+    <div class="sb-row">
+      <span>Dark Mode</span>
+      <button class="sb-dark-toggle" id="sbDarkToggle" title="Toggle Dark Mode"><i class="fa-solid fa-moon"></i></button>
+    </div>
+
+    <div class="sb-row">
+      <span>Compact Sidebar</span>
+      <label class="sb-switch">
+        <input type="checkbox" id="sbCompact">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <button class="sb-reset" id="sbReset"><i class="fa-solid fa-rotate-left"></i> Reset to Default</button>
+  </div>
+</div>
+
+<style>
+/* FLOATING BUTTON */
+#sbThemeBtn {
+  position: fixed; right: 0; top: 48%; transform: translateY(-50%); z-index: 1055;
+  width: 44px; height: 48px; border-radius: 14px 0 0 14px; border: none;
+  background: var(--sb-accent, linear-gradient(135deg,#ea580c,#f97316));
+  color: #fff; font-size: 20px; cursor: pointer;
+  box-shadow: -3px 4px 16px rgba(0,0,0,0.25);
+  display: flex; align-items: center; justify-content: center;
+  transition: width 0.2s ease, background 0.3s;
+}
+#sbThemeBtn:hover { width: 52px; }
+#sbThemeBtn i { animation: sbSpin 3s linear infinite; }
+@keyframes sbSpin { to { transform: rotate(360deg); } }
+
+/* FLOATING PANEL */
+#sbThemePanel {
+  position: fixed; right: 54px; top: 48%; transform: translateY(-50%); z-index: 1055;
+  background: #ffffff; border-radius: 16px; width: 260px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.22);
+  display: none; border: 1px solid #e2e8f0; overflow: hidden;
+  animation: sbPop 0.2s ease-out;
+}
+#sbThemePanel.open { display: block; }
+@keyframes sbPop { from { opacity:0; transform:translateY(-48%) scale(0.95); } to { opacity:1; transform:translateY(-50%) scale(1); } }
+
+.panel-head {
+  background: var(--sb-accent, linear-gradient(135deg,#ea580c,#f97316)); color: #fff;
+  padding: .85rem 1rem; display: flex; align-items: center; justify-content: space-between;
+}
+.panel-head h6 { font-size: .85rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+#sbCloseBtn { background: none; border: none; color: #fff; font-size: 1.3rem; cursor: pointer; font-weight: 700; }
+
+.panel-body { padding: 1rem; max-height: 80vh; overflow-y: auto; }
+.panel-body h6 { font-size: .72rem; text-transform: uppercase; letter-spacing: .8px; color: #64748b; margin: 1rem 0 .5rem; font-weight: 700; }
+.panel-body h6:first-child { margin-top: 0; }
+
+/* PAGE BG SWATCHES */
+.page-bg-swatches { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: .5rem; }
+.bg-swatch {
+  height: 28px; border-radius: 6px; cursor: pointer; border: 2px solid #cbd5e1;
+  transition: transform .15s ease;
+}
+.bg-swatch:hover { transform: scale(1.1); }
+.bg-swatch.selected { border-color: #0f172a; box-shadow: 0 0 0 2px var(--sb-accent-color, #ea580c); }
+
+.bg-custom-box {
+  height: 28px; border-radius: 6px; position: relative; overflow: hidden; border: 2px solid #cbd5e1;
+  display: flex; align-items: center; justify-content: center; background: #fff; cursor: pointer;
+}
+.bg-custom-box input[type="color"] {
+  position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer;
+}
+.bg-custom-box i { font-size: 11px; color: #475569; pointer-events: none; }
+
+.sb-swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.sb-swatch {
+  height: 34px; border-radius: 8px; cursor: pointer; border: 2px solid transparent;
+  transition: transform .15s ease;
+}
+.sb-swatch:hover { transform: scale(1.08); }
+.sb-swatch.selected { border-color: #0f172a; box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--sb-accent-color, #ea580c); }
+
+.sb-swatch[data-sb-swatch="ocean"]   { background: linear-gradient(135deg,#0f2027,#2c5364); }
+.sb-swatch[data-sb-swatch="royal"]   { background: linear-gradient(135deg,#41295a,#2f0743); }
+.sb-swatch[data-sb-swatch="sunset"]  { background: linear-gradient(135deg,#42275a,#734b6d); }
+.sb-swatch[data-sb-swatch="emerald"] { background: linear-gradient(135deg,#0b3d2e,#134e4a); }
+.sb-swatch[data-sb-swatch="midnight"]{ background: linear-gradient(135deg,#1f2937,#0b1220); }
+.sb-swatch[data-sb-swatch="brand"]   { background: linear-gradient(135deg,#7a2e05,#e05e12); }
+.sb-swatch[data-sb-swatch="teal"]    { background: linear-gradient(135deg,#134e4a,#0d9488); }
+.sb-swatch[data-sb-swatch="rose"]    { background: linear-gradient(135deg,#4a0e2e,#9d174d); }
+.sb-swatch[data-sb-swatch="indigo"]  { background: linear-gradient(135deg,#1e1b4b,#4338ca); }
+.sb-swatch[data-sb-swatch="slate"]   { background: linear-gradient(135deg,#334155,#0f172a); }
+.sb-swatch[data-sb-swatch="light"]   { background: linear-gradient(135deg,#ffffff,#cbd5e1); border: 1px solid #cbd5e1; }
+
+.sb-accents { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.sb-accent { height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform .15s ease; }
+.sb-accent:hover { transform: scale(1.15); }
+.sb-accent.selected { border-color: #fff; box-shadow: 0 0 0 2px #0f172a; }
+.sb-accent[data-accent="orange"] { background: #ea580c; }
+.sb-accent[data-accent="blue"]   { background: #2563eb; }
+.sb-accent[data-accent="green"]  { background: #16a34a; }
+.sb-accent[data-accent="purple"] { background: #7c3aed; }
+.sb-accent[data-accent="pink"]   { background: #db2777; }
+.sb-accent[data-accent="red"]    { background: #dc2626; }
+
+.sb-row { display: flex; align-items: center; justify-content: space-between; margin-top: .85rem; padding-top: .75rem; border-top: 1px solid #f1f5f9; }
+.sb-row span { font-size: .8rem; color: #334155; font-weight: 600; }
+.sb-dark-toggle { cursor: pointer; font-size: 1.2rem; color: #ea580c; background: none; border: none; line-height: 1; }
+
+.sb-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+.sb-switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .2s; border-radius: 20px; }
+.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .2s; border-radius: 50%; }
+input:checked + .slider { background-color: #16a34a; }
+input:checked + .slider:before { transform: translateX(18px); }
+
+.sb-reset { width: 100%; margin-top: 1rem; padding: .6rem; border: none; border-radius: 8px; background: #f1f5f9; color: #475569; font-weight: 700; font-size: .8rem; cursor: pointer; transition: background .2s; }
+.sb-reset:hover { background: #e2e8f0; color: #ea580c; }
+
+/* DYNAMIC THEME APPLIED STYLES */
+.sidebar[data-sb-theme="ocean"]   { background: linear-gradient(180deg,#0f2027 0%,#203a43 55%,#2c5364 100%) !important; color:#fff !important; }
+.sidebar[data-sb-theme="royal"]   { background: linear-gradient(180deg,#41295a 0%,#2f0743 100%) !important; color:#fff !important; }
+.sidebar[data-sb-theme="sunset"]  { background: linear-gradient(180deg,#42275a 0%,#734b6d 100%) !important; color:#fff !important; }
+.sidebar[data-sb-theme="emerald"] { background: linear-gradient(180deg,#0b3d2e 0%,#134e4a 100%) !important; color:#fff !important; }
+.sidebar[data-sb-theme="midnight"]{ background: linear-gradient(180deg,#1f2937 0%,#0b1220 100%) !important; color:#fff !important; }
+.sidebar[data-sb-theme="brand"]   { background: linear-gradient(180deg,#7a2e05 0%,#e05e12 100%) !important; color:#fff !important; }
+.sidebar[data-sb-theme="teal"]    { background: linear-gradient(180deg,#134e4a 0%,#0d9488 100%) !important; color:#fff !important; }
+.sidebar[data-sb-theme="rose"]    { background: linear-gradient(180deg,#4a0e2e 0%,#9d174d 100%) !important; color:#fff !important; }
+.sidebar[data-sb-theme="indigo"]  { background: linear-gradient(180deg,#1e1b4b 0%,#4338ca 100%) !important; color:#fff !important; }
+.sidebar[data-sb-theme="slate"]   { background: linear-gradient(180deg,#334155 0%,#0f172a 100%) !important; color:#fff !important; }
+.sidebar[data-sb-theme="light"]   { background: linear-gradient(180deg,#ffffff 0%,#f1f5f9 100%) !important; color:#0f172a !important; }
+
+.sidebar:not([data-sb-theme="light"]) .nav-item { color: #dbe4ee !important; }
+.sidebar:not([data-sb-theme="light"]) .nav-item:hover { background: rgba(255,255,255,0.12) !important; color: #fff !important; }
+.sidebar:not([data-sb-theme="light"]) .nav-section { color: #94a3b8 !important; }
+
+.sidebar.compact { width: 80px !important; text-align: center; }
+.sidebar.compact .nav-section, .sidebar.compact span:not(.nav-icon) { display: none !important; }
+.sidebar.compact .nav-item { justify-content: center; padding: .75rem 0; }
+
+body.dark-mode { background: #0f172a !important; color: #f8fafc !important; }
+body.dark-mode .topbar, body.dark-mode .stat-card, body.dark-mode .hero-card, body.dark-mode .table-card, body.dark-mode .pricing-card, body.dark-mode .form-card { background: #1e293b !important; border-color: #334155 !important; color: #f8fafc !important; }
+body.dark-mode th { background: #0f172a !important; color: #94a3b8 !important; }
+body.dark-mode td { color: #cbd5e1 !important; border-color: #334155 !important; }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var SB_THEME_KEY = 'smseva_sidebar_theme';
+  var ACCENT_KEY   = 'smseva_accent';
+  var COMPACT_KEY  = 'smseva_compact';
+  var DARK_KEY     = 'smseva_dark';
+  var PAGE_BG_KEY  = 'smseva_page_bg';
+
+  var sidebar = document.querySelector('.sidebar');
+  var content = document.querySelector('.content');
+  var brandName = document.querySelector('.brand-name');
+  var themeBtn = document.getElementById('sbThemeBtn');
+  var themePanel = document.getElementById('sbThemePanel');
+  var closeBtn = document.getElementById('sbCloseBtn');
+  var customPicker = document.getElementById('bgCustomPicker');
+
+  var accents = {
+    orange: { grad: 'linear-gradient(135deg,#ea580c,#f97316)', color: '#ea580c' },
+    blue:   { grad: 'linear-gradient(135deg,#2563eb,#60a5fa)', color: '#2563eb' },
+    green:  { grad: 'linear-gradient(135deg,#16a34a,#4ade80)', color: '#16a34a' },
+    purple: { grad: 'linear-gradient(135deg,#7c3aed,#a78bfa)', color: '#7c3aed' },
+    pink:   { grad: 'linear-gradient(135deg,#db2777,#f472b6)', color: '#db2777' },
+    red:    { grad: 'linear-gradient(135deg,#dc2626,#f87171)', color: '#dc2626' }
+  };
+
+  /* Toggle Panel */
+  if (themeBtn) themeBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    themePanel.classList.toggle('open');
+  });
+  if (closeBtn) closeBtn.addEventListener('click', function() {
+    themePanel.classList.remove('open');
+  });
+  document.addEventListener('click', function(e) {
+    if (themePanel && themePanel.classList.contains('open') && !themePanel.contains(e.target) && e.target !== themeBtn) {
+      themePanel.classList.remove('open');
+    }
+  });
+
+  /* Apply Page Background Color */
+  function applyPageBg(color) {
+    if (!color) color = '#f4f6fb';
+    document.body.style.backgroundColor = color;
+    if (content) content.style.backgroundColor = color;
+
+    document.querySelectorAll('.bg-swatch').forEach(function(s) {
+      s.classList.toggle('selected', s.getAttribute('data-bg') === color);
+    });
+    if (customPicker) customPicker.value = color;
+    localStorage.setItem(PAGE_BG_KEY, color);
+  }
+
+  /* Apply Sidebar Theme */
+  function applySidebarTheme(t) {
+    if (!t) t = 'ocean';
+    if (sidebar) sidebar.setAttribute('data-sb-theme', t);
+    document.querySelectorAll('.sb-swatch').forEach(function(s) {
+      s.classList.toggle('selected', s.getAttribute('data-sb-swatch') === t);
+    });
+    localStorage.setItem(SB_THEME_KEY, t);
+  }
+
+  /* Apply Accent Color */
+  function applyAccentColor(a) {
+    if (!accents[a]) a = 'orange';
+    var acc = accents[a];
+    document.documentElement.style.setProperty('--sb-accent', acc.grad);
+    document.documentElement.style.setProperty('--sb-accent-color', acc.color);
+    if (brandName) brandName.style.color = acc.color;
+    document.querySelectorAll('.sb-accent').forEach(function(el) {
+      el.classList.toggle('selected', el.getAttribute('data-accent') === a);
+    });
+    localStorage.setItem(ACCENT_KEY, a);
+  }
+
+  /* Apply Dark Mode */
+  function applyDarkMode(on) {
+    document.body.classList.toggle('dark-mode', on);
+    var icon = document.querySelector('#sbDarkToggle i');
+    if (icon) icon.className = on ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    localStorage.setItem(DARK_KEY, on ? '1' : '0');
+  }
+
+  /* Apply Compact Sidebar */
+  function applyCompact(on) {
+    if (sidebar) sidebar.classList.toggle('compact', on);
+    var chk = document.getElementById('sbCompact');
+    if (chk) chk.checked = on;
+    localStorage.setItem(COMPACT_KEY, on ? '1' : '0');
+  }
+
+  /* Load Saved Settings */
+  applyPageBg(localStorage.getItem(PAGE_BG_KEY) || '#f4f6fb');
+  applySidebarTheme(localStorage.getItem(SB_THEME_KEY) || 'ocean');
+  applyAccentColor(localStorage.getItem(ACCENT_KEY) || 'orange');
+  applyDarkMode(localStorage.getItem(DARK_KEY) === '1');
+  applyCompact(localStorage.getItem(COMPACT_KEY) === '1');
+
+  /* Swatch Click Handlers */
+  document.querySelectorAll('.bg-swatch').forEach(function(s) {
+    s.addEventListener('click', function() {
+      applyPageBg(this.getAttribute('data-bg'));
+    });
+  });
+
+  if (customPicker) {
+    customPicker.addEventListener('input', function() {
+      applyPageBg(this.value);
+    });
+  }
+
+  document.querySelectorAll('.sb-swatch').forEach(function(s) {
+    s.addEventListener('click', function() {
+      applySidebarTheme(this.getAttribute('data-sb-swatch'));
+    });
+  });
+
+  document.querySelectorAll('.sb-accent').forEach(function(el) {
+    el.addEventListener('click', function() {
+      applyAccentColor(this.getAttribute('data-accent'));
+    });
+  });
+
+  var dt = document.getElementById('sbDarkToggle');
+  if (dt) dt.addEventListener('click', function() {
+    var isDark = document.body.classList.contains('dark-mode');
+    applyDarkMode(!isDark);
+  });
+
+  var cp = document.getElementById('sbCompact');
+  if (cp) cp.addEventListener('change', function() {
+    applyCompact(this.checked);
+  });
+
+  var rst = document.getElementById('sbReset');
+  if (rst) rst.addEventListener('click', function() {
+    localStorage.removeItem(PAGE_BG_KEY);
+    localStorage.removeItem(SB_THEME_KEY);
+    localStorage.removeItem(ACCENT_KEY);
+    localStorage.removeItem(DARK_KEY);
+    localStorage.removeItem(COMPACT_KEY);
+    location.reload();
+  });
+});
+</script>

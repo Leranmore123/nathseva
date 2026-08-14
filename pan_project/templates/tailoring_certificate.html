@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tailoring Certificate Application — Nath Seva One</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{background:#ffffff;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.brand-name{color:#f97316;font-size:1.1rem;font-weight:700}
+.brand-sub{color:#64748b;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:.85rem}
+.user-chip{display:flex;align-items:center;gap:.5rem;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0}
+.user-chip span{font-size:.78rem;color:#334155;font-weight:600}
+.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#16a34a;font-weight:700}
+.btn-logout{background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;color:#475569;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;transition:all 0.2s}
+.btn-logout:hover{background:#f1f5f9;color:#0f172a}
+
+/* LAYOUT */
+.main-wrap{display:flex;flex:1}
+.sidebar{width:220px;background:#ffffff;border-right:1px solid #e2e8f0;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.25rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:8px;cursor:pointer;font-size:.85rem;color:#475569;text-decoration:none;border:none;background:none;font-family:inherit;width:100%;transition:all 0.15s ease}
+.nav-item:hover{background:#f1f5f9;color:#0f172a}
+.nav-item.active{background:#fff7ed;color:#ea580c;font-weight:600;border:1px solid #ffedd5}
+.nav-icon{font-size:1rem}
+.nav-section{font-size:.65rem;color:#94a3b8;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:700}
+.content{flex:1;padding:1.75rem;overflow-y:auto;background:#f8fafc}
+
+/* BREADCRUMB & HEADER */
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:#64748b;margin-bottom:1.25rem}
+.breadcrumb a{color:#64748b;text-decoration:none}
+.breadcrumb a:hover{color:#0f172a}
+.breadcrumb span{color:#0f172a;font-weight:600}
+.breadcrumb-sep{color:#cbd5e1}
+
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid #e2e8f0}
+.page-title{font-size:1.1rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:.5rem}
+.btn-list{background:#f97316;color:#ffffff;padding:.45rem .95rem;border-radius:8px;font-size:.8rem;font-weight:600;text-decoration:none;transition:background 0.2s}
+.btn-list:hover{background:#ea580c}
+
+/* FORM STYLING */
+.form-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:1.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.03);max-width:1000px;margin:0 auto}
+.section-heading{font-size:.9rem;font-weight:700;color:#2563eb;margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;padding-bottom:.5rem;border-bottom:2px solid #eff6ff}
+.form-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:1rem;margin-bottom:1.5rem}
+.col-12{grid-column:span 12}
+.col-6{grid-column:span 6}
+.col-4{grid-column:span 4}
+
+.field-group{display:flex;flex-direction:column;gap:.35rem}
+.field-label{font-size:.8rem;font-weight:600;color:#334155}
+.field-label span{color:#dc2626}
+.field-input,.field-select,.field-textarea{width:100%;padding:.65rem .85rem;border:1px solid #cbd5e1;border-radius:8px;font-size:.88rem;color:#0f172a;background:#ffffff;outline:none;font-family:inherit;transition:all 0.15s ease}
+.field-input:focus,.field-select:focus,.field-textarea:focus{border-color:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,0.1)}
+.field-textarea{resize:vertical;min-height:75px}
+.field-hint{font-size:.7rem;color:#64748b;margin-top:.2rem}
+
+/* SUBMIT BOX */
+.submit-box{margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #e2e8f0;text-align:center}
+.btn-submit-main{width:100%;background:#16a34a;color:#ffffff;border:none;border-radius:8px;padding:.85rem;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.2s;letter-spacing:.05em}
+.btn-submit-main:hover{background:#15803d}
+.btn-submit-main:disabled{background:#cbd5e1;cursor:not-allowed}
+.payable-text{margin-top:.75rem;font-size:.85rem;font-weight:700;color:#16a34a;display:flex;align-items:center;justify-content:center;gap:.35rem}
+.marquee-notice{margin-top:1rem;color:#dc2626;font-weight:700;font-size:.82rem;background:#fef2f2;padding:.5rem .85rem;border-radius:8px;border:1px solid #fecaca}
+
+/* MESSAGES */
+.alert-box{padding:.85rem 1.1rem;border-radius:8px;font-size:.85rem;margin-bottom:1.25rem;display:none}
+.alert-error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626}
+.alert-success{background:#ecfdf5;border:1px solid #a7f3d0;color:#16a34a}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Online Services</div></div>
+  <div class="topbar-right">
+    <div class="wallet-chip">💰 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip">
+      <div class="avatar">{{ retailer.full_name.0|upper }}</div>
+      <span>{{ retailer.user_id }}</span>
+    </div>
+    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="nav-section">Main Menu</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="{% url 'form' %}" class="nav-item"><span class="nav-icon">🪪</span> PAN Services</a>
+    <a href="{% url 'applied_list' %}" class="nav-item"><span class="nav-icon">📋</span> Applied List</a>
+    <div class="nav-section" style="margin-top:.5rem">Services</div>
+    <a href="{% url 'other_services' %}" class="nav-item"><span class="nav-icon">🪪</span> Other Services</a>
+    <div class="nav-section" style="margin-top:.5rem">Other</div>
+    <a href="{% url 'wallet' %}" class="nav-item"><span class="nav-icon">💰</span> Wallet</a>
+    <a href="#" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="breadcrumb">
+      <a href="{% url 'retailer_dashboard' %}">Dashboard</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="#">Services</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Tailoring Certificate</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title">
+        <span>✂️</span> Tailoring Certificate Application
+      </div>
+      <a href="{% url 'tailoring_certificate_list' %}" class="btn-list">View Applied List →</a>
+    </div>
+
+    <div class="form-card">
+      <div class="alert-box alert-error" id="errorBox"></div>
+      <div class="alert-box alert-success" id="successBox"></div>
+
+      <form id="tailoringForm" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Personal Information -->
+        <div class="section-heading">👤 Personal Information</div>
+        <div class="form-grid">
+          <div class="field-group col-6">
+            <label class="field-label">Full Name of the Candidate <span>*</span></label>
+            <input type="text" class="field-input" id="full_name" name="full_name" placeholder="Enter Full Name" maxlength="100" required style="text-transform:uppercase;">
+          </div>
+          <div class="field-group col-6">
+            <label class="field-label">Mobile Number <span>*</span></label>
+            <input type="text" class="field-input" id="mobile_number" name="mobile_number" placeholder="Enter 10 Digit Mobile Number" maxlength="10" required>
+          </div>
+          <div class="field-group col-6">
+            <label class="field-label">Email ID <span>*</span></label>
+            <input type="email" class="field-input" id="email_id" name="email_id" placeholder="Enter Email ID" required style="text-transform:lowercase;">
+          </div>
+          <div class="field-group col-6">
+            <label class="field-label">Confirm Email ID <span>*</span></label>
+            <input type="email" class="field-input" id="confirm_email" name="confirm_email" placeholder="Confirm Email ID" required style="text-transform:lowercase;">
+          </div>
+          <div class="field-group col-4">
+            <label class="field-label">Gender <span>*</span></label>
+            <select class="field-select" id="gender" name="gender" required>
+              <option value="">--Select Gender--</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="field-group col-4">
+            <label class="field-label">Date of Birth <span>*</span></label>
+            <input type="date" class="field-input" id="date_of_birth" name="date_of_birth" required>
+          </div>
+          <div class="field-group col-4">
+            <label class="field-label">Father/Husband Name <span>*</span></label>
+            <input type="text" class="field-input" id="father_husband_name" name="father_husband_name" placeholder="Enter Father/Husband Name" maxlength="100" required style="text-transform:uppercase;">
+          </div>
+        </div>
+
+        <!-- Address Information -->
+        <div class="section-heading">📍 Address Information</div>
+        <div class="form-grid">
+          <div class="field-group col-4">
+            <label class="field-label">State <span>*</span></label>
+            <select class="field-select" id="state" name="state" required>
+              <option value="">--Select State--</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Gujarat">Gujarat</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Andhra Pradesh">Andhra Pradesh</option>
+              <option value="Tamil Nadu">Tamil Nadu</option>
+              <option value="Kerala">Kerala</option>
+              <option value="Goa">Goa</option>
+            </select>
+          </div>
+          <div class="field-group col-4">
+            <label class="field-label">District <span>*</span></label>
+            <input type="text" class="field-input" id="district" name="district" placeholder="Enter District" maxlength="50" required style="text-transform:uppercase;">
+          </div>
+          <div class="field-group col-4">
+            <label class="field-label">Taluk <span>*</span></label>
+            <input type="text" class="field-input" id="taluk" name="taluk" placeholder="Enter Taluk" maxlength="50" required style="text-transform:uppercase;">
+          </div>
+          <div class="field-group col-4">
+            <label class="field-label">Village <span>*</span></label>
+            <input type="text" class="field-input" id="village" name="village" placeholder="Enter Village" maxlength="50" required style="text-transform:uppercase;">
+          </div>
+          <div class="field-group col-4">
+            <label class="field-label">Pin Code <span>*</span></label>
+            <input type="text" class="field-input" id="pin_code" name="pin_code" placeholder="Enter 6 Digit Pin Code" maxlength="6" required>
+          </div>
+          <div class="field-group col-4">
+            <label class="field-label">Physical Handicap <span>*</span></label>
+            <select class="field-select" id="physical_handicap" name="physical_handicap" required>
+              <option value="">--Select--</option>
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+          </div>
+          <div class="field-group col-12">
+            <label class="field-label">Address <span>*</span></label>
+            <textarea class="field-textarea" id="address" name="address" rows="3" placeholder="Enter Complete Address" maxlength="250" required style="text-transform:uppercase;"></textarea>
+          </div>
+        </div>
+
+        <!-- Educational Information -->
+        <div class="section-heading">🎓 Educational Information</div>
+        <div class="form-grid">
+          <div class="field-group col-6">
+            <label class="field-label">Highest Education <span>*</span></label>
+            <select class="field-select" id="highest_education" name="highest_education" required>
+              <option value="">--Select Education--</option>
+              <option value="Below 10th">Below 10th</option>
+              <option value="10th Pass">10th Pass</option>
+              <option value="12th Pass">12th Pass</option>
+              <option value="Diploma">Diploma</option>
+              <option value="Graduate">Graduate</option>
+              <option value="Post Graduate">Post Graduate</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Document Upload Section -->
+        <div class="section-heading">📁 Document Upload</div>
+        <div class="form-grid">
+          <div class="field-group col-4">
+            <label class="field-label">Candidate Photo</label>
+            <input type="file" class="field-input" id="photo" name="photo" accept="image/jpeg, image/jpg, image/png">
+            <div class="field-hint">Accepted formats: JPG, PNG</div>
+          </div>
+          <div class="field-group col-4">
+            <label class="field-label">ID Proof (Aadhaar/PAN) <span>*</span></label>
+            <input type="file" class="field-input" id="id_proof" name="id_proof" required accept="image/jpeg, image/jpg, image/png, .pdf">
+            <div class="field-hint">Accepted formats: JPG, PNG, PDF</div>
+          </div>
+          <div class="field-group col-4">
+            <label class="field-label">Education Certificate</label>
+            <input type="file" class="field-input" id="education_cert" name="education_cert" accept="image/jpeg, image/jpg, image/png, .pdf">
+            <div class="field-hint">Accepted formats: JPG, PNG, PDF</div>
+          </div>
+        </div>
+
+        <!-- Submit Section -->
+        <div class="submit-box">
+          <button type="submit" class="btn-submit-main" id="btnSubmit">SUBMIT APPLICATION</button>
+          <div class="payable-text">💵 Payable Amt: ₹450.00/-</div>
+          <div class="marquee-notice"><b>Notice:</b> This is an OFFLINE APPLICATION. Processed within 2 working hours.</div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('tailoringForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  var errBox = document.getElementById('errorBox');
+  var succBox = document.getElementById('successBox');
+  var btn = document.getElementById('btnSubmit');
+
+  errBox.style.display = 'none';
+  succBox.style.display = 'none';
+
+  var email = document.getElementById('email_id').value.trim();
+  var confirmEmail = document.getElementById('confirm_email').value.trim();
+  if (email.toLowerCase() !== confirmEmail.toLowerCase()) {
+    errBox.innerText = 'Email ID and Confirm Email ID do not match.';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  var formData = new FormData(this);
+  btn.disabled = true;
+  btn.innerText = 'Submitting Application...';
+
+  fetch("{% url 'tailoring_certificate_submit' %}", {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    btn.disabled = false;
+    btn.innerText = 'SUBMIT APPLICATION';
+
+    if (data.success) {
+      succBox.innerText = data.message + ' (Order ID: ' + data.order_id + ')';
+      succBox.style.display = 'block';
+      document.getElementById('tailoringForm').reset();
+      setTimeout(function() {
+        window.location.href = "{% url 'tailoring_certificate_list' %}";
+      }, 2000);
+    } else {
+      errBox.innerText = data.error || 'Something went wrong. Please try again.';
+      errBox.style.display = 'block';
+    }
+  })
+  .catch(err => {
+    btn.disabled = false;
+    btn.innerText = 'SUBMIT APPLICATION';
+    errBox.innerText = 'Server error. Please try again.';
+    errBox.style.display = 'block';
+  });
+});
+</script>
+</body>
+</html>

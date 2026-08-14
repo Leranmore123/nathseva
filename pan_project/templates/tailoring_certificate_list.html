@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tailoring Applications — Nath Seva One</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{background:#ffffff;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.brand-name{color:#f97316;font-size:1.1rem;font-weight:700}
+.brand-sub{color:#64748b;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:.85rem}
+.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#16a34a;font-weight:700}
+.user-chip{display:flex;align-items:center;gap:.5rem;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff}
+.user-chip span{font-size:.78rem;color:#334155;font-weight:600}
+.btn-logout{background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;color:#475569;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s}
+.btn-logout:hover{background:#f1f5f9;color:#0f172a}
+
+.main-wrap{display:flex;flex:1}
+.sidebar{width:220px;background:#ffffff;border-right:1px solid #e2e8f0;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.25rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:8px;font-size:.85rem;color:#475569;text-decoration:none;border:none;background:none;font-family:inherit;width:100%;transition:all 0.15s ease}
+.nav-item:hover{background:#f1f5f9;color:#0f172a}
+.nav-item.active{background:#fff7ed;color:#ea580c;font-weight:600;border:1px solid #ffedd5}
+.nav-section{font-size:.65rem;color:#94a3b8;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:700}
+.content{flex:1;padding:1.75rem;overflow-y:auto;background:#f8fafc}
+
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.page-title{font-size:1.1rem;font-weight:700;color:#0f172a}
+.btn-new{background:#f97316;border:none;border-radius:8px;color:#fff;font-size:.78rem;font-weight:600;padding:.45rem 1rem;cursor:pointer;text-decoration:none;display:inline-block}
+.btn-new:hover{background:#ea580c}
+
+.table-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.03)}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead th{text-align:left;padding:.75rem 1rem;color:#64748b;font-weight:600;border-bottom:1px solid #e2e8f0;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;background:#f8fafc;white-space:nowrap}
+tbody td{padding:.8rem 1rem;color:#334155;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+tbody td:first-child{color:#0f172a;font-weight:600;font-size:.75rem;font-family:monospace}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#f8fafc}
+
+.pill{display:inline-block;padding:.2rem .65rem;border-radius:20px;font-size:.66rem;font-weight:700}
+.pill-pending{background:#fff7ed;color:#ea580c;border:1px solid #ffedd5}
+.pill-completed{background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0}
+.pill-rejected{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+
+.empty{text-align:center;padding:2.5rem;color:#64748b;font-size:.82rem}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:#64748b;margin-bottom:1rem}
+.breadcrumb a{color:#64748b;text-decoration:none}
+.breadcrumb a:hover{color:#0f172a}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Online Services</div></div>
+  <div class="topbar-right">
+    <div class="wallet-chip">💰 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip"><div class="avatar">{{ retailer.full_name.0|upper }}</div><span>{{ retailer.user_id }}</span></div>
+    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <div class="nav-section">Main Menu</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="{% url 'form' %}" class="nav-item"><span class="nav-icon">🪪</span> PAN Services</a>
+    <a href="{% url 'applied_list' %}" class="nav-item"><span class="nav-icon">📋</span> Applied List</a>
+    <div class="nav-section" style="margin-top:.5rem">Services</div>
+    <a href="{% url 'other_services' %}" class="nav-item"><span class="nav-icon">🪪</span> Other Services</a>
+    <div class="nav-section" style="margin-top:.5rem">Other</div>
+    <a href="{% url 'wallet' %}" class="nav-item"><span class="nav-icon">💰</span> Wallet</a>
+    <a href="#" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+  </div>
+
+  <div class="content">
+    <div class="breadcrumb">
+      <a href="{% url 'retailer_dashboard' %}">Dashboard</a>
+      <span>/</span>
+      <span>Tailoring Applications List</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title">📜 Applied Tailoring Certificates</div>
+      <a href="{% url 'tailoring_certificate' %}" class="btn-new">+ New Application</a>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Candidate Name</th>
+            <th>Mobile</th>
+            <th>State</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Certificate / Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in applications %}
+          <tr>
+            <td>{{ app.order_id }}</td>
+            <td>{{ app.full_name }}</td>
+            <td>{{ app.mobile_number }}</td>
+            <td>{{ app.state }}</td>
+            <td style="font-weight:700;color:#16a34a">₹{{ app.amount }}</td>
+            <td>
+              {% if app.status == 'COMPLETED' %}
+                <span class="pill pill-completed">Completed</span>
+              {% elif app.status == 'REJECTED' %}
+                <span class="pill pill-rejected">Rejected (Refunded)</span>
+              {% else %}
+                <span class="pill pill-pending">Pending</span>
+              {% endif %}
+            </td>
+            <td style="color:#64748b">{{ app.created_at|date:"d M Y, h:i A" }}</td>
+            <td>
+              {% if app.status == 'COMPLETED' %}
+                {% if app.output_pdf %}
+                  <a href="{% url 'tailoring_certificate_download' app.order_id %}" target="_blank" style="background:#16a34a;color:#fff;padding:.35rem .75rem;border-radius:6px;font-size:.75rem;font-weight:700;text-decoration:none;display:inline-block">📄 Download Certificate</a>
+                {% else %}
+                  <span style="font-size:.75rem;color:#16a34a;font-weight:600">Approved</span>
+                {% endif %}
+              {% elif app.status == 'REJECTED' %}
+                <span style="font-size:.72rem;color:#dc2626;display:block">Reason: {{ app.rejection_reason|default:"Details mismatch" }}</span>
+              {% else %}
+                <span style="font-size:.75rem;color:#ea580c;font-weight:600">Under Process</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="8" class="empty">Koi Tailoring Certificate Application nahi mila.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

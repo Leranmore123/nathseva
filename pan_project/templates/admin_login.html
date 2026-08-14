@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — Nath Seva One</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f1f5f9;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.login-card{width:400px;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:2.25rem;box-shadow:0 10px 40px rgba(0,0,0,.08)}
+.brand-name{color:#f97316;font-size:1.3rem;font-weight:700;text-align:center}
+.brand-sub{color:#64748b;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;margin-top:.15rem;font-weight:600;text-align:center}
+.title{font-size:1.2rem;font-weight:700;color:#0f172a;margin-top:1.25rem;margin-bottom:1.25rem;text-align:center}
+.form-group{margin-bottom:1.1rem}
+label{font-size:.8rem;font-weight:600;color:#334155;display:block;margin-bottom:.35rem}
+input[type=text],input[type=password]{width:100%;padding:.7rem .9rem;background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;font-size:.9rem;color:#0f172a;outline:none;font-family:inherit}
+input:focus{border-color:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.1)}
+.btn-login{width:100%;padding:.78rem;background:#f97316;color:#ffffff;border:none;border-radius:8px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;margin-top:.5rem}
+.btn-login:hover{background:#ea580c}
+.error-box{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:.65rem .9rem;font-size:.82rem;color:#dc2626;margin-bottom:1rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="login-card">
+  <div class="brand-name">Nath Seva One</div>
+  <div class="brand-sub">Admin Portal</div>
+  <div class="title">Administrator Sign In</div>
+
+  {% if error %}
+  <div class="error-box">{{ error }}</div>
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+      <label>Admin Username</label>
+      <input type="text" name="username" placeholder="Enter Admin Username" required autofocus>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" name="password" placeholder="Enter Password" required>
+    </div>
+    <button type="submit" class="btn-login">LOG IN TO ADMIN PORTAL</button>
+  </form>
+</div>
+</body>
+</html>

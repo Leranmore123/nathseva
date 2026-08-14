@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Tools — Nath Seva One</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:#ffffff;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.brand-name{color:#f97316;font-size:1.1rem;font-weight:700}
+.brand-sub{color:#64748b;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:.85rem}
+.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#16a34a;font-weight:700}
+.user-chip{display:flex;align-items:center;gap:.5rem;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff}
+.user-chip span{font-size:.78rem;color:#334155;font-weight:600}
+.btn-logout{background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;color:#475569;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s}
+.btn-logout:hover{background:#f1f5f9;color:#0f172a}
+
+.main-wrap{display:flex;flex:1}
+.sidebar{width:220px;background:#ffffff;border-right:1px solid #e2e8f0;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.25rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:8px;font-size:.85rem;color:#475569;text-decoration:none;border:none;background:none;font-family:inherit;width:100%;transition:all 0.15s ease}
+.nav-item:hover{background:#f1f5f9;color:#0f172a}
+.nav-item.active{background:#fff7ed;color:#ea580c;font-weight:600;border:1px solid #ffedd5}
+.nav-section{font-size:.65rem;color:#94a3b8;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:700}
+.content{flex:1;padding:1.75rem;overflow-y:auto;background:#f8fafc}
+
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:#64748b;margin-bottom:1rem}
+.breadcrumb a{color:#64748b;text-decoration:none}
+.breadcrumb a:hover{color:#0f172a}
+
+.free-hero{background:linear-gradient(135deg,#0f2027 0%,#2c5364 100%);color:#fff;border-radius:14px;padding:1.5rem 1.75rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 14px rgba(15,32,39,0.15)}
+.free-hero h2{font-size:1.35rem;font-weight:700;margin-bottom:.25rem;display:flex;align-items:center;gap:.6rem}
+.free-hero p{font-size:.84rem;opacity:.9}
+.free-badge-lg{background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0;font-size:.82rem;font-weight:700;padding:.4rem 1rem;border-radius:20px;letter-spacing:.05em}
+
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem}
+.tool-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:1.5rem 1.25rem;text-align:center;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:between;transition:all 0.2s ease;box-shadow:0 1px 3px rgba(0,0,0,0.03)}
+.tool-card:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(0,0,0,0.08);border-color:#f97316}
+
+.tool-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#ffffff;margin-bottom:1rem;box-shadow:0 4px 10px rgba(0,0,0,0.1)}
+.tool-title{font-size:.95rem;font-weight:700;color:#0f172a;margin-bottom:.35rem}
+.tool-desc{font-size:.78rem;color:#64748b;line-height:1.4;margin-bottom:.85rem}
+.tool-free-pill{display:inline-block;background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0;font-size:.68rem;font-weight:700;padding:.2rem .65rem;border-radius:20px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Online Services</div></div>
+  <div class="topbar-right">
+    <div class="wallet-chip">💰 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip"><div class="avatar">{{ retailer.full_name.0|upper }}</div><span>{{ retailer.user_id }}</span></div>
+    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <div class="nav-section">Main Menu</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="{% url 'form' %}" class="nav-item"><span class="nav-icon">🪪</span> PAN Services</a>
+    <a href="{% url 'applied_list' %}" class="nav-item"><span class="nav-icon">📋</span> Applied List</a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Services</div>
+    <a href="{% url 'other_services' %}" class="nav-item"><span class="nav-icon">🪪</span> Other Services</a>
+    <a href="{% url 'free_tools' %}" class="nav-item active">
+      <span class="nav-icon">🎁</span> Free Tools 
+      <span style="background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0;padding:1px 6px;border-radius:10px;font-size:.65rem;font-weight:700;margin-left:auto">FREE</span>
+    </a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Account & Help</div>
+    <a href="{% url 'wallet' %}" class="nav-item"><span class="nav-icon">💰</span> Wallet</a>
+    <a href="{% url 'profile' %}" class="nav-item"><span class="nav-icon">👤</span> Profile Settings</a>
+    <a href="#" class="nav-item"><span class="nav-icon">📊</span> Reports</a>
+    <a href="#" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+  </div>
+
+  <div class="content">
+    <div class="breadcrumb">
+      <a href="{% url 'retailer_dashboard' %}">Dashboard</a>
+      <span>/</span>
+      <span>Free Utility Tools</span>
+    </div>
+
+    <!-- Free Tools Banner -->
+    <div class="free-hero">
+      <div>
+        <h2>🎁 Free Utility Tools Hub</h2>
+        <p>100% Free • No wallet balance required • Processes directly & instantly in your browser</p>
+      </div>
+      <span class="free-badge-lg">FREE SERVICE</span>
+    </div>
+
+    <!-- Tools Grid -->
+    <div class="tools-grid">
+      
+      <!-- 1. Resume Maker -->
+      <a href="{% url 'free_resume_maker' %}" class="tool-card">
+        <div class="tool-icon" style="background:#4dabf7">📄</div>
+        <div class="tool-title">Resume Maker</div>
+        <div class="tool-desc">Create a professional resume PDF format instantly</div>
+        <span class="tool-free-pill">FREE TOOL</span>
+      </a>
+
+      <!-- 2. JPG to PDF -->
+      <a href="{% url 'free_jpg_to_pdf' %}" class="tool-card">
+        <div class="tool-icon" style="background:#e05e12">🖼️</div>
+        <div class="tool-title">JPG to PDF</div>
+        <div class="tool-desc">Combine multiple photos/scans into a single PDF file</div>
+        <span class="tool-free-pill">FREE TOOL</span>
+      </a>
+
+      <!-- 3. PDF to JPG -->
+      <a href="{% url 'free_pdf_to_jpg' %}" class="tool-card">
+        <div class="tool-icon" style="background:#e64980">📑</div>
+        <div class="tool-title">PDF to JPG</div>
+        <div class="tool-desc">Export PDF pages as high quality JPG images</div>
+        <span class="tool-free-pill">FREE TOOL</span>
+      </a>
+
+      <!-- 4. Photo Maker -->
+      <a href="{% url 'free_photo_maker' %}" class="tool-card">
+        <div class="tool-icon" style="background:#12b886">📷</div>
+        <div class="tool-title">Photo Maker</div>
+        <div class="tool-desc">Create passport & ID size printable photo sheets</div>
+        <span class="tool-free-pill">FREE TOOL</span>
+      </a>
+
+      <!-- 5. Background Remover -->
+      <a href="{% url 'free_bg_remover' %}" class="tool-card">
+        <div class="tool-icon" style="background:#7048e8">🪄</div>
+        <div class="tool-title">Background Remover</div>
+        <div class="tool-desc">Remove photo backgrounds cleanly for official documents</div>
+        <span class="tool-free-pill">FREE TOOL</span>
+      </a>
+
+      <!-- 6. PVC Maker -->
+      <a href="{% url 'free_pvc_maker' %}" class="tool-card">
+        <div class="tool-icon" style="background:#f59f00">💳</div>
+        <div class="tool-title">PVC Maker</div>
+        <div class="tool-desc">Aadhaar / PAN PVC card print sizing and sheet alignment</div>
+        <span class="tool-free-pill">FREE TOOL</span>
+      </a>
+
+    </div>
+
+  </div>
+</div>
+
+{% include 'theme_switcher.html' %}
+</body>
+</html>

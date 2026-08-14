@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.hashers import check_password
 from django.db import IntegrityError, transaction
 from decimal import Decimal, InvalidOperation
@@ -13,7 +13,7 @@ import logging
 import json
 import re
 
-from .models import Retailer, PaymentRequest, PANApplication, WalletTransaction
+from .models import Retailer, PaymentRequest, PANApplication, WalletTransaction, AadhaarPdfApplication, EidToUidApplication, LMSCertificateApplication, PanToAadhaarApplication
 from .vehicle_views import vehicle_rc_allindia_pdf
 
 logger = logging.getLogger(__name__)
@@ -43,6 +43,10 @@ def _get_retailer_from_session(request):
 # ---------------------------------------------------------------------------
 
 def retailer_login(request):
+    # Agar user pehle se logged in hai, to seedha dashboard par bhejo
+    if _get_retailer_from_session(request) is not None:
+        return redirect('retailer_dashboard')
+
     context = {}
     if request.method == 'POST':
         user_id  = request.POST.get('user_id', '').strip()
@@ -67,6 +71,7 @@ def retailer_login(request):
             return render(request, 'login.html', context)
 
         request.session['retailer_id'] = str(retailer.retailer_id)
+        request.session.set_expiry(86400 * 30) # 30 Days persistent login
         request.session.modified = True
         request.session.save()
 
@@ -951,3 +956,952 @@ def dl_karnataka_view_card(request, order_id):
     except DLKarnatakaApplication.DoesNotExist:
         return render(request, 'dl_karnataka_card.html', {'error': 'Card abhi available nahi hai.'})
     return render(request, 'dl_karnataka_card.html', {'app': app_obj})
+
+
+def tailoring_certificate_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'tailoring_certificate.html', {'retailer': retailer})
+
+
+def tailoring_certificate_submit(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return JsonResponse({'success': False, 'error': 'Session expired. Please login again.'}, status=401)
+
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+    full_name = request.POST.get('full_name', '').strip()
+    mobile_number = request.POST.get('mobile_number', '').strip()
+    email_id = request.POST.get('email_id', '').strip()
+    confirm_email = request.POST.get('confirm_email', '').strip()
+    gender = request.POST.get('gender', '').strip()
+    date_of_birth = request.POST.get('date_of_birth', '').strip()
+    father_husband_name = request.POST.get('father_husband_name', '').strip()
+
+    state = request.POST.get('state', '').strip()
+    district = request.POST.get('district', '').strip()
+    taluk = request.POST.get('taluk', '').strip()
+    village = request.POST.get('village', '').strip()
+    pin_code = request.POST.get('pin_code', '').strip()
+    physical_handicap = request.POST.get('physical_handicap', '').strip()
+    address = request.POST.get('address', '').strip()
+
+    highest_education = request.POST.get('highest_education', '').strip()
+
+    photo = request.FILES.get('photo')
+    id_proof = request.FILES.get('id_proof')
+    education_cert = request.FILES.get('education_cert')
+
+    if not (full_name and mobile_number and email_id and gender and date_of_birth and father_husband_name and state and district and taluk and village and pin_code and physical_handicap and address and highest_education and id_proof):
+        return JsonResponse({'success': False, 'error': 'Kripya sabhi required fields bharein.'}, status=400)
+
+    if email_id.lower() != confirm_email.lower():
+        return JsonResponse({'success': False, 'error': 'Email ID aur Confirm Email ID match nahi ho rahe hain.'}, status=400)
+
+    charge_amount = Decimal('450.00')
+    if retailer.wallet_balance < charge_amount:
+        shortage = charge_amount - retailer.wallet_balance
+        return JsonResponse({
+            'success': False,
+            'error': f'Wallet balance kam hai. ₹{charge_amount} chahiye, ₹{shortage} aur add karein.'
+        }, status=402)
+
+    try:
+        from .models import TailoringCertificateApplication
+        with transaction.atomic():
+            app_obj = TailoringCertificateApplication.objects.create(
+                retailer=retailer,
+                full_name=full_name,
+                mobile_number=mobile_number,
+                email_id=email_id,
+                gender=gender,
+                date_of_birth=date_of_birth,
+                father_husband_name=father_husband_name,
+                state=state,
+                district=district,
+                taluk=taluk,
+                village=village,
+                pin_code=pin_code,
+                physical_handicap=physical_handicap,
+                address=address,
+                highest_education=highest_education,
+                photo=photo,
+                id_proof=id_proof,
+                education_cert=education_cert,
+                amount=charge_amount,
+                status='PENDING'
+            )
+            retailer.wallet_balance -= charge_amount
+            retailer.save(update_fields=['wallet_balance'])
+
+            WalletTransaction.objects.create(
+                retailer=retailer,
+                amount=charge_amount,
+                tx_type='debit',
+                status='completed',
+                payment_provider='internal',
+                note=f'Tailoring Certificate Application — Order ID: {app_obj.order_id}'
+            )
+
+        return JsonResponse({
+            'success': True,
+            'order_id': app_obj.order_id,
+            'message': 'Tailoring Certificate Application successfully submit ho gayi hai!',
+            'wallet_balance': str(retailer.wallet_balance)
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+def tailoring_certificate_list(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    from .models import TailoringCertificateApplication
+    apps = TailoringCertificateApplication.objects.filter(retailer=retailer)
+    return render(request, 'tailoring_certificate_list.html', {'retailer': retailer, 'applications': apps})
+
+
+def tailoring_certificate_download(request, order_id):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    from .models import TailoringCertificateApplication
+    app_obj = get_object_or_404(TailoringCertificateApplication, order_id=order_id, retailer=retailer)
+    if app_obj.output_pdf:
+        return redirect(app_obj.output_pdf.url)
+    return render(request, 'tailoring_certificate_list.html', {'retailer': retailer, 'error': 'Certificate PDF abhi upload nahi hua hai.'})
+
+
+def other_services_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'other_services.html', {'retailer': retailer})
+
+
+def print_services_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'print_services.html', {'retailer': retailer})
+
+
+def voter_services_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'voter_services.html', {'retailer': retailer})
+
+
+def ration_services_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'ration_services.html', {'retailer': retailer})
+
+
+def aadhaar_services_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'aadhaar_services.html', {'retailer': retailer})
+
+
+def basic_computer_certificate_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'basic_computer_certificate.html', {'retailer': retailer})
+
+
+def basic_computer_certificate_submit(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return JsonResponse({'success': False, 'error': 'Session expired. Please log in again.'}, status=401)
+
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+    try:
+        from .models import BasicComputerCertificateApplication
+        charge_amount = Decimal('400.00')
+
+        if retailer.wallet_balance < charge_amount:
+            return JsonResponse({'success': False, 'error': f'Insufficient wallet balance! ₹{charge_amount} required, but your balance is ₹{retailer.wallet_balance}.'}, status=400)
+
+        student_name  = request.POST.get('student_name', '').strip()
+        father_name   = request.POST.get('father_name', '').strip()
+        mother_name   = request.POST.get('mother_name', '').strip()
+        dob_str       = request.POST.get('dob', '').strip()
+        gender        = request.POST.get('gender', '').strip()
+        qualification = request.POST.get('qualification', '').strip()
+        cast_category = request.POST.get('cast_category', '').strip()
+        state         = request.POST.get('state', '').strip()
+        district      = request.POST.get('district', '').strip()
+        full_address  = request.POST.get('full_address', '').strip()
+        pin_code      = request.POST.get('pin_code', '').strip()
+        mobile_no     = request.POST.get('mobile_no', '').strip()
+        email_id      = request.POST.get('email_id', '').strip()
+
+        photo_file    = request.FILES.get('photo')
+
+        if not all([student_name, father_name, mother_name, dob_str, gender, qualification, cast_category, state, district, full_address, pin_code, mobile_no, email_id]):
+            return JsonResponse({'success': False, 'error': 'All mandatory fields must be filled.'}, status=400)
+
+        with transaction.atomic():
+            retailer.wallet_balance -= charge_amount
+            retailer.save(update_fields=['wallet_balance'])
+
+            app_obj = BasicComputerCertificateApplication.objects.create(
+                retailer=retailer,
+                student_name=student_name,
+                father_name=father_name,
+                mother_name=mother_name,
+                date_of_birth=dob_str,
+                gender=gender,
+                qualification=qualification,
+                cast_category=cast_category,
+                state=state,
+                district=district,
+                full_address=full_address,
+                pin_code=pin_code,
+                mobile_no=mobile_no,
+                email_id=email_id,
+                photo=photo_file,
+                amount=charge_amount,
+                status='PENDING',
+            )
+
+            WalletTransaction.objects.create(
+                retailer=retailer,
+                amount=charge_amount,
+                tx_type='debit',
+                status='completed',
+                payment_provider='internal',
+                note=f'Basic Computer Certificate Application — Order ID: {app_obj.order_id}'
+            )
+
+        return JsonResponse({
+            'success': True,
+            'order_id': app_obj.order_id,
+            'message': 'Basic Computer Certificate Application successfully submit ho gayi hai!',
+            'wallet_balance': str(retailer.wallet_balance)
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+def basic_computer_certificate_list(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    from .models import BasicComputerCertificateApplication
+    apps = BasicComputerCertificateApplication.objects.filter(retailer=retailer)
+    return render(request, 'basic_computer_certificate_list.html', {'retailer': retailer, 'applications': apps})
+
+
+def basic_computer_certificate_download(request, order_id):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    from .models import BasicComputerCertificateApplication
+    app_obj = get_object_or_404(BasicComputerCertificateApplication, order_id=order_id, retailer=retailer)
+    if app_obj.output_pdf:
+        return redirect(app_obj.output_pdf.url)
+    return render(request, 'basic_computer_certificate_list.html', {'retailer': retailer, 'error': 'Certificate PDF abhi upload nahi hua hai.'})
+
+
+def udyam_registration_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'udyam_registration.html', {'retailer': retailer})
+
+
+def udyam_registration_submit(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return JsonResponse({'success': False, 'error': 'Session expired. Please log in again.'}, status=401)
+
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+    try:
+        from .models import UdyamRegistrationApplication
+        charge_amount = Decimal('100.00')
+
+        if retailer.wallet_balance < charge_amount:
+            return JsonResponse({'success': False, 'error': f'Insufficient wallet balance! ₹{charge_amount} required, but your balance is ₹{retailer.wallet_balance}.'}, status=400)
+
+        applicant_name   = request.POST.get('applicant_name', '').strip()
+        aadhaar_no       = request.POST.get('aadhaar_no', '').strip()
+        dob_str          = request.POST.get('date_of_birth', '').strip() or None
+        email_id         = request.POST.get('email_id', '').strip()
+        mobile_no        = request.POST.get('mobile_no', '').strip()
+        pan_card_no      = request.POST.get('pan_card_no', '').strip()
+
+        business_name    = request.POST.get('business_name', '').strip()
+        business_type    = request.POST.get('business_type', '').strip()
+        business_address = request.POST.get('business_address', '').strip()
+        working_member   = request.POST.get('working_member', '').strip()
+        gst_number       = request.POST.get('gst_number', '').strip()
+        annual_income    = request.POST.get('annual_income', '').strip()
+
+        bank_name        = request.POST.get('bank_name', '').strip()
+        ifsc_code        = request.POST.get('ifsc_code', '').strip()
+        account_no       = request.POST.get('account_no', '').strip()
+
+        aadhaar_file     = request.FILES.get('aadhaar_file')
+        pan_file         = request.FILES.get('pan_file')
+        passbook_file    = request.FILES.get('bank_passbook_file')
+
+        if not applicant_name:
+            return JsonResponse({'success': False, 'error': 'Applicant name is required.'}, status=400)
+
+        with transaction.atomic():
+            retailer.wallet_balance -= charge_amount
+            retailer.save(update_fields=['wallet_balance'])
+
+            app_obj = UdyamRegistrationApplication.objects.create(
+                retailer=retailer,
+                applicant_name=applicant_name,
+                aadhaar_no=aadhaar_no,
+                date_of_birth=dob_str if dob_str else None,
+                email_id=email_id,
+                mobile_no=mobile_no,
+                pan_card_no=pan_card_no,
+                business_name=business_name,
+                business_type=business_type,
+                business_address=business_address,
+                working_member=working_member,
+                gst_number=gst_number,
+                annual_income=annual_income,
+                bank_name=bank_name,
+                ifsc_code=ifsc_code,
+                account_no=account_no,
+                aadhaar_file=aadhaar_file,
+                pan_file=pan_file,
+                bank_passbook_file=passbook_file,
+                amount=charge_amount,
+                status='PENDING',
+            )
+
+            WalletTransaction.objects.create(
+                retailer=retailer,
+                amount=charge_amount,
+                tx_type='debit',
+                status='completed',
+                payment_provider='internal',
+                note=f'Udyam Registration Application — Order ID: {app_obj.order_id}'
+            )
+
+        return JsonResponse({
+            'success': True,
+            'order_id': app_obj.order_id,
+            'message': 'Udyam Registration Application successfully submit ho gayi hai!',
+            'wallet_balance': str(retailer.wallet_balance)
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+def udyam_registration_list(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    from .models import UdyamRegistrationApplication
+    apps = UdyamRegistrationApplication.objects.filter(retailer=retailer)
+    return render(request, 'udyam_registration_list.html', {'retailer': retailer, 'applications': apps})
+
+
+def udyam_registration_download(request, order_id):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    from .models import UdyamRegistrationApplication
+    app_obj = get_object_or_404(UdyamRegistrationApplication, order_id=order_id, retailer=retailer)
+    if app_obj.output_pdf:
+        return redirect(app_obj.output_pdf.url)
+    return render(request, 'udyam_registration_list.html', {'retailer': retailer, 'error': 'Udyam Certificate PDF abhi upload nahi hua hai.'})
+
+
+def pvc_maker_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'pvc_maker.html', {'retailer': retailer})
+
+
+def pvc_maker_submit(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return JsonResponse({'success': False, 'error': 'Session expired. Please log in again.'}, status=401)
+
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+    try:
+        from .models import PVCMakerApplication
+        charge_amount = Decimal('150.00')
+
+        if retailer.wallet_balance < charge_amount:
+            return JsonResponse({'success': False, 'error': f'Insufficient wallet balance! ₹{charge_amount} required, but your balance is ₹{retailer.wallet_balance}.'}, status=400)
+
+        pvc_card_type   = request.POST.get('pvc_card_type', '').strip()
+        service_types_list = request.POST.getlist('service_type[]')
+        service_types   = ','.join(service_types_list)
+
+        agent_mobile    = request.POST.get('agent_mobile', '').strip()
+        customer_mobile = request.POST.get('customer_mobile', '').strip()
+        full_name       = request.POST.get('full_name', '').strip()
+        village         = request.POST.get('village', '').strip()
+        taluk           = request.POST.get('taluk', '').strip()
+        district        = request.POST.get('district', '').strip()
+        pincode         = request.POST.get('pincode', '').strip()
+        delivery_address = request.POST.get('delivery_address', '').strip()
+
+        pdf_file        = request.FILES.get('pdf_file')
+        card_number     = request.POST.get('card_number', '').strip()
+
+        if not pvc_card_type or not full_name or not delivery_address:
+            return JsonResponse({'success': False, 'error': 'PVC card type, full name, and delivery address are required.'}, status=400)
+
+        with transaction.atomic():
+            retailer.wallet_balance -= charge_amount
+            retailer.save(update_fields=['wallet_balance'])
+
+            app_obj = PVCMakerApplication.objects.create(
+                retailer=retailer,
+                pvc_card_type=pvc_card_type,
+                service_types=service_types,
+                agent_mobile=agent_mobile,
+                customer_mobile=customer_mobile,
+                full_name=full_name,
+                village=village,
+                taluk=taluk,
+                district=district,
+                pincode=pincode,
+                delivery_address=delivery_address,
+                pdf_file=pdf_file,
+                card_number=card_number,
+                amount=charge_amount,
+                status='PENDING',
+            )
+
+            WalletTransaction.objects.create(
+                retailer=retailer,
+                amount=charge_amount,
+                tx_type='debit',
+                status='completed',
+                payment_provider='internal',
+                note=f'PVC Card Maker Application — Order ID: {app_obj.order_id}'
+            )
+
+        return JsonResponse({
+            'success': True,
+            'order_id': app_obj.order_id,
+            'message': 'PVC Card Maker Application successfully submit ho gayi hai!',
+            'wallet_balance': str(retailer.wallet_balance)
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+def pvc_maker_list(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    from .models import PVCMakerApplication
+    apps = PVCMakerApplication.objects.filter(retailer=retailer)
+    return render(request, 'pvc_maker_list.html', {'retailer': retailer, 'applications': apps})
+
+
+def pvc_maker_download(request, order_id):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    from .models import PVCMakerApplication
+    app_obj = get_object_or_404(PVCMakerApplication, order_id=order_id, retailer=retailer)
+    if app_obj.output_pdf:
+        return redirect(app_obj.output_pdf.url)
+    return render(request, 'pvc_maker_list.html', {'retailer': retailer, 'error': 'PVC Card PDF abhi upload nahi hua hai.'})
+
+
+def cibil_score_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'cibil_score.html', {'retailer': retailer})
+
+
+def cibil_score_submit(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return JsonResponse({'success': False, 'error': 'Session expired. Please log in again.'}, status=401)
+
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+    try:
+        from .models import CibilScoreApplication
+        charge_amount = Decimal('120.00')
+
+        if retailer.wallet_balance < charge_amount:
+            return JsonResponse({'success': False, 'error': f'Insufficient wallet balance! ₹{charge_amount} required, but your balance is ₹{retailer.wallet_balance}.'}, status=400)
+
+        first_name     = request.POST.get('firstName', '').strip()
+        last_name      = request.POST.get('lastname', '').strip()
+        pan_number     = request.POST.get('panNumber', '').strip()
+        mobile_number  = request.POST.get('mobileNumber', '').strip()
+        aadhaar_number = request.POST.get('aadhaar_number', '').strip()
+
+        if not first_name or not last_name or not pan_number or not mobile_number:
+            return JsonResponse({'success': False, 'error': 'First name, last name, PAN number, and mobile number are required.'}, status=400)
+
+        with transaction.atomic():
+            retailer.wallet_balance -= charge_amount
+            retailer.save(update_fields=['wallet_balance'])
+
+            app_obj = CibilScoreApplication.objects.create(
+                retailer=retailer,
+                first_name=first_name,
+                last_name=last_name,
+                pan_number=pan_number,
+                mobile_number=mobile_number,
+                aadhaar_number=aadhaar_number,
+                amount=charge_amount,
+                status='PENDING',
+            )
+
+            WalletTransaction.objects.create(
+                retailer=retailer,
+                amount=charge_amount,
+                tx_type='debit',
+                status='completed',
+                payment_provider='internal',
+                note=f'CIBIL Score Report Application — Order ID: {app_obj.order_id}'
+            )
+
+        return JsonResponse({
+            'success': True,
+            'order_id': app_obj.order_id,
+            'message': 'CIBIL Score Application successfully submit ho gayi hai!',
+            'wallet_balance': str(retailer.wallet_balance)
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+def cibil_score_list(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    from .models import CibilScoreApplication
+    apps = CibilScoreApplication.objects.filter(retailer=retailer)
+    return render(request, 'cibil_score_list.html', {'retailer': retailer, 'applications': apps})
+
+
+def cibil_score_download(request, order_id):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    from .models import CibilScoreApplication
+    app_obj = get_object_or_404(CibilScoreApplication, order_id=order_id, retailer=retailer)
+    if app_obj.output_pdf:
+        return redirect(app_obj.output_pdf.url)
+    return render(request, 'cibil_score_list.html', {'retailer': retailer, 'error': 'CIBIL Report PDF abhi upload nahi hua hai.'})
+
+
+def free_tools_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'free_tools.html', {'retailer': retailer})
+
+
+def free_resume_maker_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'free_resume_maker.html', {'retailer': retailer})
+
+
+def free_jpg_to_pdf_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'free_jpg_to_pdf.html', {'retailer': retailer})
+
+
+def free_pdf_to_jpg_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'free_pdf_to_jpg.html', {'retailer': retailer})
+
+
+def free_photo_maker_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'free_photo_maker.html', {'retailer': retailer})
+
+
+def free_bg_remover_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'free_bg_remover.html', {'retailer': retailer})
+
+
+def free_pvc_maker_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'free_pvc_maker.html', {'retailer': retailer})
+
+
+def profile_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+
+    success_msg = None
+    error_msg = None
+
+    if request.method == 'POST':
+        fullname = request.POST.get('fullname', '').strip()
+        state = request.POST.get('state', '').strip()
+        address = request.POST.get('address', '').strip()
+        current_password = request.POST.get('current_password', '')
+        new_password = request.POST.get('new_password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        if fullname:
+            retailer.full_name = fullname
+        retailer.state = state
+        retailer.address = address
+
+        if current_password or new_password or confirm_password:
+            if not check_password(current_password, retailer.password):
+                error_msg = "Current password is incorrect."
+            elif not new_password or len(new_password) < 6:
+                error_msg = "New password must be at least 6 characters."
+            elif new_password != confirm_password:
+                error_msg = "New passwords do not match."
+            else:
+                retailer.set_password(new_password)
+
+        if not error_msg:
+            retailer.save()
+            success_msg = "Profile updated successfully!"
+
+    return render(request, 'profile.html', {
+        'retailer': retailer,
+        'success_msg': success_msg,
+        'error_msg': error_msg
+    })
+
+
+def aadhaar_pdf_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'aadhaar_pdf.html', {'retailer': retailer})
+
+
+def aadhaar_pdf_submit(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return JsonResponse({'success': False, 'error': 'Session expired. Please log in again.'}, status=401)
+
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+    uid_number = request.POST.get('uid_number', '').strip()
+    name = request.POST.get('name', '').strip().upper()
+
+    if not uid_number or len(uid_number) != 12 or not uid_number.isdigit():
+        return JsonResponse({'success': False, 'error': 'Valid 12-digit UID Number is required.'})
+
+    if not name or len(name) < 2:
+        return JsonResponse({'success': False, 'error': 'Valid Name is required.'})
+
+    cost = Decimal('1000.00')
+    if retailer.wallet_balance < cost:
+        return JsonResponse({'success': False, 'error': f'Insufficient Wallet Balance! Requires ₹{cost}, your balance is ₹{retailer.wallet_balance}. Please recharge.'})
+
+    # Deduct wallet & record transaction
+    retailer.wallet_balance -= cost
+    retailer.save()
+
+    app_obj = AadhaarPdfApplication.objects.create(
+        retailer=retailer,
+        uid_number=uid_number,
+        name=name,
+        amount=cost,
+        status='PENDING'
+    )
+
+    WalletTransaction.objects.create(
+        retailer=retailer,
+        amount=cost,
+        tx_type='debit',
+        status='completed'
+    )
+
+    return JsonResponse({'success': True, 'message': 'Application submitted successfully!', 'order_id': app_obj.order_id})
+
+
+def aadhaar_pdf_list(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    applications = AadhaarPdfApplication.objects.filter(retailer=retailer)
+    return render(request, 'aadhaar_pdf_list.html', {'retailer': retailer, 'applications': applications})
+
+
+def aadhaar_pdf_download(request, order_id):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    app_obj = get_object_or_404(AadhaarPdfApplication, order_id=order_id, retailer=retailer)
+    if app_obj.output_pdf:
+        return redirect(app_obj.output_pdf.url)
+    return render(request, 'aadhaar_pdf_list.html', {'retailer': retailer, 'error': 'Aadhaar PDF report is not ready yet.'})
+
+
+def eid_to_uid_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'eid_to_uid.html', {'retailer': retailer})
+
+
+def eid_to_uid_submit(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return JsonResponse({'success': False, 'error': 'Session expired. Please log in again.'}, status=401)
+
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+    eid_number = request.POST.get('eid_number', '').strip()
+    upload_slip = request.FILES.get('upload_slip')
+
+    if not eid_number or len(eid_number) != 28 or not eid_number.isdigit():
+        return JsonResponse({'success': False, 'error': 'Valid 28-digit EID Number is required.'})
+
+    if not upload_slip:
+        return JsonResponse({'success': False, 'error': 'Upload Slip file is required.'})
+
+    cost = Decimal('750.00')
+    if retailer.wallet_balance < cost:
+        return JsonResponse({'success': False, 'error': f'Insufficient Wallet Balance! Requires ₹{cost}, your balance is ₹{retailer.wallet_balance}. Please recharge.'})
+
+    # Deduct wallet & record transaction
+    retailer.wallet_balance -= cost
+    retailer.save()
+
+    app_obj = EidToUidApplication.objects.create(
+        retailer=retailer,
+        eid_number=eid_number,
+        upload_slip=upload_slip,
+        amount=cost,
+        status='PENDING'
+    )
+
+    WalletTransaction.objects.create(
+        retailer=retailer,
+        amount=cost,
+        tx_type='debit',
+        status='completed'
+    )
+
+    return JsonResponse({'success': True, 'message': 'EID to UID Application submitted successfully!', 'order_id': app_obj.order_id})
+
+
+def eid_to_uid_list(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    applications = EidToUidApplication.objects.filter(retailer=retailer)
+    return render(request, 'eid_to_uid_list.html', {'retailer': retailer, 'applications': applications})
+
+
+def eid_to_uid_download(request, order_id):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    app_obj = get_object_or_404(EidToUidApplication, order_id=order_id, retailer=retailer)
+    if app_obj.output_pdf:
+        return redirect(app_obj.output_pdf.url)
+    return render(request, 'eid_to_uid_list.html', {'retailer': retailer, 'error': 'EID to UID report is not ready yet.'})
+
+
+def lms_certificate_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'lms_certificate.html', {'retailer': retailer})
+
+
+def lms_certificate_submit(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return JsonResponse({'success': False, 'error': 'Session expired. Please log in again.'}, status=401)
+
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+    full_name = request.POST.get('full_name', '').strip().upper()
+    aadhaarno = request.POST.get('aadhaarno', '').strip()
+    email = request.POST.get('email', '').strip().lower()
+    mobile = request.POST.get('mobile', '').strip()
+    state = request.POST.get('state', '').strip()
+    district = request.POST.get('district', '').strip().upper()
+    taluka = request.POST.get('taluka', '').strip().upper()
+    native_place = request.POST.get('native_place', '').strip().upper()
+
+    if not full_name or len(full_name) < 2:
+        return JsonResponse({'success': False, 'error': 'Valid Full Name is required.'})
+
+    if not aadhaarno or len(aadhaarno) != 12 or not aadhaarno.isdigit():
+        return JsonResponse({'success': False, 'error': 'Valid 12-digit Aadhaar Number is required.'})
+
+    if not email or '@' not in email:
+        return JsonResponse({'success': False, 'error': 'Valid Email Address is required.'})
+
+    if not mobile or len(mobile) != 10 or not mobile.isdigit():
+        return JsonResponse({'success': False, 'error': 'Valid 10-digit Mobile Number is required.'})
+
+    if not state or not district or not taluka or not native_place:
+        return JsonResponse({'success': False, 'error': 'State, District, Taluka and Native Place are required.'})
+
+    cost = Decimal('1000.00')
+    if retailer.wallet_balance < cost:
+        return JsonResponse({'success': False, 'error': f'Insufficient Wallet Balance! Requires ₹{cost}, your balance is ₹{retailer.wallet_balance}. Please recharge.'})
+
+    # Deduct wallet & record transaction
+    retailer.wallet_balance -= cost
+    retailer.save()
+
+    app_obj = LMSCertificateApplication.objects.create(
+        retailer=retailer,
+        full_name=full_name,
+        aadhaar_number=aadhaarno,
+        email=email,
+        mobile=mobile,
+        state=state,
+        district=district,
+        taluka=taluka,
+        native_place=native_place,
+        amount=cost,
+        status='PENDING'
+    )
+
+    WalletTransaction.objects.create(
+        retailer=retailer,
+        amount=cost,
+        tx_type='debit',
+        status='completed'
+    )
+
+    return JsonResponse({'success': True, 'message': 'LMS Certificate Application submitted successfully!', 'order_id': app_obj.order_id})
+
+
+def lms_certificate_list(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    applications = LMSCertificateApplication.objects.filter(retailer=retailer)
+    return render(request, 'lms_certificate_list.html', {'retailer': retailer, 'applications': applications})
+
+
+def lms_certificate_download(request, order_id):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    app_obj = get_object_or_404(LMSCertificateApplication, order_id=order_id, retailer=retailer)
+    if app_obj.output_pdf:
+        return redirect(app_obj.output_pdf.url)
+    return render(request, 'lms_certificate_list.html', {'retailer': retailer, 'error': 'LMS Certificate is not ready yet.'})
+
+
+def pan_services_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'pan_services.html', {'retailer': retailer})
+
+
+def pan_to_aadhaar_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    applications = PanToAadhaarApplication.objects.filter(retailer=retailer)
+    return render(request, 'pan_to_aadhaar.html', {'retailer': retailer, 'applications': applications})
+
+
+def pan_to_aadhaar_submit(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return JsonResponse({'success': False, 'error': 'Session expired. Please log in again.'}, status=401)
+
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+    panno = request.POST.get('panno', '').strip().upper()
+
+    if not panno or len(panno) != 10 or not re.match(r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$', panno):
+        return JsonResponse({'success': False, 'error': 'Valid 10-character PAN Number (e.g. ABCDE1234F) is required.'})
+
+    cost = Decimal('200.00')
+    if retailer.wallet_balance < cost:
+        return JsonResponse({'success': False, 'error': f'Insufficient Wallet Balance! Requires ₹{cost}, your balance is ₹{retailer.wallet_balance}. Please recharge.'})
+
+    # Deduct wallet & record transaction
+    retailer.wallet_balance -= cost
+    retailer.save()
+
+    app_obj = PanToAadhaarApplication.objects.create(
+        retailer=retailer,
+        pan_number=panno,
+        amount=cost,
+        status='PENDING'
+    )
+
+    WalletTransaction.objects.create(
+        retailer=retailer,
+        amount=cost,
+        tx_type='debit',
+        status='completed'
+    )
+
+    return JsonResponse({'success': True, 'message': 'PAN to Aadhaar Application submitted successfully!', 'order_id': app_obj.order_id})
+
+
+def pricing_page(request):
+    retailer = _get_retailer_from_session(request)
+    if retailer is None:
+        return redirect('retailer_login')
+    return render(request, 'pricing.html', {'retailer': retailer})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

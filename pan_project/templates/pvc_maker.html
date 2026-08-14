@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PVC Card Maker Application — Nath Seva One</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:#ffffff;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.brand-name{color:#f97316;font-size:1.1rem;font-weight:700}
+.brand-sub{color:#64748b;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:.85rem}
+.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#16a34a;font-weight:700}
+.user-chip{display:flex;align-items:center;gap:.5rem;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff}
+.user-chip span{font-size:.78rem;color:#334155;font-weight:600}
+.btn-logout{background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;color:#475569;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s}
+.btn-logout:hover{background:#f1f5f9;color:#0f172a}
+
+.main-wrap{display:flex;flex:1}
+.sidebar{width:220px;background:#ffffff;border-right:1px solid #e2e8f0;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.25rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:8px;font-size:.85rem;color:#475569;text-decoration:none;border:none;background:none;font-family:inherit;width:100%;transition:all 0.15s ease}
+.nav-item:hover{background:#f1f5f9;color:#0f172a}
+.nav-item.active{background:#fff7ed;color:#ea580c;font-weight:600;border:1px solid #ffedd5}
+.nav-section{font-size:.65rem;color:#94a3b8;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:700}
+.content{flex:1;padding:1.75rem;overflow-y:auto;background:#f8fafc}
+
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:#64748b;margin-bottom:1rem}
+.breadcrumb a{color:#64748b;text-decoration:none}
+.breadcrumb a:hover{color:#0f172a}
+
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.page-title{font-size:1.1rem;font-weight:700;color:#0f172a}
+
+.form-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:1.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.03);margin-bottom:1.5rem}
+.section-title{font-size:.88rem;font-weight:700;color:#06b6d4;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;padding-bottom:.4rem;border-bottom:1px solid #ecfeff}
+
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem}
+.form-group{margin-bottom:.25rem}
+.form-group.full-width{grid-column:span 2}
+
+label{font-size:.78rem;font-weight:600;color:#334155;display:block;margin-bottom:.35rem}
+label .req{color:#dc2626}
+
+input[type=text],select,textarea{width:100%;padding:.65rem .85rem;background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;font-size:.85rem;color:#0f172a;outline:none;font-family:inherit;transition:all 0.15s ease}
+input:focus,select:focus,textarea:focus{border-color:#06b6d4;box-shadow:0 0 0 3px rgba(6,182,212,0.1)}
+
+.checkbox-group{display:flex;gap:1.25rem;align-items:center;padding:.65rem .85rem;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px}
+.checkbox-group label{margin-bottom:0;cursor:pointer;font-weight:500;display:flex;align-items:center;gap:.4rem}
+
+.price-box{background:#ecfeff;border:1px solid #cffafe;border-radius:10px;padding:.85rem;text-align:center;margin-top:1.25rem;color:#0891b2;font-weight:700;font-size:.9rem}
+
+.btn-submit{width:100%;padding:.8rem;background:#06b6d4;color:#ffffff;border:none;border-radius:8px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s ease;margin-top:1rem}
+.btn-submit:hover{background:#0891b2}
+.btn-submit:disabled{background:#cbd5e1;cursor:not-allowed}
+
+.notice-banner{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:.65rem;color:#dc2626;font-size:.75rem;text-align:center;font-weight:600;margin-top:.85rem}
+.alert-box{padding:.75rem 1rem;border-radius:8px;font-size:.82rem;margin-bottom:1.25rem;display:none}
+.alert-error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626}
+.alert-success{background:#ecfdf5;border:1px solid #a7f3d0;color:#16a34a}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Online Services</div></div>
+  <div class="topbar-right">
+    <div class="wallet-chip" id="walletDisplay">💰 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip"><div class="avatar">{{ retailer.full_name.0|upper }}</div><span>{{ retailer.user_id }}</span></div>
+    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <div class="nav-section">Main Menu</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="{% url 'form' %}" class="nav-item"><span class="nav-icon">🪪</span> PAN Services</a>
+    <a href="{% url 'applied_list' %}" class="nav-item"><span class="nav-icon">📋</span> Applied List</a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Services</div>
+    <a href="{% url 'other_services' %}" class="nav-item"><span class="nav-icon">🪪</span> Other Services</a>
+    <a href="{% url 'pvc_maker' %}" class="nav-item active"><span class="nav-icon">🪪</span> PVC Card Maker</a>
+    <a href="{% url 'pvc_maker_list' %}" class="nav-item"><span class="nav-icon">📜</span> PVC Applied List</a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Other</div>
+    <a href="{% url 'wallet' %}" class="nav-item"><span class="nav-icon">💰</span> Wallet</a>
+    <a href="#" class="nav-item"><span class="nav-icon">📊</span> Reports</a>
+    <a href="#" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+  </div>
+
+  <div class="content">
+    <div class="breadcrumb">
+      <a href="{% url 'retailer_dashboard' %}">Dashboard</a>
+      <span>/</span>
+      <a href="{% url 'other_services' %}">Other Services</a>
+      <span>/</span>
+      <span>PVC Card Maker</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title">🪪 PVC Card Maker Application</div>
+      <a href="{% url 'pvc_maker_list' %}" style="background:#ffffff;border:1px solid #cbd5e1;color:#334155;padding:.4rem .85rem;border-radius:6px;font-size:.78rem;font-weight:600;text-decoration:none">View Applied List →</a>
+    </div>
+
+    <div class="alert-box alert-error" id="errBox"></div>
+    <div class="alert-box alert-success" id="succBox"></div>
+
+    <form id="pvcForm" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="form-card">
+        <div class="section-title">🪪 PVC Card Order Details</div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Select Your Order PVC Card <span class="req">*</span></label>
+            <select name="pvc_card_type" id="pvc_card_type" required>
+              <option value="">Select PVC Card Type</option>
+              <option value="Vehicle RC PVC Card">Vehicle RC PVC Card</option>
+              <option value="Driving License PVC Card">Driving License PVC Card</option>
+              <option value="Voter ID PVC Card">Voter ID PVC Card</option>
+              <option value="Ayushman PVC Card">Ayushman PVC Card</option>
+              <option value="Ration Smart PVC Card">Ration Smart PVC Card</option>
+              <option value="Aadhaar Card PVC Card">Aadhaar Card PVC Card</option>
+              <option value="Pan PVC Card">Pan PVC Card</option>
+              <option value="UDID PVC Card">UDID PVC Card</option>
+              <option value="E-Shram Card">E-Shram Card</option>
+              <option value="ABHA Health Card">ABHA Health Card</option>
+              <option value="FID Card Card">FID Card Card</option>
+              <option value="Others PVC Card">Others PVC Card</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Service Type <span class="req">*</span></label>
+            <div class="checkbox-group">
+              <label><input type="checkbox" name="service_type[]" value="Upload PDF" id="chkPdf"> Upload PDF</label>
+              <label><input type="checkbox" name="service_type[]" value="Only Number" id="chkNum"> Only Number</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Agent Mobile Number <span class="req">*</span></label>
+            <input type="text" name="agent_mobile" maxlength="10" placeholder="Enter 10 Digit Mobile Number" required>
+          </div>
+
+          <div class="form-group">
+            <label>Customer Mobile Number <span class="req">*</span></label>
+            <input type="text" name="customer_mobile" maxlength="10" placeholder="Enter 10 Digit Mobile Number" required>
+          </div>
+
+          <div class="form-group">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" name="full_name" placeholder="ENTER FULL NAME" required style="text-transform:uppercase">
+          </div>
+
+          <div class="form-group">
+            <label>Village <span class="req">*</span></label>
+            <input type="text" name="village" placeholder="ENTER VILLAGE" required style="text-transform:uppercase">
+          </div>
+
+          <div class="form-group">
+            <label>Taluk <span class="req">*</span></label>
+            <input type="text" name="taluk" placeholder="ENTER TALUK" required style="text-transform:uppercase">
+          </div>
+
+          <div class="form-group">
+            <label>District <span class="req">*</span></label>
+            <input type="text" name="district" placeholder="ENTER DISTRICT" required style="text-transform:uppercase">
+          </div>
+
+          <div class="form-group">
+            <label>Pin Code <span class="req">*</span></label>
+            <input type="text" name="pincode" maxlength="6" placeholder="Enter 6 Digit Pin Code" required>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Complete Delivery Address <span class="req">*</span></label>
+            <textarea name="delivery_address" rows="3" placeholder="ENTER COMPLETE DELIVERY ADDRESS" required style="text-transform:uppercase"></textarea>
+          </div>
+
+          <!-- Dynamic PDF Upload -->
+          <div class="form-group full-width" id="pdfSec" style="display:none">
+            <label>Upload PDF File <span class="req">*</span></label>
+            <input type="file" name="pdf_file" accept=".pdf" id="filePdf">
+            <small style="color:#64748b;font-size:.72rem;display:block;margin-top:.25rem">Accepted format: PDF (Max 10MB)</small>
+          </div>
+
+          <!-- Dynamic Card Number -->
+          <div class="form-group full-width" id="numSec" style="display:none">
+            <label>Enter Card Number <span class="req">*</span></label>
+            <input type="text" name="card_number" placeholder="Enter Card Number" id="txtCardNum">
+          </div>
+        </div>
+
+        <div class="price-box">
+          💳 Payable Amount: ₹150.00 (Wallet Deduction)
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">SUBMIT APPLICATION (₹150)</button>
+        <div class="notice-banner"><b>Note:</b> OFFLINE APPLICATION — Working hours within 2 hours application process.</div>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script>
+var chkPdf = document.getElementById('chkPdf');
+var chkNum = document.getElementById('chkNum');
+var pdfSec = document.getElementById('pdfSec');
+var numSec = document.getElementById('numSec');
+
+chkPdf.addEventListener('change', function() {
+  pdfSec.style.display = this.checked ? 'block' : 'none';
+});
+
+chkNum.addEventListener('change', function() {
+  numSec.style.display = this.checked ? 'block' : 'none';
+});
+
+document.getElementById('pvcForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var errBox = document.getElementById('errBox');
+  var succBox = document.getElementById('succBox');
+  var btn = document.getElementById('submitBtn');
+
+  errBox.style.display = 'none';
+  succBox.style.display = 'none';
+  btn.disabled = true;
+  btn.innerText = 'Processing Application...';
+
+  var formData = new FormData(this);
+
+  fetch("{% url 'pvc_maker_submit' %}", {
+    method: 'POST',
+    body: formData,
+    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      succBox.innerText = data.message + ' (Order ID: ' + data.order_id + ')';
+      succBox.style.display = 'block';
+      document.getElementById('walletDisplay').innerText = '💰 ₹' + data.wallet_balance;
+      document.getElementById('pvcForm').reset();
+      pdfSec.style.display = 'none';
+      numSec.style.display = 'none';
+      btn.innerText = 'SUBMIT APPLICATION (₹150)';
+      btn.disabled = false;
+      setTimeout(function() {
+        window.location.href = "{% url 'pvc_maker_list' %}";
+      }, 1500);
+    } else {
+      errBox.innerText = data.error || 'Submission failed.';
+      errBox.style.display = 'block';
+      btn.innerText = 'SUBMIT APPLICATION (₹150)';
+      btn.disabled = false;
+    }
+  })
+  .catch(err => {
+    errBox.innerText = 'Server error. Please try again.';
+    errBox.style.display = 'block';
+    btn.innerText = 'SUBMIT APPLICATION (₹150)';
+    btn.disabled = false;
+  });
+});
+</script>
+</body>
+</html>

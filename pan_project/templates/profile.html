@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile Settings — Nath Seva One</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:#ffffff;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.brand-name{color:#f97316;font-size:1.1rem;font-weight:700}
+.brand-sub{color:#64748b;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:.85rem}
+.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#16a34a;font-weight:700}
+.user-chip{display:flex;align-items:center;gap:.5rem;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff}
+.user-chip span{font-size:.78rem;color:#334155;font-weight:600}
+.btn-logout{background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;color:#475569;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s}
+.btn-logout:hover{background:#f1f5f9;color:#0f172a}
+
+.main-wrap{display:flex;flex:1}
+.sidebar{width:220px;background:#ffffff;border-right:1px solid #e2e8f0;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.25rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:8px;font-size:.85rem;color:#475569;text-decoration:none;border:none;background:none;font-family:inherit;width:100%;transition:all 0.15s ease}
+.nav-item:hover{background:#f1f5f9;color:#0f172a}
+.nav-item.active{background:#fff7ed;color:#ea580c;font-weight:600;border:1px solid #ffedd5}
+.nav-section{font-size:.65rem;color:#94a3b8;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:700}
+.content{flex:1;padding:1.75rem;overflow-y:auto;background:#f8fafc}
+
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:#64748b;margin-bottom:1rem}
+.breadcrumb a{color:#64748b;text-decoration:none}
+.breadcrumb a:hover{color:#0f172a}
+
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.page-title{font-size:1.1rem;font-weight:700;color:#0f172a}
+
+.grid-wrap{display:grid;grid-template-columns:1fr 300px;gap:1.5rem}
+
+.form-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:1.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.03)}
+
+.alert{padding:.75rem 1rem;border-radius:8px;font-size:.84rem;margin-bottom:1.25rem;font-weight:600}
+.alert-success{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+.alert-danger{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem}
+.form-group{display:flex;flex-direction:column}
+.form-group.full{grid-column:span 2}
+
+label{font-size:.78rem;font-weight:600;color:#334155;margin-bottom:.35rem}
+label span{color:#dc2626}
+
+input[type=text],input[type=email],input[type=password],select,textarea{width:100%;padding:.6rem .85rem;background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;font-size:.85rem;color:#0f172a;outline:none;font-family:inherit;transition:all 0.15s ease}
+input[readonly]{background:#f1f5f9;color:#64748b;cursor:not-allowed}
+input:focus,select:focus,textarea:focus{border-color:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,0.1)}
+
+.section-divider{grid-column:span 2;border-top:1px solid #e2e8f0;padding-top:1rem;margin-top:.5rem}
+.section-title{font-size:.9rem;font-weight:700;color:#0f172a;margin-bottom:.25rem}
+.section-sub{font-size:.78rem;color:#64748b;margin-bottom:.75rem}
+
+.btn-submit{padding:.75rem 1.5rem;background:#f97316;color:#ffffff;border:none;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s ease}
+.btn-submit:hover{background:#ea580c}
+.btn-reset{padding:.75rem 1.25rem;background:#ffffff;border:1px solid #cbd5e1;color:#475569;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit;margin-left:.75rem;transition:all 0.15s ease}
+.btn-reset:hover{background:#f1f5f9;color:#0f172a}
+
+.info-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,0.03)}
+.info-title{font-size:.9rem;font-weight:700;color:#0f172a;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.info-item{margin-bottom:1rem}
+.info-item:last-child{margin-bottom:0}
+.info-label{font-size:.72rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem}
+.info-val{font-size:.95rem;font-weight:700;color:#0f172a}
+.status-badge{display:inline-block;padding:.2rem .6rem;background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0;border-radius:12px;font-size:.75rem;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Retailer Portal</div></div>
+  <div class="topbar-right">
+    <div class="wallet-chip">💰 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip"><div class="avatar">{{ retailer.full_name.0|upper }}</div><span>{{ retailer.user_id }}</span></div>
+    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <div class="nav-section">Main Menu</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="{% url 'pan_services' %}" class="nav-item"><span class="nav-icon">🪪</span> PAN Services</a>
+    <a href="{% url 'applied_list' %}" class="nav-item"><span class="nav-icon">📋</span> Applied List</a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Services</div>
+    <a href="{% url 'print_services' %}" class="nav-item"><span class="nav-icon">🖨️</span> Print Services</a>
+    <a href="{% url 'aadhaar_services' %}" class="nav-item"><span class="nav-icon">🩺</span> Aadhaar Services</a>
+    <a href="{% url 'other_services' %}" class="nav-item"><span class="nav-icon">🪪</span> Other Services</a>
+    <a href="{% url 'free_tools' %}" class="nav-item"><span class="nav-icon">🎁</span> Free Tools</a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Account & Help</div>
+    <a href="{% url 'wallet' %}" class="nav-item"><span class="nav-icon">💰</span> Wallet</a>
+    <a href="{% url 'pricing' %}" class="nav-item"><span class="nav-icon">🏷️</span> Service Pricing</a>
+    <a href="{% url 'profile' %}" class="nav-item active"><span class="nav-icon">👤</span> Profile Settings</a>
+  </div>
+
+  <div class="content">
+    <div class="breadcrumb">
+      <a href="{% url 'retailer_dashboard' %}">Dashboard</a>
+      <span>/</span>
+      <span>Profile Settings</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title">👤 Profile Settings</div>
+    </div>
+
+    {% if success_msg %}
+      <div class="alert alert-success">✅ {{ success_msg }}</div>
+    {% endif %}
+    {% if error_msg %}
+      <div class="alert alert-danger">⚠️ {{ error_msg }}</div>
+    {% endif %}
+
+    <div class="grid-wrap">
+      <div class="form-card">
+        <form method="POST" action="{% url 'profile' %}">
+          {% csrf_token %}
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Full Name <span>*</span></label>
+              <input type="text" name="fullname" value="{{ retailer.full_name }}" required maxlength="50">
+            </div>
+
+            <div class="form-group">
+              <label>Mobile Number <span>*</span></label>
+              <input type="text" name="mobilenumber" value="{{ retailer.mobile }}" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Email Address <span>*</span></label>
+              <input type="email" name="emailaddress" value="{{ retailer.email|default:retailer.mobile|add:'@nathseva.com' }}" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>State <span>*</span></label>
+              <select name="state" required>
+                <option value="">Select State</option>
+                <option value="AP" {% if retailer.state == 'AP' %}selected{% endif %}>Andhra Pradesh</option>
+                <option value="AR" {% if retailer.state == 'AR' %}selected{% endif %}>Arunachal Pradesh</option>
+                <option value="AS" {% if retailer.state == 'AS' %}selected{% endif %}>Assam</option>
+                <option value="BR" {% if retailer.state == 'BR' %}selected{% endif %}>Bihar</option>
+                <option value="CT" {% if retailer.state == 'CT' %}selected{% endif %}>Chhattisgarh</option>
+                <option value="GA" {% if retailer.state == 'GA' %}selected{% endif %}>Goa</option>
+                <option value="GJ" {% if retailer.state == 'GJ' %}selected{% endif %}>Gujarat</option>
+                <option value="HR" {% if retailer.state == 'HR' %}selected{% endif %}>Haryana</option>
+                <option value="HP" {% if retailer.state == 'HP' %}selected{% endif %}>Himachal Pradesh</option>
+                <option value="JK" {% if retailer.state == 'JK' %}selected{% endif %}>Jammu and Kashmir</option>
+                <option value="JH" {% if retailer.state == 'JH' %}selected{% endif %}>Jharkhand</option>
+                <option value="KA" {% if retailer.state == 'KA' %}selected{% endif %}>Karnataka</option>
+                <option value="KL" {% if retailer.state == 'KL' %}selected{% endif %}>Kerala</option>
+                <option value="MP" {% if retailer.state == 'MP' %}selected{% endif %}>Madhya Pradesh</option>
+                <option value="MH" {% if retailer.state == 'MH' %}selected{% endif %}>Maharashtra</option>
+                <option value="MN" {% if retailer.state == 'MN' %}selected{% endif %}>Manipur</option>
+                <option value="ML" {% if retailer.state == 'ML' %}selected{% endif %}>Meghalaya</option>
+                <option value="MZ" {% if retailer.state == 'MZ' %}selected{% endif %}>Mizoram</option>
+                <option value="NL" {% if retailer.state == 'NL' %}selected{% endif %}>Nagaland</option>
+                <option value="OR" {% if retailer.state == 'OR' %}selected{% endif %}>Odisha</option>
+                <option value="PB" {% if retailer.state == 'PB' %}selected{% endif %}>Punjab</option>
+                <option value="RJ" {% if retailer.state == 'RJ' %}selected{% endif %}>Rajasthan</option>
+                <option value="SK" {% if retailer.state == 'SK' %}selected{% endif %}>Sikkim</option>
+                <option value="TN" {% if retailer.state == 'TN' %}selected{% endif %}>Tamil Nadu</option>
+                <option value="TG" {% if retailer.state == 'TG' %}selected{% endif %}>Telangana</option>
+                <option value="TR" {% if retailer.state == 'TR' %}selected{% endif %}>Tripura</option>
+                <option value="UT" {% if retailer.state == 'UT' %}selected{% endif %}>Uttarakhand</option>
+                <option value="UP" {% if retailer.state == 'UP' %}selected{% endif %}>Uttar Pradesh</option>
+                <option value="WB" {% if retailer.state == 'WB' %}selected{% endif %}>West Bengal</option>
+                <option value="AN" {% if retailer.state == 'AN' %}selected{% endif %}>Andaman and Nicobar Islands</option>
+                <option value="CH" {% if retailer.state == 'CH' %}selected{% endif %}>Chandigarh</option>
+                <option value="DN" {% if retailer.state == 'DN' %}selected{% endif %}>Dadra and Nagar Haveli</option>
+                <option value="DD" {% if retailer.state == 'DD' %}selected{% endif %}>Daman and Diu</option>
+                <option value="DL" {% if retailer.state == 'DL' %}selected{% endif %}>Delhi</option>
+                <option value="LD" {% if retailer.state == 'LD' %}selected{% endif %}>Lakshadweep</option>
+                <option value="PY" {% if retailer.state == 'PY' %}selected{% endif %}>Puducherry</option>
+              </select>
+            </div>
+
+            <div class="form-group full">
+              <label>Address</label>
+              <textarea name="address" rows="3" placeholder="Enter Full Address" maxlength="250">{{ retailer.address }}</textarea>
+            </div>
+
+            <div class="section-divider">
+              <div class="section-title">🔒 Change Password (Optional)</div>
+              <div class="section-sub">Leave blank if you do not wish to change your login password.</div>
+            </div>
+
+            <div class="form-group full">
+              <label>Current Password</label>
+              <input type="password" name="current_password" placeholder="Enter Current Password" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label>New Password</label>
+              <input type="password" name="new_password" placeholder="Enter New Password (min 6 chars)" autocomplete="off" minlength="6">
+            </div>
+
+            <div class="form-group">
+              <label>Confirm New Password</label>
+              <input type="password" name="confirm_password" placeholder="Confirm New Password" autocomplete="off" minlength="6">
+            </div>
+
+            <div class="form-group full" style="margin-top:.5rem">
+              <div>
+                <button type="submit" class="btn-submit">💾 Update Profile</button>
+                <button type="reset" class="btn-reset">🔄 Reset</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="info-card">
+        <div class="info-title">ℹ️ Profile Information</div>
+        <div class="info-item">
+          <div class="info-label">User ID</div>
+          <div class="info-val">{{ retailer.user_id }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Wallet Balance</div>
+          <div class="info-val" style="color:#16a34a">₹{{ retailer.wallet_balance }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Account Status</div>
+          <div><span class="status-badge">Active</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% include 'theme_switcher.html' %}
+</body>
+</html>

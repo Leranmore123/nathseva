@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — PVC Card Maker List</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:#ffffff;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.brand-name{color:#f97316;font-size:1.1rem;font-weight:700}
+.brand-sub{color:#dc2626;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.btn-logout{background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;color:#475569;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block}
+
+.main-wrap{display:flex;flex:1}
+.sidebar{width:230px;background:#ffffff;border-right:1px solid #e2e8f0;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.25rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:8px;font-size:.85rem;color:#475569;text-decoration:none;border:none;background:none;font-family:inherit;width:100%;transition:all 0.15s ease}
+.nav-item:hover{background:#f1f5f9;color:#0f172a}
+.nav-item.active{background:#fef2f2;color:#dc2626;font-weight:600;border:1px solid #fecaca}
+.nav-icon{font-size:1rem}
+.nav-section{font-size:.65rem;color:#94a3b8;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:700}
+.content{flex:1;padding:1.75rem;overflow-y:auto;background:#f8fafc}
+
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.page-title{font-size:1.1rem;font-weight:700;color:#0f172a}
+
+.filters-bar{display:flex;gap:1rem;margin-bottom:1.25rem;align-items:center}
+.filter-btn{padding:.4rem .85rem;border-radius:20px;font-size:.78rem;font-weight:600;text-decoration:none;border:1px solid #cbd5e1;color:#475569;background:#ffffff}
+.filter-btn.active{background:#dc2626;color:#ffffff;border-color:#dc2626}
+
+.search-input{padding:.45rem .85rem;border:1px solid #cbd5e1;border-radius:8px;font-size:.85rem;width:260px;outline:none}
+.search-input:focus{border-color:#f97316}
+
+.table-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.03)}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead th{text-align:left;padding:.75rem 1rem;color:#64748b;font-weight:600;border-bottom:1px solid #e2e8f0;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;background:#f8fafc}
+tbody td{padding:.8rem 1rem;color:#334155;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+tbody td:first-child{color:#0f172a;font-weight:600;font-family:monospace}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#f8fafc}
+
+.pill{display:inline-block;padding:.2rem .65rem;border-radius:20px;font-size:.66rem;font-weight:700}
+.pill-pending{background:#fff7ed;color:#ea580c;border:1px solid #ffedd5}
+.pill-completed{background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0}
+.pill-rejected{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+
+.btn-process{background:#2563eb;color:#ffffff;padding:.35rem .75rem;border-radius:6px;font-size:.75rem;font-weight:600;text-decoration:none;display:inline-block}
+.btn-process:hover{background:#1d4ed8}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Admin Control Panel</div></div>
+  <a href="{% url 'admin_logout' %}" class="btn-logout">Logout</a>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <div class="nav-section">Admin Portal</div>
+    <a href="{% url 'admin_dashboard' %}" class="nav-item"><span class="nav-icon">📊</span> Dashboard Overview</a>
+    <div class="nav-section" style="margin-top:.5rem">Service Requests</div>
+    <a href="{% url 'admin_other_services' %}" class="nav-item active"><span class="nav-icon">🪪</span> Other Services</a>
+    <a href="{% url 'admin_other_services' %}?status=PENDING" class="nav-item"><span class="nav-icon">⏳</span> Pending Apps</a>
+    <div class="nav-section" style="margin-top:.5rem">System</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item" target="_blank"><span class="nav-icon">🌐</span> Retailer View</a>
+  </div>
+
+  <div class="content">
+    <div class="page-header">
+      <div class="page-title">🪪 PVC Card Maker Applications Management</div>
+    </div>
+
+    <div class="filters-bar">
+      <a href="{% url 'admin_pvc_list' %}" class="filter-btn {% if not status_filter %}active{% endif %}">All Apps</a>
+      <a href="{% url 'admin_pvc_list' %}?status=PENDING" class="filter-btn {% if status_filter == 'PENDING' %}active{% endif %}">⏳ Pending</a>
+      <a href="{% url 'admin_pvc_list' %}?status=COMPLETED" class="filter-btn {% if status_filter == 'COMPLETED' %}active{% endif %}">✅ Completed</a>
+      <a href="{% url 'admin_pvc_list' %}?status=REJECTED" class="filter-btn {% if status_filter == 'REJECTED' %}active{% endif %}">❌ Rejected</a>
+
+      <form method="GET" style="margin-left:auto">
+        <input type="text" name="q" value="{{ search_q }}" placeholder="Search Customer Name / Order ID..." class="search-input">
+      </form>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Card Type</th>
+            <th>Customer Name</th>
+            <th>Mobile</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in applications %}
+          <tr>
+            <td>{{ app.order_id }}</td>
+            <td>{{ app.pvc_card_type }}</td>
+            <td>{{ app.full_name }}</td>
+            <td>{{ app.customer_mobile }}</td>
+            <td>
+              {% if app.status == 'COMPLETED' %}
+                <span class="pill pill-completed">Completed</span>
+              {% elif app.status == 'REJECTED' %}
+                <span class="pill pill-rejected">Rejected</span>
+              {% else %}
+                <span class="pill pill-pending">Pending</span>
+              {% endif %}
+            </td>
+            <td style="color:#64748b">{{ app.created_at|date:"d M Y, h:i A" }}</td>
+            <td>
+              <a href="{% url 'admin_pvc_detail' app.order_id %}" class="btn-process">Process / Review →</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" style="text-align:center;padding:2.5rem;color:#64748b">No applications found in this category.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

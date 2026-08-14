@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Process PVC App — {{ app.order_id }}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:#ffffff;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.brand-name{color:#f97316;font-size:1.1rem;font-weight:700}
+.brand-sub{color:#dc2626;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.btn-logout{background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;color:#475569;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block}
+
+.main-wrap{display:flex;flex:1}
+.sidebar{width:230px;background:#ffffff;border-right:1px solid #e2e8f0;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.25rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:8px;font-size:.85rem;color:#475569;text-decoration:none;border:none;background:none;font-family:inherit;width:100%;transition:all 0.15s ease}
+.nav-item:hover{background:#f1f5f9;color:#0f172a}
+.nav-item.active{background:#fef2f2;color:#dc2626;font-weight:600;border:1px solid #fecaca}
+.nav-icon{font-size:1rem}
+.nav-section{font-size:.65rem;color:#94a3b8;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:700}
+.content{flex:1;padding:1.75rem;overflow-y:auto;background:#f8fafc}
+
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:#64748b;margin-bottom:1.25rem}
+.breadcrumb a{color:#64748b;text-decoration:none}
+.breadcrumb a:hover{color:#0f172a}
+
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid #e2e8f0}
+.page-title{font-size:1.1rem;font-weight:700;color:#0f172a}
+
+.grid-workspace{display:grid;grid-template-columns:1.2fr 1fr;gap:1.5rem;align-items:start}
+
+.info-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,0.03);margin-bottom:1.25rem}
+.card-title{font-size:.9rem;font-weight:700;color:#0891b2;margin-bottom:1rem;padding-bottom:.4rem;border-bottom:1px solid #ecfeff}
+
+.info-row{display:flex;justify-content:space-between;padding:.55rem 0;border-bottom:1px solid #f1f5f9;font-size:.84rem}
+.info-row:last-child{border-bottom:none}
+.info-key{color:#64748b;font-weight:600}
+.info-val{color:#0f172a;font-weight:600;text-align:right}
+
+.doc-link{display:inline-block;padding:.4rem .85rem;background:#ecfeff;color:#0891b2;border-radius:6px;font-size:.8rem;font-weight:600;text-decoration:none;border:1px solid #cffafe;margin-top:.25rem}
+.doc-link:hover{background:#cffafe}
+
+/* ACTION PANELS */
+.action-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,0.03);margin-bottom:1.25rem}
+.panel-approve{border-left:4px solid #16a34a}
+.panel-reject{border-left:4px solid #dc2626}
+
+.btn-approve{width:100%;background:#16a34a;color:#ffffff;border:none;border-radius:8px;padding:.75rem;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.2s}
+.btn-approve:hover{background:#15803d}
+
+.btn-reject{width:100%;background:#dc2626;color:#ffffff;border:none;border-radius:8px;padding:.75rem;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.2s;margin-top:.75rem}
+.btn-reject:hover{background:#b91c1c}
+
+.field-label{font-size:.8rem;font-weight:600;color:#334155;margin-bottom:.35rem;display:block}
+.field-input,.field-textarea{width:100%;padding:.65rem .85rem;border:1px solid #cbd5e1;border-radius:8px;font-size:.85rem;color:#0f172a;outline:none;font-family:inherit;margin-bottom:.85rem}
+.field-textarea{min-height:75px;resize:vertical}
+
+.status-badge{display:inline-block;padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:700}
+.badge-pending{background:#fff7ed;color:#ea580c;border:1px solid #ffedd5}
+.badge-completed{background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0}
+.badge-rejected{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+
+.alert-box{padding:.75rem 1rem;border-radius:8px;font-size:.82rem;margin-bottom:1rem;display:none}
+.alert-error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626}
+.alert-success{background:#ecfdf5;border:1px solid #a7f3d0;color:#16a34a}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Admin Control Panel</div></div>
+  <a href="{% url 'admin_logout' %}" class="btn-logout">Logout</a>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <div class="nav-section">Admin Portal</div>
+    <a href="{% url 'admin_dashboard' %}" class="nav-item"><span class="nav-icon">📊</span> Dashboard Overview</a>
+    <div class="nav-section" style="margin-top:.5rem">Service Requests</div>
+    <a href="{% url 'admin_other_services' %}" class="nav-item active"><span class="nav-icon">🪪</span> Other Services</a>
+    <a href="{% url 'admin_other_services' %}?status=PENDING" class="nav-item"><span class="nav-icon">⏳</span> Pending Apps</a>
+    <div class="nav-section" style="margin-top:.5rem">System</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item" target="_blank"><span class="nav-icon">🌐</span> Retailer View</a>
+  </div>
+
+  <div class="content">
+    <div class="breadcrumb">
+      <a href="{% url 'admin_dashboard' %}">Admin Dashboard</a>
+      <span>/</span>
+      <a href="{% url 'admin_pvc_list' %}">PVC Card Applications</a>
+      <span>/</span>
+      <span>Order #{{ app.order_id }}</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title">PVC Card Application Processing — {{ app.order_id }}</div>
+      <div>
+        Status: 
+        {% if app.status == 'COMPLETED' %}
+          <span class="status-badge badge-completed">COMPLETED</span>
+        {% elif app.status == 'REJECTED' %}
+          <span class="status-badge badge-rejected">REJECTED (Refunded)</span>
+        {% else %}
+          <span class="status-badge badge-pending">PENDING</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="alert-box alert-error" id="errBox"></div>
+    <div class="alert-box alert-success" id="succBox"></div>
+
+    <div class="grid-workspace">
+      
+      <!-- LEFT: Order Details -->
+      <div>
+        <div class="info-card">
+          <div class="card-title">🪪 PVC Card & Contact Details</div>
+          <div class="info-row"><span class="info-key">PVC Card Type</span><span class="info-val">{{ app.pvc_card_type }}</span></div>
+          <div class="info-row"><span class="info-key">Service Type</span><span class="info-val">{{ app.service_types|default:"-" }}</span></div>
+          <div class="info-row"><span class="info-key">Customer Full Name</span><span class="info-val">{{ app.full_name }}</span></div>
+          <div class="info-row"><span class="info-key">Customer Mobile</span><span class="info-val">{{ app.customer_mobile }}</span></div>
+          <div class="info-row"><span class="info-key">Agent Mobile</span><span class="info-val">{{ app.agent_mobile }}</span></div>
+          {% if app.card_number %}
+            <div class="info-row"><span class="info-key">Card Number</span><span class="info-val" style="color:#0891b2">{{ app.card_number }}</span></div>
+          {% endif %}
+        </div>
+
+        <div class="info-card">
+          <div class="card-title">📍 Delivery Address Details</div>
+          <div class="info-row"><span class="info-key">Village</span><span class="info-val">{{ app.village }}</span></div>
+          <div class="info-row"><span class="info-key">Taluk</span><span class="info-val">{{ app.taluk }}</span></div>
+          <div class="info-row"><span class="info-key">District</span><span class="info-val">{{ app.district }}</span></div>
+          <div class="info-row"><span class="info-key">Pin Code</span><span class="info-val">{{ app.pincode }}</span></div>
+          <div class="info-row"><span class="info-key">Complete Address</span><span class="info-val">{{ app.delivery_address }}</span></div>
+        </div>
+
+        {% if app.pdf_file %}
+        <div class="info-card">
+          <div class="card-title">📁 Uploaded PDF File</div>
+          <a href="{{ app.pdf_file.url }}" target="_blank" class="doc-link">📄 Download Source PDF File</a>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- RIGHT: Admin Actions -->
+      <div>
+        
+        <!-- APPROVE PANEL -->
+        <div class="action-card panel-approve">
+          <div class="card-title" style="color:#16a34a">✅ Option A: Approve & Upload Final PVC Card PDF</div>
+          <form id="approveForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="APPROVE">
+            
+            <label class="field-label">Upload Completed PVC Card PDF File</label>
+            <input type="file" name="output_pdf" accept=".pdf, image/*" class="field-input">
+            
+            <button type="submit" class="btn-approve" id="btnApprove">APPROVE & COMPLETE APPLICATION</button>
+          </form>
+          {% if app.output_pdf %}
+            <div style="margin-top:.75rem"><a href="{{ app.output_pdf.url }}" target="_blank" class="doc-link">📄 View Uploaded PVC Card PDF</a></div>
+          {% endif %}
+        </div>
+
+        <!-- REJECT PANEL -->
+        <div class="action-card panel-reject">
+          <div class="card-title" style="color:#dc2626">❌ Option B: Reject & Refund ₹150 to Wallet</div>
+          <form id="rejectForm">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="REJECT">
+            
+            <label class="field-label">Reason for Rejection (Visible to Retailer)</label>
+            <textarea name="rejection_reason" class="field-textarea" placeholder="e.g. Invalid address, corrupted PDF..." required>{{ app.rejection_reason }}</textarea>
+            
+            <button type="submit" class="btn-reject" id="btnReject">REJECT & REFUND ₹150 AUTOMATICALLY</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function processForm(formId, btnId) {
+  var form = document.getElementById(formId);
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var errBox = document.getElementById('errBox');
+    var succBox = document.getElementById('succBox');
+    var btn = document.getElementById(btnId);
+
+    errBox.style.display = 'none';
+    succBox.style.display = 'none';
+    btn.disabled = true;
+
+    var formData = new FormData(this);
+
+    fetch("{% url 'admin_pvc_process' app.order_id %}", {
+      method: 'POST',
+      body: formData,
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(res => res.json())
+    .then(data => {
+      btn.disabled = false;
+      if (data.success) {
+        succBox.innerText = data.message;
+        succBox.style.display = 'block';
+        setTimeout(function() { location.reload(); }, 1500);
+      } else {
+        errBox.innerText = data.error || 'Operation failed.';
+        errBox.style.display = 'block';
+      }
+    })
+    .catch(err => {
+      btn.disabled = false;
+      errBox.innerText = 'Server error.';
+      errBox.style.display = 'block';
+    });
+  });
+}
+
+processForm('approveForm', 'btnApprove');
+processForm('rejectForm', 'btnReject');
+</script>
+</body>
+</html>

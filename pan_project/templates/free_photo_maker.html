@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Passport Photo Maker — Nath Seva One</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:#ffffff;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.brand-name{color:#f97316;font-size:1.1rem;font-weight:700}
+.brand-sub{color:#64748b;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:.85rem}
+.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#16a34a;font-weight:700}
+.user-chip{display:flex;align-items:center;gap:.5rem;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff}
+.user-chip span{font-size:.78rem;color:#334155;font-weight:600}
+.btn-logout{background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;color:#475569;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s}
+.btn-logout:hover{background:#f1f5f9;color:#0f172a}
+
+.main-wrap{display:flex;flex:1}
+.sidebar{width:220px;background:#ffffff;border-right:1px solid #e2e8f0;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.25rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:8px;font-size:.85rem;color:#475569;text-decoration:none;border:none;background:none;font-family:inherit;width:100%;transition:all 0.15s ease}
+.nav-item:hover{background:#f1f5f9;color:#0f172a}
+.nav-item.active{background:#fff7ed;color:#ea580c;font-weight:600;border:1px solid #ffedd5}
+.nav-section{font-size:.65rem;color:#94a3b8;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:700}
+.content{flex:1;padding:1.75rem;overflow-y:auto;background:#f8fafc}
+
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:#64748b;margin-bottom:1rem}
+.breadcrumb a{color:#64748b;text-decoration:none}
+.breadcrumb a:hover{color:#0f172a}
+
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.page-title{font-size:1.1rem;font-weight:700;color:#0f172a}
+
+.form-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:1.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.03);margin-bottom:1.5rem}
+
+.tool-drop{border:2px dashed #cbd5e1;border-radius:14px;padding:2.5rem 1.5rem;text-align:center;color:#64748b;cursor:pointer;transition:all .2s;background:#f8fafc}
+.tool-drop:hover,.tool-drop.drag{border-color:#10b981;color:#059669;background:#ecfdf5}
+.tool-drop-icon{font-size:2.5rem;margin-bottom:.5rem;color:#10b981}
+
+#pmStage{max-height:440px;background:#f1f5f9;border-radius:8px;overflow:hidden;border:1px solid #cbd5e1}
+#pmStage img{max-width:100%;display:block}
+#pmPreview{max-width:100%;border:1px solid #cbd5e1;border-radius:8px;background:#ffffff;margin-bottom:.5rem}
+
+label{font-size:.78rem;font-weight:600;color:#334155;display:block;margin-bottom:.35rem}
+select{width:100%;padding:.55rem .75rem;background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;font-size:.84rem;color:#0f172a;outline:none;font-family:inherit;margin-bottom:.85rem}
+
+.bg-btn-group{display:flex;gap:.5rem;margin-bottom:.85rem}
+.bg-btn{padding:.35rem .75rem;border:1px solid #cbd5e1;border-radius:6px;background:#ffffff;font-size:.78rem;font-weight:600;color:#475569;cursor:pointer}
+.bg-btn.active{background:#10b981;color:#ffffff;border-color:#10b981}
+
+.btn-make{padding:.65rem 1.25rem;background:#10b981;color:#ffffff;border:none;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-make:hover{background:#059669}
+
+.btn-reset{padding:.65rem 1rem;background:#ffffff;border:1px solid #cbd5e1;color:#475569;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-reset:hover{background:#f1f5f9}
+
+.btn-dl{padding:.55rem 1rem;background:#2563eb;color:#ffffff;border:none;border-radius:6px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-sheet{padding:.55rem 1rem;background:#ffffff;border:1px solid #2563eb;color:#2563eb;border-radius:6px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-sheet:hover{background:#eff6ff}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Free Utility Tools</div></div>
+  <div class="topbar-right">
+    <div class="wallet-chip">💰 ₹{{ retailer.wallet_balance }}</div>
+    <div class="user-chip"><div class="avatar">{{ retailer.full_name.0|upper }}</div><span>{{ retailer.user_id }}</span></div>
+    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <div class="nav-section">Main Menu</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="{% url 'form' %}" class="nav-item"><span class="nav-icon">🪪</span> PAN Services</a>
+    <a href="{% url 'applied_list' %}" class="nav-item"><span class="nav-icon">📋</span> Applied List</a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Services</div>
+    <a href="{% url 'other_services' %}" class="nav-item"><span class="nav-icon">🪪</span> Other Services</a>
+    <a href="{% url 'free_tools' %}" class="nav-item active">
+      <span class="nav-icon">🎁</span> Free Tools 
+      <span style="background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0;padding:1px 6px;border-radius:10px;font-size:.65rem;font-weight:700;margin-left:auto">FREE</span>
+    </a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Account & Help</div>
+    <a href="{% url 'wallet' %}" class="nav-item"><span class="nav-icon">💰</span> Wallet</a>
+    <a href="{% url 'profile' %}" class="nav-item"><span class="nav-icon">👤</span> Profile Settings</a>
+    <a href="#" class="nav-item"><span class="nav-icon">📊</span> Reports</a>
+    <a href="#" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+  </div>
+
+  <div class="content">
+    <div class="breadcrumb">
+      <a href="{% url 'retailer_dashboard' %}">Dashboard</a>
+      <span>/</span>
+      <a href="{% url 'free_tools' %}">Free Tools</a>
+      <span>/</span>
+      <span>Passport Photo Maker</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title">📷 Free Passport & ID Photo Maker</div>
+      <span style="background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0;padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:700">100% FREE • Printable 4x6 Sheet</span>
+    </div>
+
+    <div class="form-card">
+      <h3 style="font-size:1rem;font-weight:700;color:#059669;margin-bottom:.35rem">Passport / ID Photo Crop & Print Sheet Generator</h3>
+      <p style="font-size:.8rem;color:#64748b;margin-bottom:1.25rem">Upload a photo, choose size standard, crop over face, replace backdrop color, and generate 4x6 print sheets.</p>
+
+      <div id="pmDrop" class="tool-drop">
+        <div class="tool-drop-icon">📷</div>
+        <div style="font-weight:700;color:#0f172a;font-size:.95rem">Click to select photo or drag & drop here</div>
+        <div style="font-size:.78rem;color:#94a3b8;margin-top:.25rem">Supported formats: JPG, JPEG, PNG</div>
+      </div>
+      <input type="file" id="pmFile" accept="image/*" style="display:none">
+
+      <div id="pmEditor" style="display:none;grid-template-columns:1.2fr 1fr;gap:1.5rem;margin-top:1.25rem">
+        <div>
+          <div id="pmStage"><img id="pmImg" src="" alt=""></div>
+        </div>
+        <div>
+          <label>Photo Preset Size</label>
+          <select id="pmSize">
+            <option value="35:45:413:531">Passport 35 x 45 mm (India / UK)</option>
+            <option value="51:51:600:600">US Visa 2 x 2 inch</option>
+            <option value="25:35:295:413">Stamp Size 25 x 35 mm</option>
+            <option value="50:70:591:827">Custom 50 x 70 mm</option>
+          </select>
+
+          <label>Backdrop Color Fill</label>
+          <div class="bg-btn-group" id="pmBg">
+            <button type="button" class="bg-btn active" data-bg="">Original</button>
+            <button type="button" class="bg-btn" data-bg="#ffffff">White</button>
+            <button type="button" class="bg-btn" data-bg="#e9f2ff">Light Blue</button>
+            <button type="button" class="bg-btn" data-bg="#dce6ff">Blue</button>
+          </div>
+
+          <div style="display:flex;gap:.75rem;margin-bottom:1.25rem">
+            <button id="pmMake" class="btn-make">✂️ Crop & Make Photo</button>
+            <button id="pmReset" class="btn-reset">🔄 Reset</button>
+          </div>
+
+          <div id="pmOut" style="display:none">
+            <img id="pmPreview" src="" alt="">
+            <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+              <button id="pmDl" class="btn-dl">📥 Download Photo</button>
+              <button id="pmSheet" class="btn-sheet">🖨️ 4x6 Sheet (8 Copies)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+<script>
+(function(){
+  var drop = document.getElementById('pmDrop'), input = document.getElementById('pmFile');
+  var editor = document.getElementById('pmEditor'), img = document.getElementById('pmImg');
+  var out = document.getElementById('pmOut'), preview = document.getElementById('pmPreview');
+  var cropper = null, bg = '', outW = 413, outH = 531, lastCanvas = null;
+
+  drop.addEventListener('click', function(){ input.click(); });
+  input.addEventListener('change', function(e){ if(e.target.files[0]) load(e.target.files[0]); });
+
+  ['dragover', 'dragenter'].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('drag'); });
+  });
+
+  ['dragleave', 'drop'].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('drag'); });
+  });
+
+  drop.addEventListener('drop', function(e){ if(e.dataTransfer.files[0]) load(e.dataTransfer.files[0]); });
+
+  function parseSize(){
+    var p = document.getElementById('pmSize').value.split(':');
+    outW = +p[2];
+    outH = +p[3];
+    return +p[0] / +p[1];
+  }
+
+  function initCropper(){
+    if(cropper) cropper.destroy();
+    var ratio = parseSize();
+    cropper = new Cropper(img, { viewMode: 1, aspectRatio: ratio, autoCropArea: 0.9, background: false, responsive: true });
+  }
+
+  function load(file){
+    if(!/^image\//.test(file.type)){ alert('Please choose an image file.'); return; }
+    out.style.display = 'none';
+    img.src = URL.createObjectURL(file);
+    editor.style.display = 'grid';
+    img.onload = function(){ initCropper(); };
+  }
+
+  document.getElementById('pmSize').addEventListener('change', initCropper);
+  document.getElementById('pmReset').addEventListener('click', function(){ if(cropper) cropper.reset(); });
+
+  document.getElementById('pmBg').addEventListener('click', function(e){
+    var b = e.target.closest('button[data-bg]');
+    if(!b) return;
+    bg = b.dataset.bg;
+    this.querySelectorAll('button').forEach(function(x){ x.classList.remove('active'); });
+    b.classList.add('active');
+  });
+
+  function applyBg(canvas){
+    if(!bg) return canvas;
+    var w = canvas.width, h = canvas.height, ctx = canvas.getContext('2d');
+    var im = ctx.getImageData(0, 0, w, h), d = im.data;
+    var bgc = hexRgb(bg);
+    var seeds = [[0,0], [w-1,0], [0,h-1], [w-1,h-1]];
+    var ref = [];
+    seeds.forEach(function(s){ var idx = (s[1]*w + s[0])*4; ref.push([d[idx], d[idx+1], d[idx+2]]); });
+    var tol = 52, visited = new Uint8Array(w*h), stack = [];
+    seeds.forEach(function(s){ stack.push(s[1]*w + s[0]); });
+
+    function near(i, c){ var o = i*4; return Math.abs(d[o]-c[0])<=tol && Math.abs(d[o+1]-c[1])<=tol && Math.abs(d[o+2]-c[2])<=tol; }
+
+    while(stack.length){
+      var p = stack.pop(); if(visited[p]) continue; visited[p] = 1;
+      var x = p%w, y = (p-x)/w;
+      var match = ref.some(function(c){ return near(p, c); });
+      if(!match) continue;
+      var o = p*4; d[o]=bgc[0]; d[o+1]=bgc[1]; d[o+2]=bgc[2]; d[o+3]=255;
+      if(x>0) stack.push(p-1); if(x<w-1) stack.push(p+1); if(y>0) stack.push(p-w); if(y<h-1) stack.push(p+w);
+    }
+    ctx.putImageData(im, 0, 0);
+    return canvas;
+  }
+
+  function hexRgb(hex){
+    hex = hex.replace('#', '');
+    return [parseInt(hex.substr(0,2),16), parseInt(hex.substr(2,2),16), parseInt(hex.substr(4,2),16)];
+  }
+
+  document.getElementById('pmMake').addEventListener('click', function(){
+    if(!cropper) return;
+    var canvas = cropper.getCroppedCanvas({ width: outW, height: outH, fillColor: '#ffffff', imageSmoothingQuality: 'high' });
+    if(!canvas) return;
+    applyBg(canvas);
+    lastCanvas = canvas;
+    preview.src = canvas.toDataURL('image/jpeg', 0.95);
+    out.style.display = 'block';
+  });
+
+  function dlCanvas(canvas, name){
+    var a = document.createElement('a');
+    a.href = canvas.toDataURL('image/jpeg', 0.95);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  document.getElementById('pmDl').addEventListener('click', function(){
+    if(lastCanvas) dlCanvas(lastCanvas, 'photo_' + Date.now() + '.jpg');
+  });
+
+  document.getElementById('pmSheet').addEventListener('click', function(){
+    if(!lastCanvas) return;
+    var SW = 1200, SH = 1800, cols = 4, rows = 2, pad = 24;
+    var sheet = document.createElement('canvas');
+    sheet.width = SW;
+    sheet.height = SH;
+    var ctx = sheet.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, SW, SH);
+
+    var cw = (SW - pad*(cols+1))/cols, ratio = lastCanvas.height/lastCanvas.width, ch = cw*ratio;
+
+    for(var r = 0; r < rows; r++){
+      for(var c = 0; c < cols; c++){
+        var x = pad + c*(cw + pad), y = pad + r*(ch + pad);
+        ctx.drawImage(lastCanvas, x, y, cw, ch);
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.strokeRect(x, y, cw, ch);
+      }
+    }
+    dlCanvas(sheet, 'photo_sheet_' + Date.now() + '.jpg');
+  });
+})();
+</script>
+</body>
+</html>
