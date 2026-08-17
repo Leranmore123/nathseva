@@ -45,6 +45,12 @@ urlpatterns = [
     path('vehicle/dl-karnataka/card/<str:order_id>/', views.dl_karnataka_view_card, name='dl_karnataka_card'),
 
     # ── Tailoring Certificate & Other Services ─────────────────────────
+    path('services/kar-gov/', views.kar_gov_services_page, name='kar_gov_services'),
+    path('services/kar-gov/senior-citizen/', views.senior_citizen_page, name='senior_citizen'),
+    path('services/kar-gov/senior-citizen/submit/', views.senior_citizen_submit, name='senior_citizen_submit'),
+    path('services/kar-gov/senior-citizen/list/', views.senior_citizen_list, name='senior_citizen_list'),
+    path('services/kar-gov/senior-citizen/download/<str:order_id>/', views.senior_citizen_download, name='senior_citizen_download'),
+
     path('services/print/', views.print_services_page, name='print_services'),
     path('services/pan/', views.pan_services_page, name='pan_services'),
     path('services/pan/pan-to-aadhaar/', views.pan_to_aadhaar_page, name='pan_to_aadhaar'),
@@ -135,4 +141,195 @@ urlpatterns = [
     path('admin-portal/pan-to-aadhaar/', admin_views.admin_pan_to_aadhaar_applications, name='admin_pan_to_aadhaar_list'),
     path('admin-portal/pan-to-aadhaar/<str:order_id>/', admin_views.admin_pan_to_aadhaar_detail, name='admin_pan_to_aadhaar_detail'),
     path('admin-portal/pan-to-aadhaar/<str:order_id>/process/', admin_views.admin_pan_to_aadhaar_process, name='admin_pan_to_aadhaar_process'),
+    path('admin-portal/govt-services/', admin_views.admin_govt_services_directory, name='admin_govt_services_list'),
+    path('admin-portal/senior-citizen/', admin_views.admin_senior_applications, name='admin_senior_list'),
+    path('admin-portal/senior-citizen/<str:order_id>/', admin_views.admin_senior_detail, name='admin_senior_detail'),
+    path('admin-portal/senior-citizen/<str:order_id>/process/', admin_views.admin_senior_process, name='admin_senior_process'),
+
+    # ── Gruha Laxmi ─────────────────────────────────────────
+    path('services/kar-gov/gruha-laxmi/', views.gruha_laxmi_page, name='gruha_laxmi'),
+    path('services/kar-gov/gruha-laxmi/submit/', views.gruha_laxmi_submit, name='gruha_laxmi_submit'),
+    path('services/kar-gov/gruha-laxmi/list/', views.gruha_laxmi_list, name='gruha_laxmi_list'),
+    path('services/kar-gov/gruha-laxmi/download/<str:order_id>/', views.gruha_laxmi_download, name='gruha_laxmi_download'),
+
+    path('admin-portal/gruha-laxmi/', admin_views.admin_gruha_laxmi_applications, name='admin_gruha_laxmi_list'),
+    path('admin-portal/gruha-laxmi/<str:order_id>/', admin_views.admin_gruha_laxmi_detail, name='admin_gruha_laxmi_detail'),
+    path('admin-portal/gruha-laxmi/<str:order_id>/process/', admin_views.admin_gruha_laxmi_process, name='admin_gruha_laxmi_process'),
+
+    # ── Gruha Laxmi Status ────────────────────────────────────
+    path('services/kar-gov/gruha-laxmi-status/', views.gruha_laxmi_status_page, name='gruha_laxmi_status'),
+    path('services/kar-gov/gruha-laxmi-status/submit/', views.gruha_laxmi_status_submit, name='gruha_laxmi_status_submit'),
+    path('services/kar-gov/gruha-laxmi-status/list/', views.gruha_laxmi_status_list, name='gruha_laxmi_status_list'),
+    path('services/kar-gov/gruha-laxmi-status/download/<str:order_id>/', views.gruha_laxmi_status_download, name='gruha_laxmi_status_download'),
+
+    path('admin-portal/gruha-laxmi-status/', admin_views.admin_gruha_laxmi_status_applications, name='admin_gruha_laxmi_status_list'),
+    path('admin-portal/gruha-laxmi-status/<str:order_id>/', admin_views.admin_gruha_laxmi_status_detail, name='admin_gruha_laxmi_status_detail'),
+    path('admin-portal/gruha-laxmi-status/<str:order_id>/process/', admin_views.admin_gruha_laxmi_status_process, name='admin_gruha_laxmi_status_process'),
+
+    # ── Gruha Laxmi KYC ───────────────────────────────────────
+    path('services/kar-gov/gruha-laxmi-kyc/', views.gruha_laxmi_kyc_page, name='gruha_laxmi_kyc'),
+    path('services/kar-gov/gruha-laxmi-kyc/submit/', views.gruha_laxmi_kyc_submit, name='gruha_laxmi_kyc_submit'),
+    path('services/kar-gov/gruha-laxmi-kyc/list/', views.gruha_laxmi_kyc_list, name='gruha_laxmi_kyc_list'),
+    path('services/kar-gov/gruha-laxmi-kyc/download/<str:order_id>/', views.gruha_laxmi_kyc_download, name='gruha_laxmi_kyc_download'),
+
+    path('admin-portal/gruha-laxmi-kyc/', admin_views.admin_gruha_laxmi_kyc_applications, name='admin_gruha_laxmi_kyc_list'),
+    path('admin-portal/gruha-laxmi-kyc/<str:order_id>/', admin_views.admin_gruha_laxmi_kyc_detail, name='admin_gruha_laxmi_kyc_detail'),
+    path('admin-portal/gruha-laxmi-kyc/<str:order_id>/process/', admin_views.admin_gruha_laxmi_kyc_process, name='admin_gruha_laxmi_kyc_process'),
+
+    # ── Gruha Laxmi Sanction Order ────────────────────────────
+    path('services/kar-gov/gruha-laxmi-sanction/', views.gruha_laxmi_sanction_page, name='gruha_laxmi_sanction'),
+    path('services/kar-gov/gruha-laxmi-sanction/submit/', views.gruha_laxmi_sanction_submit, name='gruha_laxmi_sanction_submit'),
+    path('services/kar-gov/gruha-laxmi-sanction/list/', views.gruha_laxmi_sanction_list, name='gruha_laxmi_sanction_list'),
+    path('services/kar-gov/gruha-laxmi-sanction/download/<str:order_id>/', views.gruha_laxmi_sanction_download, name='gruha_laxmi_sanction_download'),
+
+    path('admin-portal/gruha-laxmi-sanction/', admin_views.admin_gruha_laxmi_sanction_applications, name='admin_gruha_laxmi_sanction_list'),
+    path('admin-portal/gruha-laxmi-sanction/<str:order_id>/', admin_views.admin_gruha_laxmi_sanction_detail, name='admin_gruha_laxmi_sanction_detail'),
+    path('admin-portal/gruha-laxmi-sanction/<str:order_id>/process/', admin_views.admin_gruha_laxmi_sanction_process, name='admin_gruha_laxmi_sanction_process'),
+
+    # ── Gruha Jyothi ──────────────────────────────────────────
+    path('services/kar-gov/gruha-jyothi/', views.gruha_jyothi_page, name='gruha_jyothi'),
+    path('services/kar-gov/gruha-jyothi/submit/', views.gruha_jyothi_submit, name='gruha_jyothi_submit'),
+    path('services/kar-gov/gruha-jyothi/list/', views.gruha_jyothi_list, name='gruha_jyothi_list'),
+    path('services/kar-gov/gruha-jyothi/download/<str:order_id>/', views.gruha_jyothi_download, name='gruha_jyothi_download'),
+
+    path('admin-portal/gruha-jyothi/', admin_views.admin_gruha_jyothi_applications, name='admin_gruha_jyothi_list'),
+    path('admin-portal/gruha-jyothi/<str:order_id>/', admin_views.admin_gruha_jyothi_detail, name='admin_gruha_jyothi_detail'),
+    path('admin-portal/gruha-jyothi/<str:order_id>/process/', admin_views.admin_gruha_jyothi_process, name='admin_gruha_jyothi_process'),
+
+    # ── Gruha Jyothi D-Link ───────────────────────────────────
+    path('services/kar-gov/gruha-jyothi-dlink/', views.gruha_jyothi_dlink_page, name='gruha_jyothi_dlink'),
+    path('services/kar-gov/gruha-jyothi-dlink/submit/', views.gruha_jyothi_dlink_submit, name='gruha_jyothi_dlink_submit'),
+    path('services/kar-gov/gruha-jyothi-dlink/list/', views.gruha_jyothi_dlink_list, name='gruha_jyothi_dlink_list'),
+    path('services/kar-gov/gruha-jyothi-dlink/download/<str:order_id>/', views.gruha_jyothi_dlink_download, name='gruha_jyothi_dlink_download'),
+
+    path('admin-portal/gruha-jyothi-dlink/', admin_views.admin_gruha_jyothi_dlink_applications, name='admin_gruha_jyothi_dlink_list'),
+    path('admin-portal/gruha-jyothi-dlink/<str:order_id>/', admin_views.admin_gruha_jyothi_dlink_detail, name='admin_gruha_jyothi_dlink_detail'),
+    path('admin-portal/gruha-jyothi-dlink/<str:order_id>/process/', admin_views.admin_gruha_jyothi_dlink_process, name='admin_gruha_jyothi_dlink_process'),
+
+    # ── Bhoomi Pahani Link ────────────────────────────────────
+    path('services/kar-gov/bhoomi-pahani-link/', views.bhoomi_pahani_link_page, name='bhoomi_pahani_link'),
+    path('services/kar-gov/bhoomi-pahani-link/submit/', views.bhoomi_pahani_link_submit, name='bhoomi_pahani_link_submit'),
+    path('services/kar-gov/bhoomi-pahani-link/list/', views.bhoomi_pahani_link_list, name='bhoomi_pahani_link_list'),
+    path('services/kar-gov/bhoomi-pahani-link/download/<str:order_id>/', views.bhoomi_pahani_link_download, name='bhoomi_pahani_link_download'),
+
+    path('admin-portal/bhoomi-pahani-link/', admin_views.admin_bhoomi_pahani_link_applications, name='admin_bhoomi_pahani_link_list'),
+    path('admin-portal/bhoomi-pahani-link/<str:order_id>/', admin_views.admin_bhoomi_pahani_link_detail, name='admin_bhoomi_pahani_link_detail'),
+    path('admin-portal/bhoomi-pahani-link/<str:order_id>/process/', admin_views.admin_bhoomi_pahani_link_process, name='admin_bhoomi_pahani_link_process'),
+
+    # ── RTC Download ──────────────────────────────────────────
+    path('services/kar-gov/rtc-download/', views.rtc_download_page, name='rtc_download'),
+    path('services/kar-gov/rtc-download/submit/', views.rtc_download_submit, name='rtc_download_submit'),
+    path('services/kar-gov/rtc-download/list/', views.rtc_download_list, name='rtc_download_list'),
+    path('services/kar-gov/rtc-download/download/<str:order_id>/', views.rtc_download_pdf, name='rtc_download_pdf'),
+
+    path('admin-portal/rtc-download/', admin_views.admin_rtc_download_applications, name='admin_rtc_download_list'),
+    path('admin-portal/rtc-download/<str:order_id>/', admin_views.admin_rtc_download_detail, name='admin_rtc_download_detail'),
+    path('admin-portal/rtc-download/<str:order_id>/process/', admin_views.admin_rtc_download_process, name='admin_rtc_download_process'),
+
+    # ── ABHA Health Card ──────────────────────────────────────
+    path('services/kar-gov/abha-card/', views.abha_card_page, name='abha_card'),
+    path('services/kar-gov/abha-card/submit/', views.abha_card_submit, name='abha_card_submit'),
+    path('services/kar-gov/abha-card/list/', views.abha_card_list, name='abha_card_list'),
+    path('services/kar-gov/abha-card/download/<str:order_id>/', views.abha_card_download, name='abha_card_download'),
+
+    path('admin-portal/abha-card/', admin_views.admin_abha_card_applications, name='admin_abha_card_list'),
+    path('admin-portal/abha-card/<str:order_id>/', admin_views.admin_abha_card_detail, name='admin_abha_card_detail'),
+    path('admin-portal/abha-card/<str:order_id>/process/', admin_views.admin_abha_card_process, name='admin_abha_card_process'),
+
+    # ── Ayushman Bharat Card (₹100 Scheme) ────────────────────
+    path('services/kar-gov/ayush-card/', views.ayush_card_page, name='ayush_card'),
+    path('services/kar-gov/ayush-card/submit/', views.ayush_card_submit, name='ayush_card_submit'),
+    path('services/kar-gov/ayush-card/list/', views.ayush_card_list, name='ayush_card_list'),
+    path('services/kar-gov/ayush-card/download/<str:order_id>/', views.ayush_card_download, name='ayush_card_download'),
+
+    path('admin-portal/ayush-card/', admin_views.admin_ayush_card_applications, name='admin_ayush_card_list'),
+    path('admin-portal/ayush-card/<str:order_id>/', admin_views.admin_ayush_card_detail, name='admin_ayush_card_detail'),
+    path('admin-portal/ayush-card/<str:order_id>/process/', admin_views.admin_ayush_card_process, name='admin_ayush_card_process'),
+
+    # ── Ayushman Card Download Only Service ───────────────────
+    path('services/kar-gov/ayush-download/', views.ayush_dwnld_page, name='ayush_dwnld'),
+    path('services/kar-gov/ayush-download/submit/', views.ayush_dwnld_submit, name='ayush_dwnld_submit'),
+    path('services/kar-gov/ayush-download/list/', views.ayush_dwnld_list, name='ayush_dwnld_list'),
+    path('services/kar-gov/ayush-download/download/<str:order_id>/', views.ayush_dwnld_pdf, name='ayush_dwnld_pdf'),
+
+    path('admin-portal/ayush-download/', admin_views.admin_ayush_dwnld_applications, name='admin_ayush_dwnld_list'),
+    path('admin-portal/ayush-download/<str:order_id>/', admin_views.admin_ayush_dwnld_detail, name='admin_ayush_dwnld_detail'),
+    path('admin-portal/ayush-download/<str:order_id>/process/', admin_views.admin_ayush_dwnld_process, name='admin_ayush_dwnld_process'),
+
+    # ── e-Shram Card Registration Application ─────────────────
+    path('services/kar-gov/eshram/', views.eshram_page, name='eshram'),
+    path('services/kar-gov/eshram/submit/', views.eshram_submit, name='eshram_submit'),
+    path('services/kar-gov/eshram/list/', views.eshram_list, name='eshram_list'),
+    path('services/kar-gov/eshram/download/<str:order_id>/', views.eshram_download, name='eshram_download'),
+
+    path('admin-portal/eshram/', admin_views.admin_eshram_applications, name='admin_eshram_list'),
+    path('admin-portal/eshram/<str:order_id>/', admin_views.admin_eshram_detail, name='admin_eshram_detail'),
+    path('admin-portal/eshram/<str:order_id>/process/', admin_views.admin_eshram_process, name='admin_eshram_process'),
+
+    # ── e-Shram Card Download Only Application ─────────────────
+    path('services/kar-gov/eshram-download/', views.eshram_dwnld_page, name='eshram_dwnld'),
+    path('services/kar-gov/eshram-download/submit/', views.eshram_dwnld_submit, name='eshram_dwnld_submit'),
+    path('services/kar-gov/eshram-download/list/', views.eshram_dwnld_list, name='eshram_dwnld_list'),
+    path('services/kar-gov/eshram-download/download/<str:order_id>/', views.eshram_dwnld_pdf, name='eshram_dwnld_pdf'),
+
+    path('admin-portal/eshram-download/', admin_views.admin_eshram_dwnld_applications, name='admin_eshram_dwnld_list'),
+    path('admin-portal/eshram-download/<str:order_id>/', admin_views.admin_eshram_dwnld_detail, name='admin_eshram_dwnld_detail'),
+    path('admin-portal/eshram-download/<str:order_id>/process/', admin_views.admin_eshram_dwnld_process, name='admin_eshram_dwnld_process'),
+
+    # ── PM Kisan Services Application ─────────────────────────
+    path('services/kar-gov/pmkisan/', views.pmkisan_page, name='pmkisan'),
+    path('services/kar-gov/pmkisan/submit/', views.pmkisan_submit, name='pmkisan_submit'),
+    path('services/kar-gov/pmkisan/list/', views.pmkisan_list, name='pmkisan_list'),
+    path('services/kar-gov/pmkisan/download/<str:order_id>/', views.pmkisan_download, name='pmkisan_download'),
+
+    path('admin-portal/pmkisan/', admin_views.admin_pmkisan_applications, name='admin_pmkisan_list'),
+    path('admin-portal/pmkisan/<str:order_id>/', admin_views.admin_pmkisan_detail, name='admin_pmkisan_detail'),
+    path('admin-portal/pmkisan/<str:order_id>/process/', admin_views.admin_pmkisan_process, name='admin_pmkisan_process'),
+
+    # ── Naada Kacheri Certificate Download Application ─────────
+    path('services/kar-gov/naadakacheri-download/', views.naadakacheri_dwnld_page, name='naadakacheri_dwnld'),
+    path('services/kar-gov/naadakacheri-download/submit/', views.naadakacheri_dwnld_submit, name='naadakacheri_dwnld_submit'),
+    path('services/kar-gov/naadakacheri-download/list/', views.naadakacheri_dwnld_list, name='naadakacheri_dwnld_list'),
+    path('services/kar-gov/naadakacheri-download/download/<str:order_id>/', views.naadakacheri_dwnld_pdf, name='naadakacheri_dwnld_pdf'),
+
+    path('admin-portal/naadakacheri-download/', admin_views.admin_naadakacheri_dwnld_applications, name='admin_naadakacheri_dwnld_list'),
+    path('admin-portal/naadakacheri-download/<str:order_id>/', admin_views.admin_naadakacheri_dwnld_detail, name='admin_naadakacheri_dwnld_detail'),
+    path('admin-portal/naadakacheri-download/<str:order_id>/process/', admin_views.admin_naadakacheri_dwnld_process, name='admin_naadakacheri_dwnld_process'),
+
+    # ── Yuva Nidhi Scheme Application ─────────────────────────
+    path('services/kar-gov/yuvanidhi/', views.yuvanidhi_page, name='yuvanidhi'),
+    path('services/kar-gov/yuvanidhi/submit/', views.yuvanidhi_submit, name='yuvanidhi_submit'),
+    path('services/kar-gov/yuvanidhi/list/', views.yuvanidhi_list, name='yuvanidhi_list'),
+    path('services/kar-gov/yuvanidhi/download/<str:order_id>/', views.yuvanidhi_download, name='yuvanidhi_download'),
+
+    path('admin-portal/yuvanidhi/', admin_views.admin_yuvanidhi_applications, name='admin_yuvanidhi_list'),
+    path('admin-portal/yuvanidhi/<str:order_id>/', admin_views.admin_yuvanidhi_detail, name='admin_yuvanidhi_detail'),
+    path('admin-portal/yuvanidhi/<str:order_id>/process/', admin_views.admin_yuvanidhi_process, name='admin_yuvanidhi_process'),
+
+    # ── SSP Password Change Application ───────────────────────
+    path('services/kar-gov/ssp-password-change/', views.ssp_password_page, name='ssp_password_page'),
+    path('services/kar-gov/ssp-password-change/submit/', views.ssp_password_submit, name='ssp_password_submit'),
+    path('services/kar-gov/ssp-password-change/list/', views.ssp_password_list, name='ssp_password_list'),
+    path('services/kar-gov/ssp-password-change/download/<str:order_id>/', views.ssp_password_download, name='ssp_password_download'),
+
+    path('admin-portal/ssp-password-change/', admin_views.admin_ssp_password_applications, name='admin_ssp_password_list'),
+    path('admin-portal/ssp-password-change/<str:order_id>/', admin_views.admin_ssp_password_detail, name='admin_ssp_password_detail'),
+    path('admin-portal/ssp-password-change/<str:order_id>/process/', admin_views.admin_ssp_password_process, name='admin_ssp_password_process'),
+
+    # ── SSP Mobile Link Application ───────────────────────────
+    path('services/kar-gov/ssp-mobile-link/', views.ssp_mobile_page, name='ssp_mobile_page'),
+    path('services/kar-gov/ssp-mobile-link/submit/', views.ssp_mobile_submit, name='ssp_mobile_submit'),
+    path('services/kar-gov/ssp-mobile-link/list/', views.ssp_mobile_list, name='ssp_mobile_list'),
+    path('services/kar-gov/ssp-mobile-link/download/<str:order_id>/', views.ssp_mobile_download, name='ssp_mobile_download'),
+
+    path('admin-portal/ssp-mobile-link/', admin_views.admin_ssp_mobile_applications, name='admin_ssp_mobile_list'),
+    path('admin-portal/ssp-mobile-link/<str:order_id>/', admin_views.admin_ssp_mobile_detail, name='admin_ssp_mobile_detail'),
+    path('admin-portal/ssp-mobile-link/<str:order_id>/process/', admin_views.admin_ssp_mobile_process, name='admin_ssp_mobile_process'),
+
+    # ── Mobile to PAN Find (Surepass API) ─────────────────────
+    path('services/pan/mobile-to-pan/', views.mobile_to_pan_page, name='mobile_to_pan_page'),
+    path('services/pan/mobile-to-pan/submit/', views.mobile_to_pan_submit, name='mobile_to_pan_submit'),
+    path('services/pan/mobile-to-pan/list/', views.mobile_to_pan_list, name='mobile_to_pan_list'),
+
+    path('admin-portal/mobile-to-pan/', admin_views.admin_mobile_to_pan_applications, name='admin_mobile_to_pan_list'),
 ]

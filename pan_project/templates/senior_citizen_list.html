@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Senior Citizen Applications — SM Sevaone</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:#ffffff;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.brand-name{color:#e05e12;font-size:1.1rem;font-weight:700}
+.brand-sub{color:#64748b;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:.85rem}
+.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#16a34a;font-weight:700;text-decoration:none}
+.user-chip{display:flex;align-items:center;gap:.5rem;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:#e05e12;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff}
+.user-chip span{font-size:.78rem;color:#334155;font-weight:600}
+.btn-logout{background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;color:#475569;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s}
+.btn-logout:hover{background:#f1f5f9;color:#0f172a}
+
+.main-wrap{display:flex;flex:1}
+.sidebar{width:220px;background:#ffffff;border-right:1px solid #e2e8f0;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.25rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:8px;font-size:.85rem;color:#475569;text-decoration:none;border:none;background:none;font-family:inherit;width:100%;transition:all 0.15s ease}
+.nav-item:hover{background:#f1f5f9;color:#0f172a}
+.nav-item.active{background:#fff7ed;color:#e05e12;font-weight:600;border:1px solid #ffedd5}
+.nav-section{font-size:.65rem;color:#94a3b8;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:700}
+.content{flex:1;padding:1.75rem;overflow-y:auto;background:#f8fafc}
+
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.page-title{font-size:1.1rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px}
+.btn-new{background:#e05e12;border:none;border-radius:8px;color:#fff;font-size:.78rem;font-weight:600;padding:.45rem 1rem;cursor:pointer;text-decoration:none;display:inline-block}
+.btn-new:hover{background:#c24b09}
+
+.table-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.03)}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead th{text-align:left;padding:.75rem 1rem;color:#64748b;font-weight:600;border-bottom:1px solid #e2e8f0;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;background:#f8fafc;white-space:nowrap}
+tbody td{padding:.8rem 1rem;color:#334155;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+tbody td:first-child{color:#0f172a;font-weight:600;font-size:.75rem;font-family:monospace}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#f8fafc}
+
+.pill{display:inline-block;padding:.2rem .65rem;border-radius:20px;font-size:.66rem;font-weight:700}
+.pill-pending{background:#fff7ed;color:#e05e12;border:1px solid #ffedd5}
+.pill-completed{background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0}
+.pill-rejected{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+
+.btn-dl{background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0;padding:.3rem .6rem;border-radius:6px;font-weight:700;font-size:.72rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.btn-dl:hover{background:#16a34a;color:#fff}
+
+.empty{text-align:center;padding:2.5rem;color:#64748b;font-size:.82rem}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:#64748b;margin-bottom:1rem}
+.breadcrumb a{color:#64748b;text-decoration:none}
+.breadcrumb a:hover{color:#0f172a}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div><div class="brand-name">SM Sevaone</div><div class="brand-sub">Retailer Portal</div></div>
+  <div class="topbar-right">
+    <a href="{% url 'wallet' %}" class="wallet-chip">💰 ₹{{ retailer.wallet_balance }}</a>
+    <div class="user-chip"><div class="avatar">{{ retailer.full_name.0|upper }}</div><span>{{ retailer.user_id }}</span></div>
+    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <div class="nav-section">Main Menu</div>
+    <a href="{% url 'retailer_dashboard' %}" class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="{% url 'applied_list' %}" class="nav-item"><span class="nav-icon">📋</span> Applied List</a>
+    
+    <div class="nav-section" style="margin-top:.5rem">Services</div>
+    <a href="{% url 'kar_gov_services' %}" class="nav-item active"><span class="nav-icon">🏛️</span> Govt. Services</a>
+    <a href="{% url 'other_services' %}" class="nav-item"><span class="nav-icon">🪪</span> Other Services</a>
+  </div>
+
+  <div class="content">
+    <div class="breadcrumb">
+      <a href="{% url 'retailer_dashboard' %}">Dashboard</a>
+      <span>/</span>
+      <a href="{% url 'kar_gov_services' %}">Govt. Services</a>
+      <span>/</span>
+      <span>Senior Citizen Applications</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title"><i class="fa-solid fa-shield-halved" style="color:#e05e12"></i> Applied Senior Citizen Applications</div>
+      <a href="{% url 'senior_citizen' %}" class="btn-new">+ New Application</a>
+    </div>
+
+    {% if error %}
+      <div style="background:#fef2f2;border:1px solid #fca5a5;color:#dc2626;padding:.75rem 1rem;border-radius:8px;font-size:.85rem;font-weight:600;margin-bottom:1rem">
+        {{ error }}
+      </div>
+    {% endif %}
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Applicant Name</th>
+            <th>Aadhaar Number</th>
+            <th>Mobile</th>
+            <th>District / Taluk</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in applications %}
+            <tr>
+              <td>{{ app.order_id }}</td>
+              <td><strong>{{ app.applicant_name }}</strong></td>
+              <td>{{ app.aadhaar_number }}</td>
+              <td>{{ app.mobile }}</td>
+              <td>{{ app.district }} / {{ app.talluk }}</td>
+              <td>{{ app.created_at|date:"d M Y, h:i A" }}</td>
+              <td>
+                {% if app.status == 'COMPLETED' %}
+                  <span class="pill pill-completed">COMPLETED</span>
+                {% elif app.status == 'REJECTED' %}
+                  <span class="pill pill-rejected">REJECTED</span>
+                  {% if app.rejection_reason %}
+                    <br><small style="color:#dc2626;font-size:.7rem">{{ app.rejection_reason }}</small>
+                  {% endif %}
+                {% else %}
+                  <span class="pill pill-pending">PENDING</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if app.status == 'COMPLETED' and app.output_pdf %}
+                  <a href="{% url 'senior_citizen_download' app.order_id %}" class="btn-dl" target="_blank">
+                    <i class="fa-solid fa-download"></i> Download Card
+                  </a>
+                {% elif app.status == 'COMPLETED' %}
+                  <span style="font-size:.75rem;color:#16a34a;font-weight:600">Completed</span>
+                {% else %}
+                  <span style="font-size:.75rem;color:#64748b">Processing</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="8" class="empty">No Senior Citizen applications submitted yet.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -199,6 +199,7 @@ tbody tr:hover td{background:#f8fafc}
     <a href="{% url 'applied_list' %}" class="nav-item"><span class="nav-icon"><i class="fa-solid fa-list-ul" style="color:#74c0fc"></i></span> Applied List</a>
     
     <div class="nav-section" style="margin-top:.5rem">Services</div>
+    <a href="{% url 'kar_gov_services' %}" class="nav-item" style="background: linear-gradient(135deg, #e05e12 0%, #f0902f 100%) !important; color: #ffffff !important; font-weight: 700; border-radius: 12px; box-shadow: 0 4px 12px rgba(224,94,18,0.35); margin-bottom: 4px;"><span class="nav-icon"><i class="fa-solid fa-landmark" style="color:#ffffff !important"></i></span> Govt. Services</a>
     <a href="{% url 'print_services' %}" class="nav-item"><span class="nav-icon"><i class="fa-solid fa-print" style="color:#63e6be"></i></span> Print Services</a>
     <a href="{% url 'aadhaar_services' %}" class="nav-item"><span class="nav-icon"><i class="fa-solid fa-fingerprint" style="color:#0d9488"></i></span> Aadhaar Services</a>
     <a href="{% url 'other_services' %}" class="nav-item"><span class="nav-icon"><i class="fa-solid fa-briefcase" style="color:#b197fc"></i></span> Other Services</a>
@@ -305,7 +306,7 @@ tbody tr:hover td{background:#f8fafc}
       </div>
 
       <div class="services-row">
-        <a href="{% url 'other_services' %}" class="service-card" style="--svc: linear-gradient(135deg, #f97316, #fb923c); --svcShadow: rgba(249,115,22,.35);">
+        <a href="{% url 'kar_gov_services' %}" class="service-card" style="--svc: linear-gradient(135deg, #f97316, #fb923c); --svcShadow: rgba(249,115,22,.35);">
           <div class="service-icon"><i class="fa-solid fa-landmark"></i></div>
           <p class="service-title">Govt. Services</p>
         </a>

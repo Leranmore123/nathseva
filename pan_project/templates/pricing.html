@@ -1,253 +1,1308 @@
-<!DOCTYPE html>
-<html lang="hi">
+<!doctype html>
+<html lang="en" class="color-sidebar color-header headercolor5">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Service Pricing — Nath Seva One</title>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--favicon-->
+<link rel="icon" href="https://www.smsevaone.com/user/assets/images/favicon-32x32.png" type="image/png"/>
+<!--plugins-->
+<link href="https://www.smsevaone.com/user/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
+<link href="https://www.smsevaone.com/user/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" />
+<link href="https://www.smsevaone.com/user/assets/plugins/metismenu/css/metisMenu.min.css" rel="stylesheet"/>
+<!-- loader-->
+<link href="https://www.smsevaone.com/user/assets/css/pace.min.css" rel="stylesheet"/>
+<script src="https://www.smsevaone.com/user/assets/js/pace.min.js"></script>
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.smsevaone.com/user/assets/css/bootstrap-extended.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://www.smsevaone.com/user/assets/css/app.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+<!-- Theme Style CSS -->
+<link rel="stylesheet" href="https://www.smsevaone.com/user/assets/css/dark-theme.css"/>
+<link rel="stylesheet" href="https://www.smsevaone.com/user/assets/css/semi-dark.css"/>
+<link rel="stylesheet" href="https://www.smsevaone.com/user/assets/css/header-colors.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>Service Pricing - Nath Seva One</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f4f6fb;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+.css-serial {
+counter-reset: serial-number;
+}
+.css-serial td:first-child:before {
+counter-increment: serial-number;
+content: counter(serial-number);
+}
 
-/* TOPBAR */
-.topbar{background:#ffffff;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
-.brand-name{color:#f97316;font-size:1.1rem;font-weight:700}
-.brand-sub{color:#64748b;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
-.topbar-right{display:flex;align-items:center;gap:.85rem}
-.user-chip{display:flex;align-items:center;gap:.5rem;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:20px;padding:.3rem .85rem .3rem .3rem}
-.avatar{width:28px;height:28px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0}
-.user-chip span{font-size:.78rem;color:#334155;font-weight:600}
-.wallet-chip{display:flex;align-items:center;gap:.4rem;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:20px;padding:.3rem .85rem;font-size:.78rem;color:#16a34a;font-weight:700;text-decoration:none}
-.btn-logout{background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;color:#475569;font-size:.78rem;padding:.35rem .75rem;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s}
-.btn-logout:hover{background:#f1f5f9;color:#0f172a}
+/* Custom Sidebar & Topbar */
+.sidebar-wrapper {
+background: linear-gradient(180deg, #0f2027 0%, #203a43 55%, #2c5364 100%) !important;
+border-right: 0 !important;
+box-shadow: 2px 0 18px rgba(0,0,0,0.18);
+transition: background .4s ease;
+}
+.sidebar-wrapper .sidebar-header {
+background: rgba(255,255,255,0.04) !important;
+border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+backdrop-filter: blur(4px);
+}
+.sidebar-wrapper .sidebar-header .toggle-icon i { color: #fff; }
+.sidebar-wrapper[data-sb-theme="ocean"] { background: linear-gradient(180deg,#0f2027 0%,#203a43 55%,#2c5364 100%) !important; }
+.sidebar-wrapper[data-sb-theme="royal"] { background: linear-gradient(180deg,#41295a 0%,#2f0743 100%) !important; }
+.sidebar-wrapper[data-sb-theme="sunset"] { background: linear-gradient(180deg,#42275a 0%,#734b6d 100%) !important; }
+.sidebar-wrapper[data-sb-theme="emerald"] { background: linear-gradient(180deg,#0b3d2e 0%,#134e4a 100%) !important; }
+.sidebar-wrapper[data-sb-theme="midnight"]{ background: linear-gradient(180deg,#1f2937 0%,#0b1220 100%) !important; }
+.sidebar-wrapper[data-sb-theme="brand"] { background: linear-gradient(180deg,#7a2e05 0%,#e05e12 100%) !important; }
+.sidebar-wrapper[data-sb-theme="teal"] { background: linear-gradient(180deg,#134e4a 0%,#0d9488 100%) !important; }
+.sidebar-wrapper[data-sb-theme="rose"] { background: linear-gradient(180deg,#4a0e2e 0%,#9d174d 100%) !important; }
+.sidebar-wrapper[data-sb-theme="indigo"] { background: linear-gradient(180deg,#1e1b4b 0%,#4338ca 100%) !important; }
+.sidebar-wrapper[data-sb-theme="slate"] { background: linear-gradient(180deg,#334155 0%,#0f172a 100%) !important; }
+.sidebar-wrapper[data-sb-theme="light"] { background: linear-gradient(180deg,#ffffff 0%,#eef2f8 100%) !important; }
+.sidebar-wrapper[data-sb-theme="light"] .metismenu a { color:#334155 !important; }
+.sidebar-wrapper[data-sb-theme="light"] .sidebar-header { background:rgba(0,0,0,.02) !important; border-bottom:1px solid #e6ebf3 !important; }
+.sidebar-wrapper[data-sb-theme="light"] .menu-label { color:#94a3b8 !important; }
 
-/* LAYOUT */
-.main-wrap{display:flex;flex:1}
-.sidebar{width:230px;background:#ffffff;border-right:1px solid #e2e8f0;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.25rem}
-.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:8px;cursor:pointer;font-size:.85rem;color:#475569;text-decoration:none;border:none;background:none;font-family:inherit;width:100%;transition:all 0.15s ease}
-.nav-item:hover{background:#f1f5f9;color:#0f172a}
-.nav-item.active{background:#fff7ed;color:#ea580c;font-weight:600;border:1px solid #ffedd5}
-.nav-icon{font-size:1rem;width:20px;text-align:center}
-.nav-section{font-size:.65rem;color:#94a3b8;letter-spacing:.12em;text-transform:uppercase;padding:.75rem .85rem .25rem;font-weight:700}
-.content{flex:1;padding:1.75rem;overflow-y:auto;background:#f4f6fb}
+.sidebar-wrapper .metismenu a {
+color: #dbe4ee !important;
+border-radius: 10px;
+margin: 3px 10px;
+padding: 10px 14px;
+font-weight: 500;
+letter-spacing: .2px;
+transition: all .25s ease;
+}
+.sidebar-wrapper .metismenu a .menu-title { color: inherit !important; }
+.sidebar-wrapper .metismenu a:hover {
+background: rgba(255,255,255,0.10) !important;
+color: #ffffff !important;
+transform: translateX(3px);
+}
+.sidebar-wrapper .metismenu a:hover .parent-icon i { color:#fff !important; }
+.sidebar-wrapper .metismenu li.mm-active > a,
+.sidebar-wrapper .metismenu a.active {
+background: var(--sb-accent, linear-gradient(135deg,#e05e12 0%,#f0902f 100%)) !important;
+color: #fff !important;
+box-shadow: 0 6px 16px rgba(0,0,0,.22);
+}
+.sidebar-wrapper .metismenu li.mm-active > a .parent-icon i,
+.sidebar-wrapper .metismenu a.active .parent-icon i { color:#fff !important; }
+.sidebar-wrapper .metismenu .parent-icon i { font-size: 20px; }
 
-/* PAGE HEADER */
-.page-title{font-size:1.3rem;font-weight:700;color:#ea580c;display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem}
-.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:#64748b;margin-bottom:1.25rem}
-.breadcrumb a{color:#f97316;text-decoration:none;font-weight:600}
+.sidebar-wrapper .menu-label {
+color: #8aa1b4 !important;
+text-transform: uppercase;
+font-size: 11px;
+font-weight: 700;
+letter-spacing: 1.2px;
+padding: 16px 20px 6px !important;
+opacity: .9;
+}
 
-/* PRICING GRID */
-.pricing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 1.25rem; }
-.pricing-card { background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); overflow: hidden; }
+.topbar {
+background: #ffffff;
+box-shadow: 0 2px 10px rgba(0,0,0,.06);
+border-bottom: 1px solid #eef1f6;
+}
+.topbar .nav-link { color: #4a5568; }
+.topbar .nav-item .nav-link i { font-size: 22px; }
 
-.pricing-header { padding: 1rem 1.25rem; color: #fff; display: flex; align-items: center; justify-content: space-between; font-weight: 700; font-size: .95rem; }
-.pricing-header.gov { background: linear-gradient(135deg, #16a34a, #22c55e); }
-.pricing-header.gruha { background: linear-gradient(135deg, #2563eb, #3b82f6); }
-.pricing-header.aadhaar { background: linear-gradient(135deg, #0d9488, #14b8a6); }
-.pricing-header.other { background: linear-gradient(135deg, #9333ea, #a855f7); }
-.pricing-header.ration { background: linear-gradient(135deg, #d97706, #f59e0b); }
-.pricing-header.voter { background: linear-gradient(135deg, #dc2626, #ef4444); }
-.pricing-header.dl { background: linear-gradient(135deg, #0284c7, #38bdf8); }
+.wallet-pill {
+display: inline-flex; align-items: center; gap: 7px;
+background: #eafaf1; color: #12854a;
+padding: 7px 15px; border-radius: 30px;
+font-weight: 700; text-decoration: none; line-height: 1;
+white-space: nowrap; transition: all .2s ease;
+border: 1px solid #cdeedd;
+}
+.wallet-pill:hover { background: #12854a; color: #fff; box-shadow: 0 4px 12px rgba(18,133,74,.35); }
+.wallet-pill i { font-size: 16px; }
+.topbar .user-box .user-name { font-weight: 700; color:#1f2d3d; }
+.topbar .user-box .designattion { color:#8794a5; }
 
-.pricing-badge { background: rgba(255,255,255,0.25); color: #fff; font-size: .75rem; padding: 3px 10px; border-radius: 12px; }
+.mobile-toggle-menu {
+display:flex !important; align-items:center; justify-content:center;
+cursor:pointer; font-size: 26px; color:#e05e12;
+}
 
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: .7rem 1.25rem; font-size: .85rem; border-bottom: 1px solid #f1f5f9; text-align: left; }
-th { background: #f8fafc; color: #64748b; font-weight: 700; font-size: .78rem; text-transform: uppercase; letter-spacing: .5px; }
-tr:last-child td { border-bottom: none; }
-.price-tag { font-weight: 700; color: #2563eb; }
+#sbThemeBtn {
+position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 1055;
+width: 44px; height: 48px; border-radius: 14px 0 0 14px; border: none;
+background: var(--sb-accent, linear-gradient(135deg,#e05e12,#f0902f));
+color:#fff; font-size: 22px; cursor:pointer;
+box-shadow: 3px 3px 16px rgba(0,0,0,.30);
+display:flex; align-items:center; justify-content:center;
+transition: width .2s ease;
+}
+#sbThemeBtn:hover { width: 52px; }
+#sbThemeBtn:hover i { animation: sbSpin 1.4s linear infinite; }
+@keyframes sbSpin { to { transform: rotate(360deg); } }
+#sbThemePanel {
+position: fixed; right: 54px; top: 50%; transform: translateY(-50%); z-index: 1055;
+background:#fff; border-radius: 14px; padding: 14px;
+box-shadow: 0 12px 40px rgba(0,0,0,.20);
+width: 234px; max-height: 86vh; overflow-y:auto; display:none; border:1px solid #eef1f6;
+}
+#sbThemePanel.open { display:block; animation: sbPop .2s ease; }
+@keyframes sbPop { from{opacity:0;} to{opacity:1;} }
+#sbThemePanel h6 { font-size: 12px; text-transform:uppercase; letter-spacing:.6px; color:#8794a5; margin:14px 0 10px; }
+#sbThemePanel h6:first-child { margin-top: 0; }
+.sb-swatches { display:grid; grid-template-columns: repeat(4,1fr); gap:9px; }
+.sb-swatch {
+height: 36px; border-radius: 10px; cursor:pointer; border:2px solid transparent;
+position:relative; transition: transform .15s ease;
+}
+.sb-swatch:hover { transform: scale(1.08); }
+.sb-swatch.selected { border-color:#111; box-shadow:0 0 0 2px #fff, 0 0 0 4px #e05e12; }
+.sb-swatch[data-sb-swatch="ocean"] { background: linear-gradient(135deg,#0f2027,#2c5364); }
+.sb-swatch[data-sb-swatch="royal"] { background: linear-gradient(135deg,#41295a,#2f0743); }
+.sb-swatch[data-sb-swatch="sunset"] { background: linear-gradient(135deg,#42275a,#734b6d); }
+.sb-swatch[data-sb-swatch="emerald"] { background: linear-gradient(135deg,#0b3d2e,#134e4a); }
+.sb-swatch[data-sb-swatch="midnight"]{ background: linear-gradient(135deg,#1f2937,#0b1220); }
+.sb-swatch[data-sb-swatch="brand"] { background: linear-gradient(135deg,#7a2e05,#e05e12); }
+.sb-swatch[data-sb-swatch="teal"] { background: linear-gradient(135deg,#134e4a,#0d9488); }
+.sb-swatch[data-sb-swatch="rose"] { background: linear-gradient(135deg,#4a0e2e,#9d174d); }
+.sb-swatch[data-sb-swatch="indigo"] { background: linear-gradient(135deg,#1e1b4b,#4338ca); }
+.sb-swatch[data-sb-swatch="slate"] { background: linear-gradient(135deg,#334155,#0f172a); }
+.sb-swatch[data-sb-swatch="light"] { background: linear-gradient(135deg,#ffffff,#dfe6ef); border:1px solid #e6ebf3; }
+
+.sb-accents { display:grid; grid-template-columns: repeat(6,1fr); gap:8px; }
+.sb-accent { height:26px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition: transform .15s ease; }
+.sb-accent:hover { transform: scale(1.12); }
+.sb-accent.selected { border-color:#fff; box-shadow:0 0 0 2px #111; }
+.sb-accent[data-accent="orange"] { background:#e05e12; }
+.sb-accent[data-accent="blue"] { background:#2563eb; }
+.sb-accent[data-accent="green"] { background:#16a34a; }
+.sb-accent[data-accent="purple"] { background:#7c3aed; }
+.sb-accent[data-accent="pink"] { background:#db2777; }
+.sb-accent[data-accent="red"] { background:#dc2626; }
+
+.sb-row { display:flex; align-items:center; justify-content:space-between; margin-top:14px; padding-top:12px; border-top:1px solid #eef1f6; }
+.sb-row span { font-size:13px; color:#4a5568; font-weight:600; }
+.sb-dark-toggle { cursor:pointer; font-size:24px; color:#e05e12; background:none; border:none; line-height:1; }
+.sb-switch { position:relative; width:44px; height:24px; flex:0 0 auto; }
+.sb-switch input { display:none; }
+.sb-switch label { position:absolute; inset:0; background:#d7dee8; border-radius:20px; cursor:pointer; transition: background .2s ease; }
+.sb-switch label::after { content:""; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition: transform .2s ease; box-shadow:0 1px 3px rgba(0,0,0,.3); }
+.sb-switch input:checked + label { background:#16a34a; }
+.sb-switch input:checked + label::after { transform: translateX(20px); }
+.sb-reset { width:100%; margin-top:14px; padding:9px; border:none; border-radius:10px; background:#f1f4f9; color:#4a5568; font-weight:700; font-size:13px; cursor:pointer; transition: background .2s ease; }
+.sb-reset:hover { background:#e6ebf3; color:#e05e12; }
+
+@media (max-width: 991.98px){
+.topbar .navbar { padding:.5rem 0; }
+.user-box { padding-left:.5rem !important; padding-right:.5rem !important; margin-left:.5rem !important; }
+.navbar-nav { gap:.5rem !important; }
+}
+@media (max-width: 767.98px){
+.navbar-nav { flex-direction:row; align-items:center; flex-wrap:wrap; gap:.5rem !important; }
+.user-box .user-info { display:none !important; }
+.top-menu { flex:1; min-width:0; }
+#sbThemeBtn { width:40px; height:44px; font-size:20px; }
+}
+
+#SearchModal .search-list a {
+display:flex; align-items:center; gap:12px; padding:11px 14px; border-radius:10px;
+color:#334155; text-decoration:none; transition: background .18s ease;
+}
+#SearchModal .search-list a:hover { background:#f3f6fb; color:#e05e12; }
+#SearchModal .search-list a i { font-size:20px; width:24px; text-align:center; color:#e05e12; }
+#SearchModal .search-list a small { display:block; color:#94a3b8; font-weight:400; }
 </style>
 </head>
 <body>
+<!--wrapper-->
+<div class="wrapper">
+<!--sidebar-->
+<div class="sidebar-wrapper" data-simplebar="true">
+<div class="sidebar-header">
+<div>
+  <h4 class="m-0" style="color:#e05e12; font-weight:800; font-size:18px;">Nath Seva One</h4>
+</div>
+<div class="toggle-icon ms-auto d-none"><i class="bx bx-arrow-to-left"></i></div>
+</div>
+<!--navigation-->
+<ul class="metismenu" id="menu">
+<li>
+<a href="{% url 'retailer_dashboard' %}">
+<div class="parent-icon"><i class="fa-solid fa-gauge-high" style="color:#ff6b6b;"></i></div>
+<div class="menu-title">Dashboard</div>
+</a>
+</li>
+<li>
+<a href="{% url 'wallet' %}">
+<div class="parent-icon"><i class="fa-solid fa-wallet" style="color:#ffd43b;"></i></div>
+<div class="menu-title">Wallet</div>
+</a>
+</li>
+<li class="menu-label">Statement</li>
+<li>
+<a href="{% url 'applied_list' %}">
+<div class="parent-icon"><i class="fa-solid fa-list-ul" style="color:#74c0fc;"></i></div>
+<div class="menu-title">Transaction Details</div>
+</a>
+</li>
+<li class="menu-label">Services</li>
+<li>
+<a href="{% url 'kar_gov_services' %}">
+<div class="parent-icon"><i class="fa-solid fa-landmark" style="color:#ffa94d;"></i></div>
+<div class="menu-title">Govt. Services</div>
+</a>
+</li>
+<li>
+<a href="{% url 'print_services' %}">
+<div class="parent-icon"><i class="fa-solid fa-print" style="color:#63e6be;"></i></div>
+<div class="menu-title">Print Services</div>
+</a>
+</li>
+<li>
+<a href="{% url 'other_services' %}">
+<div class="parent-icon"><i class="fa-solid fa-id-card" style="color:#b197fc;"></i></div>
+<div class="menu-title">Other Services</div>
+</a>
+</li>
+<li>
+<a href="{% url 'free_tools' %}">
+<div class="parent-icon"><i class="fa-solid fa-gift" style="color:#20c997;"></i></div>
+<div class="menu-title">Free Tools <span class="badge bg-success ms-1" style="font-size:9px;vertical-align:middle;">FREE</span></div>
+</a>
+</li>
+<li class="menu-label">Account &amp; Help</li>
+<li>
+<a href="{% url 'profile' %}">
+<div class="parent-icon"><i class="fa-solid fa-user-gear" style="color:#4dabf7;"></i></div>
+<div class="menu-title">Profile Settings</div>
+</a>
+</li>
+<li class="mm-active">
+<a href="{% url 'pricing' %}" class="active">
+<div class="parent-icon"><i class="fa-solid fa-indian-rupee-sign" style="color:#69db7c;"></i></div>
+<div class="menu-title">Pricing</div>
+</a>
+</li>
+<li>
+<a href="{% url 'retailer_logout' %}">
+<div class="parent-icon"><i class="fa-solid fa-right-from-bracket" style="color:#ff8787;"></i></div>
+<div class="menu-title">Logout</div>
+</a>
+</li>
+</ul>
+<!--end navigation-->
+</div>
+<!--end sidebar-->
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div><div class="brand-name">Nath Seva One</div><div class="brand-sub">Retailer Portal</div></div>
-  <div class="topbar-right">
-    <a href="{% url 'wallet' %}" class="wallet-chip">💰 ₹{{ retailer.wallet_balance }}</a>
-    <div class="user-chip">
-      <div class="avatar">{{ retailer.full_name.0|upper }}</div>
-      <span>{{ retailer.user_id }}</span>
-    </div>
-    <a href="{% url 'retailer_logout' %}" class="btn-logout">Logout</a>
-  </div>
+<header>
+<div class="topbar d-flex align-items-center">
+<nav class="navbar navbar-expand gap-3">
+<div class="mobile-toggle-menu"><i class='bx bx-menu'></i></div>
+<div class="top-menu ms-auto">
+<ul class="navbar-nav align-items-center gap-2 flex-wrap">
+<!-- Search -->
+<li class="nav-item">
+<a class="nav-link" href="javascript:;" data-bs-toggle="modal" data-bs-target="#SearchModal" title="Search services"><i class='bx bx-search'></i></a>
+</li>
+<!-- Dark mode -->
+<li class="nav-item d-none d-sm-flex">
+<a class="nav-link" id="topDarkToggle" href="javascript:;" title="Toggle dark mode"><i class='bx bx-moon'></i></a>
+</li>
+<!-- Wallet -->
+<li class="nav-item">
+<a class="wallet-pill" href="{% url 'wallet' %}" title="Wallet Balance">
+<i class="fa-solid fa-wallet"></i>
+<b>₹{{ retailer.wallet_balance|default:"0.00" }}</b>
+</a>
+</li>
+</ul>
+</div>
+<!-- User -->
+<div class="user-box dropdown px-2 px-md-3 ms-2">
+<a class="d-flex align-items-center nav-link dropdown-toggle gap-2 gap-md-3 dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+<div class="avatar" style="width:36px;height:36px;border-radius:50%;background:#e05e12;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;">
+  {{ retailer.full_name.0|default:"R"|upper }}
+</div>
+<div class="user-info d-none d-md-block">
+<p class="user-name mb-0">{{ retailer.full_name|default:"Retailer" }}</p>
+<p class="designattion mb-0 small">{{ retailer.user_id|default:"RETAILER PORTAL" }}</p>
+</div>
+</a>
+<ul class="dropdown-menu dropdown-menu-end">
+<li><a class="dropdown-item d-flex align-items-center" href="{% url 'retailer_dashboard' %}"><i class="bx bx-home-circle fs-5 me-2"></i><span>Dashboard</span></a></li>
+<li><a class="dropdown-item d-flex align-items-center" href="{% url 'profile' %}"><i class="bx bx-user fs-5 me-2"></i><span>Profile</span></a></li>
+<li><a class="dropdown-item d-flex align-items-center" href="{% url 'pricing' %}"><i class="bx bx-cog fs-5 me-2"></i><span>Pricing</span></a></li>
+<li><div class="dropdown-divider mb-0"></div></li>
+<li><a class="dropdown-item d-flex align-items-center" href="{% url 'retailer_logout' %}"><i class="bx bx-log-out-circle fs-5 me-2"></i><span>Logout</span></a></li>
+</ul>
+</div>
+</nav>
+</div>
+</header>
+
+<!-- Sidebar theme switcher -->
+<button id="sbThemeBtn" title="Theme settings"><i class="fa-solid fa-gear"></i></button>
+<div id="sbThemePanel">
+<h6>Sidebar Theme</h6>
+<div class="sb-swatches">
+<div class="sb-swatch" data-sb-swatch="ocean" title="Ocean"></div>
+<div class="sb-swatch" data-sb-swatch="royal" title="Royal"></div>
+<div class="sb-swatch" data-sb-swatch="sunset" title="Sunset"></div>
+<div class="sb-swatch" data-sb-swatch="emerald" title="Emerald"></div>
+<div class="sb-swatch" data-sb-swatch="midnight" title="Midnight"></div>
+<div class="sb-swatch" data-sb-swatch="brand" title="Brand"></div>
+<div class="sb-swatch" data-sb-swatch="teal" title="Teal"></div>
+<div class="sb-swatch" data-sb-swatch="rose" title="Rose"></div>
+<div class="sb-swatch" data-sb-swatch="indigo" title="Indigo"></div>
+<div class="sb-swatch" data-sb-swatch="slate" title="Slate"></div>
+<div class="sb-swatch" data-sb-swatch="light" title="Light"></div>
+</div>
+<h6>Accent Color</h6>
+<div class="sb-accents">
+<div class="sb-accent" data-accent="orange" title="Orange"></div>
+<div class="sb-accent" data-accent="blue" title="Blue"></div>
+<div class="sb-accent" data-accent="green" title="Green"></div>
+<div class="sb-accent" data-accent="purple" title="Purple"></div>
+<div class="sb-accent" data-accent="pink" title="Pink"></div>
+<div class="sb-accent" data-accent="red" title="Red"></div>
+</div>
+<div class="sb-row">
+<span>Dark Mode</span>
+<button class="sb-dark-toggle" id="sbDarkToggle" title="Toggle dark mode"><i class='bx bx-moon'></i></button>
+</div>
+<div class="sb-row">
+<span>Compact Sidebar</span>
+<div class="sb-switch">
+<input type="checkbox" id="sbCompact">
+<label for="sbCompact"></label>
+</div>
+</div>
+<button class="sb-reset" id="sbReset"><i class="fa-solid fa-rotate-left me-1"></i> Reset to Default</button>
 </div>
 
-<!-- MAIN WRAPPER -->
-<div class="main-wrap">
-
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="nav-section">Main Menu</div>
-    <a href="{% url 'retailer_dashboard' %}" class="nav-item"><span class="nav-icon"><i class="fa-solid fa-gauge-high" style="color:#ff6b6b"></i></span> Dashboard</a>
-    <a href="{% url 'pan_services' %}" class="nav-item"><span class="nav-icon"><i class="fa-solid fa-address-card" style="color:#db2777"></i></span> PAN Services</a>
-    <a href="{% url 'applied_list' %}" class="nav-item"><span class="nav-icon"><i class="fa-solid fa-list-ul" style="color:#74c0fc"></i></span> Applied List</a>
-    
-    <div class="nav-section" style="margin-top:.5rem">Services</div>
-    <a href="{% url 'print_services' %}" class="nav-item"><span class="nav-icon"><i class="fa-solid fa-print" style="color:#63e6be"></i></span> Print Services</a>
-    <a href="{% url 'aadhaar_services' %}" class="nav-item"><span class="nav-icon"><i class="fa-solid fa-fingerprint" style="color:#0d9488"></i></span> Aadhaar Services</a>
-    <a href="{% url 'other_services' %}" class="nav-item"><span class="nav-icon"><i class="fa-solid fa-briefcase" style="color:#b197fc"></i></span> Other Services</a>
-    <a href="{% url 'free_tools' %}" class="nav-item"><span class="nav-icon"><i class="fa-solid fa-gift" style="color:#20c997"></i></span> Free Tools</a>
-    
-    <div class="nav-section" style="margin-top:.5rem">Account & Help</div>
-    <a href="{% url 'wallet' %}" class="nav-item"><span class="nav-icon"><i class="fa-solid fa-wallet" style="color:#ffd43b"></i></span> Wallet</a>
-    <a href="{% url 'pricing' %}" class="nav-item active"><span class="nav-icon"><i class="fa-solid fa-tags" style="color:#69db7c"></i></span> Service Pricing</a>
-    <a href="{% url 'profile' %}" class="nav-item"><span class="nav-icon"><i class="fa-solid fa-user-gear" style="color:#4dabf7"></i></span> Profile Settings</a>
-  </div>
-
-  <!-- CONTENT -->
-  <div class="content">
-    <div class="breadcrumb">
-      <a href="{% url 'retailer_dashboard' %}">Dashboard</a>
-      <span>/</span>
-      <span>Service Pricing</span>
-    </div>
-
-    <h2 class="page-title"><i class="fa-solid fa-tags"></i> Service Pricing Rate Chart</h2>
-
-    <div class="pricing-grid">
-
-      <!-- Aadhaar Services Pricing -->
-      <div class="pricing-card">
-        <div class="pricing-header aadhaar">
-          <span><i class="fa-solid fa-fingerprint"></i> Aadhaar Services</span>
-          <span class="pricing-badge">4 Services</span>
-        </div>
-        <table>
-          <thead><tr><th>Service Name</th><th>Price</th></tr></thead>
-          <tbody>
-            <tr><td>UID to Aadhaar PDF</td><td class="price-tag">₹1,000.00</td></tr>
-            <tr><td>EID to UID</td><td class="price-tag">₹750.00</td></tr>
-            <tr><td>LMS Certificate</td><td class="price-tag">₹1,000.00</td></tr>
-            <tr><td>PAN to Aadhaar Verification</td><td class="price-tag">₹200.00</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Other Services Pricing -->
-      <div class="pricing-card">
-        <div class="pricing-header other">
-          <span><i class="fa-solid fa-briefcase"></i> Other Services</span>
-          <span class="pricing-badge">14 Services</span>
-        </div>
-        <table>
-          <thead><tr><th>Service Name</th><th>Price</th></tr></thead>
-          <tbody>
-            <tr><td>Tailoring Certificate</td><td class="price-tag">₹450.00</td></tr>
-            <tr><td>Basic Computer Certificate</td><td class="price-tag">₹400.00</td></tr>
-            <tr><td>Ration Card Correction</td><td class="price-tag">₹200.00</td></tr>
-            <tr><td>Credit Score / CIBIL</td><td class="price-tag">₹120.00</td></tr>
-            <tr><td>Udyam Registration</td><td class="price-tag">₹100.00</td></tr>
-            <tr><td>Ayushman Card</td><td class="price-tag">₹100.00</td></tr>
-            <tr><td>Link Aadhaar & Pahani</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>ABHA Card</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>AYUSH Download</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>Ration To Aadhaar</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>Aadhaar To Ration</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>SSP Password Change</td><td class="price-tag">₹30.00</td></tr>
-            <tr><td>PAN Card Print</td><td class="price-tag">₹20.00</td></tr>
-            <tr><td>Download RTC</td><td class="price-tag">₹10.00</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Government Services Pricing -->
-      <div class="pricing-card">
-        <div class="pricing-header gov">
-          <span><i class="fa-solid fa-landmark"></i> Government Services</span>
-          <span class="pricing-badge">6 Services</span>
-        </div>
-        <table>
-          <thead><tr><th>Service Name</th><th>Price</th></tr></thead>
-          <tbody>
-            <tr><td>Senior Citizen Apply</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>E-Shram Apply</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>E-Shram Download</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>Nada Kacheri Download</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>PM-Kisan</td><td class="price-tag">₹30.00</td></tr>
-            <tr><td>Yuva Nidhi</td><td class="price-tag">₹30.00</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Gruha Schemes Pricing -->
-      <div class="pricing-card">
-        <div class="pricing-header gruha">
-          <span><i class="fa-solid fa-house-chimney-window"></i> Gruha Schemes</span>
-          <span class="pricing-badge">6 Services</span>
-        </div>
-        <table>
-          <thead><tr><th>Service Name</th><th>Price</th></tr></thead>
-          <tbody>
-            <tr><td>Gruha Lakshmi Apply</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>Gruha Lakshmi e-KYC</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>Gruha Jyothi Apply</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>Gruha Jyothi D-Link</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>Gruha Lakshmi Status</td><td class="price-tag">₹30.00</td></tr>
-            <tr><td>Gruha Lakshmi Sanction Order</td><td class="price-tag">₹30.00</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Ration Services Pricing -->
-      <div class="pricing-card">
-        <div class="pricing-header ration">
-          <span><i class="fa-solid fa-bowl-rice"></i> Ration Card Services</span>
-          <span class="pricing-badge">5 Services</span>
-        </div>
-        <table>
-          <thead><tr><th>Service Name</th><th>Price</th></tr></thead>
-          <tbody>
-            <tr><td>Ration Shop & Member Details</td><td class="price-tag">₹10.00</td></tr>
-            <tr><td>Anna Bhagya DBT Status</td><td class="price-tag">₹10.00</td></tr>
-            <tr><td>Correction Status</td><td class="price-tag">₹10.00</td></tr>
-            <tr><td>Ration Card (Automated)</td><td class="price-tag">₹5.00</td></tr>
-            <tr><td>Ration Card (Without OTP)</td><td class="price-tag">₹5.00</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Voter Services Pricing -->
-      <div class="pricing-card">
-        <div class="pricing-header voter">
-          <span><i class="fa-solid fa-check-to-slot"></i> Voter Card Services</span>
-          <span class="pricing-badge">6 Services</span>
-        </div>
-        <table>
-          <thead><tr><th>Service Name</th><th>Price</th></tr></thead>
-          <tbody>
-            <tr><td>EPIC Correction (Name)</td><td class="price-tag">₹100.00</td></tr>
-            <tr><td>EPIC Correction (Photo)</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>EPIC Correction (Gender)</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>EPIC Correction (Address)</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>Mobile Number Update</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>Voter Card Download</td><td class="price-tag">₹10.00</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Driving & Vehicle Services Pricing -->
-      <div class="pricing-card">
-        <div class="pricing-header dl">
-          <span><i class="fa-solid fa-id-badge"></i> Driving & Vehicle Services</span>
-          <span class="pricing-badge">6 Services</span>
-        </div>
-        <table>
-          <thead><tr><th>Service Name</th><th>Price</th></tr></thead>
-          <tbody>
-            <tr><td>DL Karnataka PDF</td><td class="price-tag">₹30.00</td></tr>
-            <tr><td>DL All India PDF</td><td class="price-tag">₹30.00</td></tr>
-            <tr><td>Vehicle RC All India PDF</td><td class="price-tag">₹30.00</td></tr>
-            <tr><td>DL Renewal / Address Update</td><td class="price-tag">₹50.00</td></tr>
-            <tr><td>RC Transfer / NOC</td><td class="price-tag">₹50.00</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-    </div>
-  </div>
+<!-- Search modal -->
+<div class="modal fade" id="SearchModal" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered modal-lg">
+<div class="modal-content">
+<div class="modal-header">
+<div class="input-group">
+<span class="input-group-text bg-transparent border-0"><i class="bx bx-search fs-4"></i></span>
+<input type="text" id="siteSearchInput" class="form-control border-0" placeholder="Search pricing... (e.g. Aadhaar, PAN, Voter, Gruha)" autocomplete="off">
+</div>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+<div class="search-list" id="siteSearchList">
+<a href="{% url 'retailer_dashboard' %}" data-k="dashboard home"><i class="bx bx-home-circle"></i><span>Dashboard</span></a>
+<a href="{% url 'wallet' %}" data-k="wallet balance recharge"><i class="bx bx-wallet"></i><span>Wallet</span></a>
+<a href="{% url 'kar_gov_services' %}" data-k="government govt services schemes"><i class="bx bx-building-house"></i><span>Govt. Services</span></a>
+<a href="{% url 'print_services' %}" data-k="print services"><i class="bx bx-printer"></i><span>Print Services</span></a>
+<a href="{% url 'other_services' %}" data-k="other services"><i class="bx bx-id-card"></i><span>Other Services</span></a>
+<a href="{% url 'free_tools' %}" data-k="free tools"><i class="bx bx-gift"></i><span>Free Tools</span></a>
+<a href="{% url 'profile' %}" data-k="profile settings account"><i class="bx bx-user-circle"></i><span>Profile Settings</span></a>
+<a href="{% url 'pricing' %}" data-k="pricing rate charges"><i class="bx bx-dollar-circle"></i><span>Pricing</span></a>
+</div>
+<p class="text-center text-muted mb-0 mt-2 d-none" id="siteSearchEmpty">No matching service found.</p>
+</div>
+</div>
+</div>
 </div>
 
-{% include 'theme_switcher.html' %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+var toggleBtn = document.querySelector('.mobile-toggle-menu');
+if (toggleBtn) {
+toggleBtn.addEventListener('click', function (e) {
+e.preventDefault(); e.stopPropagation();
+var wrapper = document.querySelector('.wrapper');
+if (wrapper) wrapper.classList.toggle('toggled');
+});
+}
+
+var SB_KEY = 'smseva_sidebar_theme';
+var wrap = document.querySelector('.sidebar-wrapper');
+function applySB(t) {
+if (wrap) wrap.setAttribute('data-sb-theme', t);
+document.querySelectorAll('.sb-swatch').forEach(function (s) {
+s.classList.toggle('selected', s.getAttribute('data-sb-swatch') === t);
+});
+}
+applySB(localStorage.getItem(SB_KEY) || 'ocean');
+var themeBtn = document.getElementById('sbThemeBtn');
+var themePanel = document.getElementById('sbThemePanel');
+if (themeBtn) themeBtn.addEventListener('click', function (e) {
+e.stopPropagation(); themePanel.classList.toggle('open');
+});
+document.querySelectorAll('.sb-swatch').forEach(function (s) {
+s.addEventListener('click', function () {
+var t = s.getAttribute('data-sb-swatch');
+applySB(t); localStorage.setItem(SB_KEY, t);
+});
+});
+document.addEventListener('click', function (e) {
+if (themePanel && themePanel.classList.contains('open') &&
+!themePanel.contains(e.target) && e.target !== themeBtn) {
+themePanel.classList.remove('open');
+}
+});
+
+var AC_KEY = 'smseva_accent';
+var accents = {
+orange: 'linear-gradient(135deg,#e05e12,#f0902f)',
+blue: 'linear-gradient(135deg,#2563eb,#60a5fa)',
+green: 'linear-gradient(135deg,#16a34a,#4ade80)',
+purple: 'linear-gradient(135deg,#7c3aed,#a78bfa)',
+pink: 'linear-gradient(135deg,#db2777,#f472b6)',
+red: 'linear-gradient(135deg,#dc2626,#f87171)'
+};
+function applyAccent(a) {
+if (!accents[a]) a = 'orange';
+document.documentElement.style.setProperty('--sb-accent', accents[a]);
+document.querySelectorAll('.sb-accent').forEach(function (el) {
+el.classList.toggle('selected', el.getAttribute('data-accent') === a);
+});
+}
+applyAccent(localStorage.getItem(AC_KEY) || 'orange');
+document.querySelectorAll('.sb-accent').forEach(function (el) {
+el.addEventListener('click', function () {
+var a = el.getAttribute('data-accent');
+applyAccent(a); localStorage.setItem(AC_KEY, a);
+});
+});
+
+var CP_KEY = 'smseva_compact';
+var wrapperEl = document.querySelector('.wrapper');
+var cpBox = document.getElementById('sbCompact');
+function applyCompact(on) {
+if (wrapperEl) wrapperEl.classList.toggle('toggled', on);
+if (cpBox) cpBox.checked = on;
+}
+applyCompact(localStorage.getItem(CP_KEY) === '1');
+if (cpBox) cpBox.addEventListener('change', function () {
+localStorage.setItem(CP_KEY, this.checked ? '1' : '0');
+applyCompact(this.checked);
+});
+
+var rst = document.getElementById('sbReset');
+if (rst) rst.addEventListener('click', function () {
+['smseva_sidebar_theme', 'smseva_accent', 'smseva_compact', 'smseva_dark'].forEach(function (k) { localStorage.removeItem(k); });
+location.reload();
+});
+
+var DK_KEY = 'smseva_dark';
+function setDark(on) {
+if (on) { document.documentElement.className = 'dark-theme'; }
+else { document.documentElement.className = 'color-sidebar color-header headercolor5'; }
+var icons = document.querySelectorAll('#topDarkToggle i, #sbDarkToggle i');
+icons.forEach(function (i) { i.className = on ? 'bx bx-sun' : 'bx bx-moon'; });
+localStorage.setItem(DK_KEY, on ? '1' : '0');
+}
+setDark(localStorage.getItem(DK_KEY) === '1');
+function toggleDark() { setDark(!(localStorage.getItem(DK_KEY) === '1')); }
+var dm = document.getElementById('topDarkToggle');
+if (dm) dm.addEventListener('click', function (e) { e.preventDefault(); toggleDark(); });
+var sdt = document.getElementById('sbDarkToggle');
+if (sdt) sdt.addEventListener('click', function (e) { e.preventDefault(); toggleDark(); });
+
+var input = document.getElementById('siteSearchInput');
+var empty = document.getElementById('siteSearchEmpty');
+if (input) {
+input.addEventListener('input', function () {
+var q = this.value.trim().toLowerCase();
+var shown = 0;
+document.querySelectorAll('#siteSearchList a').forEach(function (a) {
+var hay = (a.getAttribute('data-k') + ' ' + a.textContent).toLowerCase();
+var match = q === '' || hay.indexOf(q) !== -1;
+a.style.display = match ? 'flex' : 'none';
+if (match) shown++;
+});
+if (empty) empty.classList.toggle('d-none', shown !== 0);
+});
+input.addEventListener('keydown', function (e) {
+if (e.key === 'Enter') {
+var first = document.querySelector('#siteSearchList a[style*="flex"], #siteSearchList a:not([style])');
+if (first) window.location.href = first.getAttribute('href');
+}
+});
+var sm = document.getElementById('SearchModal');
+if (sm) sm.addEventListener('shown.bs.modal', function () { input.focus(); });
+}
+});
+</script>
+
+<!--start page wrapper -->
+<div class="page-wrapper" style="margin-left: 250px; padding: 20px;">
+<div class="page-content">
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+<div class="breadcrumb-title pe-3"><b style="color: #e05e12">Service Pricing</b></div>
+<div class="ps-3">
+<nav aria-label="breadcrumb">
+<ol class="breadcrumb mb-0 p-0">
+<li class="breadcrumb-item"><a href="{% url 'retailer_dashboard' %}">Home</a></li>
+<li class="active ms-2" aria-current="page">/ Service Pricing</li>
+</ol>
+</nav>
+</div>
+</div>
+
+<div class="row">
+
+<!-- 1. Government Services -->
+<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card radius-10">
+<div class="card-body">
+<div class="card-body bg-success radius-10 mb-3">
+<div class="d-flex align-items-center justify-content-between">
+<div>
+<h6 class="mb-0 text-white"><i class="fa-solid fa-tags me-2"></i>Government Services</h6>
+</div>
+<div>
+<span class="badge bg-light text-dark">6 Services</span>
+</div>
+</div>
+</div>
+<div class="table-responsive">
+<table class="table align-middle mb-0 css-serial">
+<thead class="table-light">
+<tr>
+<th>Sl. No.</th>
+<th>Service Name</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Senior Citizen Apply</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PM-Kisan</span></td>
+<td><span class="font-14 fw-bold text-primary">₹30.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Yuva Nidhi</span></td>
+<td><span class="font-14 fw-bold text-primary">₹30.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">E-Shram</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">E-Shram Download</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Nada Kacheri Download</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 2. Gruha Schemes -->
+<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card radius-10">
+<div class="card-body">
+<div class="card-body bg-primary radius-10 mb-3">
+<div class="d-flex align-items-center justify-content-between">
+<div>
+<h6 class="mb-0 text-white"><i class="fa-solid fa-tags me-2"></i>Gruha Schemes</h6>
+</div>
+<div>
+<span class="badge bg-light text-dark">6 Services</span>
+</div>
+</div>
+</div>
+<div class="table-responsive">
+<table class="table align-middle mb-0 css-serial">
+<thead class="table-light">
+<tr>
+<th>Sl. No.</th>
+<th>Service Name</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Gruha Lakshmi</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Gruha Lakshmi Status</span></td>
+<td><span class="font-14 fw-bold text-primary">₹30.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Gruha Lakshmi e-KYC</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Gruha Lakshmi Sanction Order</span></td>
+<td><span class="font-14 fw-bold text-primary">₹30.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Gruha Jyothi</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Gruha Jyothi D-Link</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 3. Other Services -->
+<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card radius-10">
+<div class="card-body">
+<div class="card-body bg-info radius-10 mb-3">
+<div class="d-flex align-items-center justify-content-between">
+<div>
+<h6 class="mb-0 text-white"><i class="fa-solid fa-tags me-2"></i>Other Services</h6>
+</div>
+<div>
+<span class="badge bg-light text-dark">14 Services</span>
+</div>
+</div>
+</div>
+<div class="table-responsive">
+<table class="table align-middle mb-0 css-serial">
+<thead class="table-light">
+<tr>
+<th>Sl. No.</th>
+<th>Service Name</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Link Aadhaar &amp; Pahani</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Download RTC</span></td>
+<td><span class="font-14 fw-bold text-primary">₹10.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">ABHA Card</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Ayushman Card</span></td>
+<td><span class="font-14 fw-bold text-primary">₹100.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">AYUSH Download</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">SSP Password Change</span></td>
+<td><span class="font-14 fw-bold text-primary">₹30.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Ration Card Correction</span></td>
+<td><span class="font-14 fw-bold text-primary">₹200.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Tailoring Certificate</span></td>
+<td><span class="font-14 fw-bold text-primary">₹450.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Basic Computer Certificate</span></td>
+<td><span class="font-14 fw-bold text-primary">₹400.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Udyam Registration</span></td>
+<td><span class="font-14 fw-bold text-primary">₹100.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PAN Card Print</span></td>
+<td><span class="font-14 fw-bold text-primary">₹20.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Ration To Aadhaar</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Aadhaar To Ration</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Credit Score</span></td>
+<td><span class="font-14 fw-bold text-primary">₹120.00</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 4. Ration Card Downloads -->
+<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card radius-10">
+<div class="card-body">
+<div class="card-body bg-warning radius-10 mb-3">
+<div class="d-flex align-items-center justify-content-between">
+<div>
+<h6 class="mb-0 text-white"><i class="fa-solid fa-tags me-2"></i>Print Services - Ration Card Downloads</h6>
+</div>
+<div>
+<span class="badge bg-light text-dark">2 Services</span>
+</div>
+</div>
+</div>
+<div class="table-responsive">
+<table class="table align-middle mb-0 css-serial">
+<thead class="table-light">
+<tr>
+<th>Sl. No.</th>
+<th>Service Name</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Ration Card (AUTOMATED)</span></td>
+<td><span class="font-14 fw-bold text-primary">₹5.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Ration Card (WITHOUT OTP)</span></td>
+<td><span class="font-14 fw-bold text-primary">₹5.00</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 5. Ration Card Other -->
+<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card radius-10">
+<div class="card-body">
+<div class="card-body bg-warning radius-10 mb-3">
+<div class="d-flex align-items-center justify-content-between">
+<div>
+<h6 class="mb-0 text-white"><i class="fa-solid fa-tags me-2"></i>Print Services - Ration Card Other</h6>
+</div>
+<div>
+<span class="badge bg-light text-dark">3 Services</span>
+</div>
+</div>
+</div>
+<div class="table-responsive">
+<table class="table align-middle mb-0 css-serial">
+<thead class="table-light">
+<tr>
+<th>Sl. No.</th>
+<th>Service Name</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Ration Shop &amp; Member Details</span></td>
+<td><span class="font-14 fw-bold text-primary">₹10.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Anna Bhagya DBT Status</span></td>
+<td><span class="font-14 fw-bold text-primary">₹10.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Correction Status</span></td>
+<td><span class="font-14 fw-bold text-primary">₹10.00</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 6. Voter Services -->
+<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card radius-10">
+<div class="card-body">
+<div class="card-body bg-danger radius-10 mb-3">
+<div class="d-flex align-items-center justify-content-between">
+<div>
+<h6 class="mb-0 text-white"><i class="fa-solid fa-tags me-2"></i>Print Services - Voter Services</h6>
+</div>
+<div>
+<span class="badge bg-light text-dark">9 Services</span>
+</div>
+</div>
+</div>
+<div class="table-responsive">
+<table class="table align-middle mb-0 css-serial">
+<thead class="table-light">
+<tr>
+<th>Sl. No.</th>
+<th>Service Name</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">EPIC Correction (Name)</span></td>
+<td><span class="font-14 fw-bold text-primary">₹100.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">EPIC Correction (Photo)</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">EPIC Correction (Gender)</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">EPIC Correction (DOB)</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">EPIC Correction (Address)</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Original Voter PDF</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Link Mobile No. (Aadhaar e-Sign)</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Voter Mobile Link Instant</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Voter ID Download Instant</span></td>
+<td><span class="font-14 fw-bold text-primary">₹25.00</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 7. Aadhaar Services -->
+<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card radius-10">
+<div class="card-body">
+<div class="card-body bg-secondary radius-10 mb-3">
+<div class="d-flex align-items-center justify-content-between">
+<div>
+<h6 class="mb-0 text-white"><i class="fa-solid fa-tags me-2"></i>Print Services - Aadhaar Services</h6>
+</div>
+<div>
+<span class="badge bg-light text-dark">3 Services</span>
+</div>
+</div>
+</div>
+<div class="table-responsive">
+<table class="table align-middle mb-0 css-serial">
+<thead class="table-light">
+<tr>
+<th>Sl. No.</th>
+<th>Service Name</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">EID to UID</span></td>
+<td><span class="font-14 fw-bold text-primary">₹750.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">LMS Certificate</span></td>
+<td><span class="font-14 fw-bold text-primary">₹1,000.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Aadhaar PDF</span></td>
+<td><span class="font-14 fw-bold text-primary">₹1,000.00</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 8. Aadhaar Corrections -->
+<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card radius-10">
+<div class="card-body">
+<div class="card-body bg-danger radius-10 mb-3">
+<div class="d-flex align-items-center justify-content-between">
+<div>
+<h6 class="mb-0 text-white"><i class="fa-solid fa-tags me-2"></i>Aadhaar Corrections</h6>
+</div>
+<div>
+<span class="badge bg-light text-dark">7 Services</span>
+</div>
+</div>
+</div>
+<div class="table-responsive">
+<table class="table align-middle mb-0 css-serial">
+<thead class="table-light">
+<tr>
+<th>Sl. No.</th>
+<th>Service Name</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Mobile No. Update</span></td>
+<td><span class="font-14 fw-bold text-primary">₹200.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Aadhaar Mob Update</span></td>
+<td><span class="font-14 fw-bold text-primary">₹160.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Address Update</span></td>
+<td><span class="font-14 fw-bold text-primary">₹200.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">DOB Change</span></td>
+<td><span class="font-14 fw-bold text-primary">₹15,000.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Name Change</span></td>
+<td><span class="font-14 fw-bold text-primary">₹15,000.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Full Name Change</span></td>
+<td><span class="font-14 fw-bold text-primary">₹15,000.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Child Enrollment</span></td>
+<td><span class="font-14 fw-bold text-primary">₹15,000.00</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 9. Driving License -->
+<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card radius-10">
+<div class="card-body">
+<div class="card-body bg-dark radius-10 mb-3">
+<div class="d-flex align-items-center justify-content-between">
+<div>
+<h6 class="mb-0 text-white"><i class="fa-solid fa-tags me-2"></i>Print Services - Driving License</h6>
+</div>
+<div>
+<span class="badge bg-light text-dark">4 Services</span>
+</div>
+</div>
+</div>
+<div class="table-responsive">
+<table class="table align-middle mb-0 css-serial">
+<thead class="table-light">
+<tr>
+<th>Sl. No.</th>
+<th>Service Name</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">DL All India</span></td>
+<td><span class="font-14 fw-bold text-primary">₹25.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">DL Karnataka</span></td>
+<td><span class="font-14 fw-bold text-primary">₹25.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Find DL Number</span></td>
+<td><span class="font-14 fw-bold text-primary">₹100.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Link DL to Mobile</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 10. Vehicle Services -->
+<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card radius-10">
+<div class="card-body">
+<div class="card-body bg-info radius-10 mb-3">
+<div class="d-flex align-items-center justify-content-between">
+<div>
+<h6 class="mb-0 text-white"><i class="fa-solid fa-tags me-2"></i>Print Services - Vehicle Services</h6>
+</div>
+<div>
+<span class="badge bg-light text-dark">5 Services</span>
+</div>
+</div>
+</div>
+<div class="table-responsive">
+<table class="table align-middle mb-0 css-serial">
+<thead class="table-light">
+<tr>
+<th>Sl. No.</th>
+<th>Service Name</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">RC Advance</span></td>
+<td><span class="font-14 fw-bold text-primary">₹25.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">All India Advance</span></td>
+<td><span class="font-14 fw-bold text-primary">₹25.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">RC Karnataka PVC</span></td>
+<td><span class="font-14 fw-bold text-primary">₹25.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">VRC Mobile</span></td>
+<td><span class="font-14 fw-bold text-primary">₹50.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">LL Exam</span></td>
+<td><span class="font-14 fw-bold text-primary">₹150.00</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 11. PAN Services -->
+<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card radius-10">
+<div class="card-body">
+<div class="card-body bg-warning radius-10 mb-3">
+<div class="d-flex align-items-center justify-content-between">
+<div>
+<h6 class="mb-0 text-white"><i class="fa-solid fa-tags me-2"></i>Print Services - PAN Services</h6>
+</div>
+<div>
+<span class="badge bg-light text-dark">3 Services</span>
+</div>
+</div>
+</div>
+<div class="table-responsive">
+<table class="table align-middle mb-0 css-serial">
+<thead class="table-light">
+<tr>
+<th>Sl. No.</th>
+<th>Service Name</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Aadhaar PAN Status</span></td>
+<td><span class="font-14 fw-bold text-primary">₹30.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PAN To Aadhaar</span></td>
+<td><span class="font-14 fw-bold text-primary">₹200.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">Mobile to PAN Find</span></td>
+<td><span class="font-14 fw-bold text-primary">₹25.00</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 12. PVC Maker Services -->
+<div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card radius-10">
+<div class="card-body">
+<div class="card-body bg-primary radius-10 mb-3">
+<div class="d-flex align-items-center justify-content-between">
+<div>
+<h6 class="mb-0 text-white"><i class="fa-solid fa-tags me-2"></i>PVC Maker Services</h6>
+</div>
+<div>
+<span class="badge bg-light text-dark">12 Services</span>
+</div>
+</div>
+</div>
+<div class="table-responsive">
+<table class="table align-middle mb-0 css-serial">
+<thead class="table-light">
+<tr>
+<th>Sl. No.</th>
+<th>Service Name</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PVC Maker - Vehicle RC</span></td>
+<td><span class="font-14 fw-bold text-primary">₹150.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PVC Maker - Driving License</span></td>
+<td><span class="font-14 fw-bold text-primary">₹150.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PVC Maker - Voter ID</span></td>
+<td><span class="font-14 fw-bold text-primary">₹150.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PVC Maker - Ayushman</span></td>
+<td><span class="font-14 fw-bold text-primary">₹150.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PVC Maker - Ration Smart</span></td>
+<td><span class="font-14 fw-bold text-primary">₹150.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PVC Maker - Aadhaar</span></td>
+<td><span class="font-14 fw-bold text-primary">₹150.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PVC Maker - PAN</span></td>
+<td><span class="font-14 fw-bold text-primary">₹150.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PVC Maker - UDID</span></td>
+<td><span class="font-14 fw-bold text-primary">₹150.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PVC Maker - E-Shram</span></td>
+<td><span class="font-14 fw-bold text-primary">₹150.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PVC Maker - ABHA Health</span></td>
+<td><span class="font-14 fw-bold text-primary">₹150.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PVC Maker - FID</span></td>
+<td><span class="font-14 fw-bold text-primary">₹150.00</span></td>
+</tr>
+<tr>
+<td></td>
+<td><span class="font-14 fw-semibold">PVC Maker - Others</span></td>
+<td><span class="font-14 fw-bold text-primary">₹150.00</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<!--end page wrapper -->
+
+<!--start overlay-->
+<div class="overlay toggle-icon"></div>
+<!--end overlay-->
+
+<!--Start Back To Top Button-->
+<a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
+
+<footer class="page-footer" style="position: fixed; bottom: 0; left: 250px; right: 0; background: #fff; border-top: 1px solid #eef1f6; padding: 10px 20px; text-align: center;">
+<p class="mb-0">Copyright © 2026 <a href="{% url 'retailer_dashboard' %}" style="color:#e05e12;font-weight:700;text-decoration:none;">Nath Seva One</a>. All rights reserved.</p>
+</footer>
+
+</div>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

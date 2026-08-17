@@ -537,5 +537,765 @@ class PanToAadhaarApplication(models.Model):
         return f"{self.order_id} - {self.pan_number}"
 
 
+def upload_senior_photo(instance, filename):
+    return f'senior_docs/{instance.order_id}/photo_{filename}'
+
+def upload_senior_aadhaar(instance, filename):
+    return f'senior_docs/{instance.order_id}/aadhaar_{filename}'
+
+def upload_senior_blood(instance, filename):
+    return f'senior_docs/{instance.order_id}/blood_{filename}'
+
+def upload_senior_output_pdf(instance, filename):
+    return f'senior_certs/{instance.order_id}/{filename}'
+
+
+class SeniorCitizenApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='senior_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    applicant_name      = models.CharField(max_length=100)
+    aadhaar_number      = models.CharField(max_length=12)
+    mobile              = models.CharField(max_length=10)
+    email               = models.EmailField()
+    gender              = models.CharField(max_length=10)
+    dob                 = models.DateField()
+    address             = models.TextField()
+    talluk              = models.CharField(max_length=100)
+    district            = models.CharField(max_length=100)
+    pincode             = models.CharField(max_length=6)
+
+    photo               = models.ImageField(upload_to=upload_senior_photo, null=True, blank=True)
+    aadhaar_file        = models.FileField(upload_to=upload_senior_aadhaar, null=True, blank=True)
+    blood_file          = models.FileField(upload_to=upload_senior_blood, null=True, blank=True)
+
+    output_pdf          = models.FileField(upload_to=upload_senior_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=50.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'SEN' + uuid.uuid4().hex[:16].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_gruha_laxmi_output_pdf(instance, filename):
+    return f'gruha_laxmi_certs/{instance.order_id}/{filename}'
+
+
+class GruhaLaxmiApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='gruha_laxmi_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    ration_number       = models.CharField(max_length=30)
+    aadhaar_number      = models.CharField(max_length=12)
+    applicant_name      = models.CharField(max_length=100)
+    mobile              = models.CharField(max_length=10)
+
+    output_pdf          = models.FileField(upload_to=upload_gruha_laxmi_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=50.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'GLX' + uuid.uuid4().hex[:16].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_gruha_laxmi_status_output_pdf(instance, filename):
+    return f'gruha_laxmi_status_certs/{instance.order_id}/{filename}'
+
+
+class GruhaLaxmiStatusApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='gruha_laxmi_status_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    ration_number       = models.CharField(max_length=30)
+    applicant_name      = models.CharField(max_length=100)
+
+    output_pdf          = models.FileField(upload_to=upload_gruha_laxmi_status_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=30.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'GLS' + uuid.uuid4().hex[:16].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_gruha_laxmi_kyc_output_pdf(instance, filename):
+    return f'gruha_laxmi_kyc_certs/{instance.order_id}/{filename}'
+
+
+class GruhaLaxmiKYCApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='gruha_laxmi_kyc_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    ration_number       = models.CharField(max_length=30)
+    aadhaar_number      = models.CharField(max_length=12)
+    applicant_name      = models.CharField(max_length=100)
+    mobile              = models.CharField(max_length=10)
+
+    output_pdf          = models.FileField(upload_to=upload_gruha_laxmi_kyc_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=50.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'GLK' + uuid.uuid4().hex[:16].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_gruha_laxmi_sanction_output_pdf(instance, filename):
+    return f'gruha_laxmi_sanction_certs/{instance.order_id}/{filename}'
+
+
+class GruhaLaxmiSanctionApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='gruha_laxmi_sanction_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    ration_number       = models.CharField(max_length=30)
+    applicant_name      = models.CharField(max_length=100)
+
+    output_pdf          = models.FileField(upload_to=upload_gruha_laxmi_sanction_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=30.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'GLSO' + uuid.uuid4().hex[:16].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_gruha_jyothi_output_pdf(instance, filename):
+    return f'gruha_jyothi_certs/{instance.order_id}/{filename}'
+
+
+class GruhaJyothiApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer                = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='gruha_jyothi_applications')
+    order_id                = models.CharField(max_length=50, unique=True, editable=False)
+    
+    escom                   = models.CharField(max_length=50)
+    account_id              = models.CharField(max_length=50)
+    account_holder_name     = models.CharField(max_length=100)
+    account_holder_address  = models.TextField()
+
+    occupancy_type          = models.CharField(max_length=50)
+    aadhaar_number          = models.CharField(max_length=12)
+    applicant_name          = models.CharField(max_length=100)
+    mobile                  = models.CharField(max_length=10)
+
+    output_pdf              = models.FileField(upload_to=upload_gruha_jyothi_output_pdf, null=True, blank=True)
+    rejection_reason        = models.TextField(blank=True)
+    amount                  = models.DecimalField(max_digits=10, decimal_places=2, default=50.00)
+    status                  = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at              = models.DateTimeField(auto_now_add=True)
+    processed_at            = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'GJY' + uuid.uuid4().hex[:16].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_gruha_jyothi_dlink_output_pdf(instance, filename):
+    return f'gruha_jyothi_dlink_certs/{instance.order_id}/{filename}'
+
+
+class GruhaJyothiDlinkApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='gruha_jyothi_dlink_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    aadhaar_number      = models.CharField(max_length=12)
+    applicant_name      = models.CharField(max_length=100)
+    mobile              = models.CharField(max_length=10)
+    district            = models.CharField(max_length=50)
+
+    output_pdf          = models.FileField(upload_to=upload_gruha_jyothi_dlink_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=50.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'GJDL' + uuid.uuid4().hex[:16].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_bhoomi_pahani_link_output_pdf(instance, filename):
+    return f'bhoomi_pahani_certs/{instance.order_id}/{filename}'
+
+
+class BhoomiPahaniLinkApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='bhoomi_pahani_link_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    aadhaar_number      = models.CharField(max_length=12)
+    applicant_name      = models.CharField(max_length=100)
+    mobile              = models.CharField(max_length=10)
+    district            = models.CharField(max_length=100)
+    talluk              = models.CharField(max_length=100)
+    hobli               = models.CharField(max_length=100, blank=True)
+    village             = models.CharField(max_length=100, blank=True)
+    survey_no           = models.CharField(max_length=50, blank=True)
+    hissa_no            = models.CharField(max_length=50, blank=True)
+
+    output_pdf          = models.FileField(upload_to=upload_bhoomi_pahani_link_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=50.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'BPL' + uuid.uuid4().hex[:16].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_rtc_download_output_pdf(instance, filename):
+    return f'rtc_documents/{instance.order_id}/{filename}'
+
+
+class RTCDownloadApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='rtc_download_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    applicant_name      = models.CharField(max_length=100)
+    district            = models.CharField(max_length=100)
+    talluk              = models.CharField(max_length=100)
+    hobli               = models.CharField(max_length=100, blank=True)
+    village             = models.CharField(max_length=100, blank=True)
+    survey_no           = models.CharField(max_length=50, blank=True)
+
+    output_pdf          = models.FileField(upload_to=upload_rtc_download_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=10.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'RTC' + uuid.uuid4().hex[:16].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_abha_card_output_pdf(instance, filename):
+    return f'abha_cards/{instance.order_id}/{filename}'
+
+
+class AbhaCardApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='abha_card_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    aadhaar_number      = models.CharField(max_length=12)
+    applicant_name      = models.CharField(max_length=100)
+    mobile              = models.CharField(max_length=10)
+    state               = models.CharField(max_length=100)
+
+    output_pdf          = models.FileField(upload_to=upload_abha_card_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=50.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'ABHA' + uuid.uuid4().hex[:16].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_ayush_card_photo(instance, filename):
+    return f'ayush_photos/{instance.order_id}/{filename}'
+
+
+def upload_ayush_card_output_pdf(instance, filename):
+    return f'ayush_cards/{instance.order_id}/{filename}'
+
+
+class AyushCardApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='ayush_card_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    applicant_name      = models.CharField(max_length=100)
+    aadhaar_number      = models.CharField(max_length=12)
+    mobile              = models.CharField(max_length=10)
+    relationship        = models.CharField(max_length=50)
+    dob                 = models.DateField()
+    photo_file          = models.FileField(upload_to=upload_ayush_card_photo)
+    state               = models.CharField(max_length=100)
+    district            = models.CharField(max_length=100)
+    sub_division        = models.CharField(max_length=100)
+
+    output_pdf          = models.FileField(upload_to=upload_ayush_card_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=100.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'AYUSH' + uuid.uuid4().hex[:15].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_ayush_download_output_pdf(instance, filename):
+    return f'ayush_downloads/{instance.order_id}/{filename}'
+
+
+class AyushDownloadApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='ayush_download_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    applicant_name      = models.CharField(max_length=100)
+    aadhaar_number      = models.CharField(max_length=12)
+    mobile              = models.CharField(max_length=10)
+    dob                 = models.DateField()
+    state               = models.CharField(max_length=100)
+    district            = models.CharField(max_length=100)
+
+    output_pdf          = models.FileField(upload_to=upload_ayush_download_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=50.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'AYUSHD' + uuid.uuid4().hex[:14].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_eshram_output_pdf(instance, filename):
+    return f'eshram_cards/{instance.order_id}/{filename}'
+
+
+class EShramApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='eshram_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    applicant_name      = models.CharField(max_length=100)
+    aadhaar_number      = models.CharField(max_length=12)
+    mobile              = models.CharField(max_length=10)
+    marital_status      = models.CharField(max_length=50)
+    relationship        = models.CharField(max_length=50)
+    relative_name       = models.CharField(max_length=100)
+    social_category     = models.CharField(max_length=50)
+    differently_abled   = models.CharField(max_length=10, default='no')
+    state               = models.CharField(max_length=100)
+    district            = models.CharField(max_length=100)
+    sub_division        = models.CharField(max_length=100)
+    address_line1       = models.CharField(max_length=200)
+    address_line2       = models.CharField(max_length=200)
+    pincode             = models.CharField(max_length=6)
+    staying_from        = models.CharField(max_length=50)
+    education           = models.CharField(max_length=100)
+    monthly_income      = models.CharField(max_length=100)
+    online_working      = models.CharField(max_length=10, default='no')
+    primary_occupation  = models.CharField(max_length=100)
+    work_exp            = models.CharField(max_length=20)
+    account_number      = models.CharField(max_length=50)
+    ifsc_code           = models.CharField(max_length=20)
+
+    output_pdf          = models.FileField(upload_to=upload_eshram_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=50.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'ESHRAM' + uuid.uuid4().hex[:14].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_eshram_dwnld_output_pdf(instance, filename):
+    return f'eshram_downloads/{instance.order_id}/{filename}'
+
+
+class EShramDownloadApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='eshram_download_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    applicant_name      = models.CharField(max_length=100)
+    aadhaar_number      = models.CharField(max_length=12)
+    mobile              = models.CharField(max_length=10)
+    state               = models.CharField(max_length=100)
+
+    output_pdf          = models.FileField(upload_to=upload_eshram_dwnld_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=50.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'ESHRAMD' + uuid.uuid4().hex[:14].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_pmkisan_output_pdf(instance, filename):
+    return f'pmkisan_docs/{instance.order_id}/{filename}'
+
+
+class PMKisanApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='pmkisan_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    application_type    = models.CharField(max_length=50, default='e-KYC')
+    applicant_name      = models.CharField(max_length=100)
+    aadhaar_number      = models.CharField(max_length=12)
+    mobile              = models.CharField(max_length=10)
+    state               = models.CharField(max_length=100)
+
+    output_pdf          = models.FileField(upload_to=upload_pmkisan_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=30.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'PMKISAN' + uuid.uuid4().hex[:13].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name} ({self.application_type})"
+
+
+def upload_naadakacheri_output_pdf(instance, filename):
+    return f'naadakacheri_docs/{instance.order_id}/{filename}'
+
+
+class NaadaKacheriDownloadApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='naadakacheri_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    rd_number           = models.CharField(max_length=50)
+    applicant_name      = models.CharField(max_length=100)
+    certificate_type    = models.CharField(max_length=100)
+
+    output_pdf          = models.FileField(upload_to=upload_naadakacheri_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=50.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'NKDWN' + uuid.uuid4().hex[:15].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name} ({self.certificate_type})"
+
+
+def upload_yuvanidhi_doc(instance, filename):
+    return f'yuvanidhi_docs/{instance.order_id}/{filename}'
+
+
+class YuvaNidhiApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='yuvanidhi_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    applicant_name      = models.CharField(max_length=100)
+    aadhaar_number      = models.CharField(max_length=12)
+    mobile              = models.CharField(max_length=10)
+    email               = models.EmailField(max_length=100)
+    district            = models.CharField(max_length=50)
+    talluk              = models.CharField(max_length=50)
+    education           = models.CharField(max_length=50)
+    certificate_no      = models.CharField(max_length=50)
+    university          = models.CharField(max_length=100)
+    college             = models.CharField(max_length=100)
+    ration_card_no      = models.CharField(max_length=20, blank=True)
+    caste               = models.CharField(max_length=20)
+    disability          = models.CharField(max_length=10, default='no')
+
+    markscard_10th      = models.FileField(upload_to=upload_yuvanidhi_doc)
+    markscard_puc       = models.FileField(upload_to=upload_yuvanidhi_doc, null=True, blank=True)
+    markscard_degree    = models.FileField(upload_to=upload_yuvanidhi_doc)
+
+    output_pdf          = models.FileField(upload_to=upload_yuvanidhi_doc, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=30.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'YUVANIDHI' + uuid.uuid4().hex[:11].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name}"
+
+
+def upload_ssp_password_output_pdf(instance, filename):
+    return f'ssp_password_docs/{instance.order_id}/{filename}'
+
+
+class SSPPasswordChangeApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='ssp_password_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    ssp_id              = models.CharField(max_length=50)
+    new_password        = models.CharField(max_length=100)
+
+    output_pdf          = models.FileField(upload_to=upload_ssp_password_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=30.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'SSP' + uuid.uuid4().hex[:17].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - SSP: {self.ssp_id}"
+
+
+def upload_ssp_mobile_output_pdf(instance, filename):
+    return f'ssp_mobile_docs/{instance.order_id}/{filename}'
+
+
+class SSPMobileLinkApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('REJECTED', 'Rejected')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='ssp_mobile_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    applicant_name      = models.CharField(max_length=100)
+    new_mobile          = models.CharField(max_length=10)
+    ssp_id              = models.CharField(max_length=50)
+
+    output_pdf          = models.FileField(upload_to=upload_ssp_mobile_output_pdf, null=True, blank=True)
+    rejection_reason    = models.TextField(blank=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=50.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    processed_at        = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'SSPMOB' + uuid.uuid4().hex[:14].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name} ({self.ssp_id})"
+
+
+class MobileToPanApplication(models.Model):
+    STATUS_CHOICES = [('PENDING', 'Pending'), ('COMPLETED', 'Completed'), ('FAILED', 'Failed')]
+
+    retailer            = models.ForeignKey(Retailer, on_delete=models.SET_NULL, null=True, blank=True, related_name='mobile_to_pan_applications')
+    order_id            = models.CharField(max_length=50, unique=True, editable=False)
+    
+    applicant_name      = models.CharField(max_length=100)
+    mobile_no           = models.CharField(max_length=10)
+    pan_number          = models.CharField(max_length=15, blank=True)
+    client_id           = models.CharField(max_length=100, blank=True)
+    response_message    = models.TextField(blank=True)
+
+    amount              = models.DecimalField(max_digits=10, decimal_places=2, default=15.00)
+    status              = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = 'M2P' + uuid.uuid4().hex[:17].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.order_id} - {self.applicant_name} ({self.mobile_no}) -> {self.pan_number}"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

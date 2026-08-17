@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en" class="color-sidebar color-header headercolor5">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--favicon-->
+<link rel="icon" href="https://www.smsevaone.com/user/assets/images/favicon-32x32.png" type="image/png" />
+<!--plugins-->
+<link href="https://www.smsevaone.com/user/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
+<link href="https://www.smsevaone.com/user/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" />
+<link href="https://www.smsevaone.com/user/assets/plugins/metismenu/css/metisMenu.min.css" rel="stylesheet" />
+<!-- loader-->
+<link href="https://www.smsevaone.com/user/assets/css/pace.min.css" rel="stylesheet" />
+<script src="https://www.smsevaone.com/user/assets/js/pace.min.js"></script>
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.smsevaone.com/user/assets/css/bootstrap-extended.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://www.smsevaone.com/user/assets/css/app.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+<!-- Theme Style CSS -->
+<link rel="stylesheet" href="https://www.smsevaone.com/user/assets/css/dark-theme.css" />
+<link rel="stylesheet" href="https://www.smsevaone.com/user/assets/css/semi-dark.css" />
+<link rel="stylesheet" href="https://www.smsevaone.com/user/assets/css/header-colors.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>Government Services - SM Sevaone</title>
+<style>
+/* Service card box styling - Matching Grameenseva design */
+.service-card {
+margin: 1rem;
+padding: 0 !important;
+border: 1px solid #e0e0e0 !important;
+border-radius: 12px !important;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+transition: all 0.3s ease;
+background-color: #fff;
+overflow: hidden;
+height: 100%;
+}
+.service-card:hover {
+box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+transform: translateY(-3px);
+}
+.service-card a {
+text-decoration: none;
+display: block;
+height: 100%;
+color: inherit;
+}
+.service-card .box {
+padding: 20px 15px;
+border: none;
+-webkit-border-radius: 12px;
+-moz-border-radius: 12px;
+border-radius: 12px;
+margin: 0;
+position: relative;
+height: 100%;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: flex-start;
+min-height: 280px;
+}
+.service-card .service-icon {
+width: 80px;
+height: 80px;
+border-radius: 50%;
+object-fit: cover;
+margin-bottom: 12px;
+border: 2px solid #e0e0e0;
+}
+.service-card .service-title {
+font-size: 14px;
+font-weight: 600;
+color: #333;
+margin-bottom: 8px;
+text-align: center;
+line-height: 1.3;
+min-height: 38px;
+}
+.service-card .service-badge {
+display: inline-block;
+padding: 4px 12px;
+border-radius: 20px;
+font-size: 11px;
+font-weight: 500;
+margin-bottom: 10px;
+}
+.service-card .service-badge.manual {
+background-color: #d4edda;
+color: #155724;
+}
+.service-card .service-badge.auto {
+background-color: #fff3cd;
+color: #856404;
+}
+.service-card .service-price {
+font-size: 20px;
+font-weight: 700;
+color: #28a745;
+margin-bottom: 4px;
+}
+.service-card .service-price-label {
+font-size: 11px;
+color: #6c757d;
+margin-bottom: 8px;
+}
+.service-card .service-time {
+font-size: 10px;
+color: #6c757d;
+text-align: center;
+line-height: 1.4;
+margin-top: auto;
+padding-top: 8px;
+border-top: 1px solid #f0f0f0;
+width: 100%;
+}
+</style>
+</head>
+<body>
+<!--wrapper-->
+<div class="wrapper">
+<style>
+/* Sidebar + Topbar */
+.sidebar-wrapper {
+background: linear-gradient(180deg, #0f2027 0%, #203a43 55%, #2c5364 100%) !important;
+border-right: 0 !important;
+box-shadow: 2px 0 18px rgba(0,0,0,0.18);
+transition: background .4s ease;
+}
+.sidebar-wrapper .sidebar-header {
+background: rgba(255,255,255,0.04) !important;
+border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+backdrop-filter: blur(4px);
+}
+.sidebar-wrapper .sidebar-header .toggle-icon i { color: #fff; }
+.sidebar-wrapper .metismenu a {
+color: #dbe4ee !important;
+border-radius: 10px;
+margin: 3px 10px;
+padding: 10px 14px;
+font-weight: 500;
+letter-spacing: .2px;
+transition: all .25s ease;
+}
+.sidebar-wrapper .metismenu a .menu-title { color: inherit !important; }
+.sidebar-wrapper .metismenu a:hover {
+background: rgba(255,255,255,0.10) !important;
+color: #ffffff !important;
+transform: translateX(3px);
+}
+.sidebar-wrapper .metismenu li.mm-active > a,
+.sidebar-wrapper .metismenu a.active {
+background: var(--sb-accent, linear-gradient(135deg,#e05e12 0%,#f0902f 100%)) !important;
+color: #fff !important;
+box-shadow: 0 6px 16px rgba(0,0,0,.22);
+}
+.sidebar-wrapper .menu-label {
+color: #8aa1b4 !important;
+text-transform: uppercase;
+font-size: 11px;
+font-weight: 700;
+letter-spacing: 1.2px;
+padding: 16px 20px 6px !important;
+opacity: .9;
+}
+.topbar {
+background: #ffffff;
+box-shadow: 0 2px 10px rgba(0,0,0,.06);
+border-bottom: 1px solid #eef1f6;
+}
+.topbar .nav-link { color: #4a5568; }
+.wallet-pill {
+display: inline-flex; align-items: center; gap: 7px;
+background: #eafaf1; color: #12854a;
+padding: 7px 15px; border-radius: 30px;
+font-weight: 700; text-decoration: none; line-height: 1;
+white-space: nowrap; transition: all .2s ease;
+border: 1px solid #cdeedd;
+}
+.wallet-pill:hover { background: #12854a; color: #fff; box-shadow: 0 4px 12px rgba(18,133,74,.35); }
+.topbar .user-img { border: 2px solid #e05e12; padding: 1px; width: 34px; height: 34px; border-radius: 50%; }
+</style>
+
+<!--sidebar-->
+<div class="sidebar-wrapper" data-simplebar="true">
+<div class="sidebar-header">
+<div>
+<h4 class="mb-0 text-white" style="font-weight:700">SM Sevaone</h4>
+</div>
+<div class="toggle-icon ms-auto d-none"><i class="bx bx-arrow-to-left"></i></div>
+</div>
+<!--navigation-->
+<ul class="metismenu" id="menu">
+<li>
+<a href="{% url 'retailer_dashboard' %}">
+<div class="parent-icon"><i class="fa-solid fa-gauge-high" style="color:#ff6b6b;"></i></div>
+<div class="menu-title">Dashboard</div>
+</a>
+</li>
+<li>
+<a href="{% url 'wallet' %}">
+<div class="parent-icon"><i class="fa-solid fa-wallet" style="color:#ffd43b;"></i></div>
+<div class="menu-title">Wallet</div>
+</a>
+</li>
+<li class="menu-label">Statement</li>
+<li>
+<a href="{% url 'applied_list' %}">
+<div class="parent-icon"><i class="fa-solid fa-list-ul" style="color:#74c0fc;"></i></div>
+<div class="menu-title">Applied List</div>
+</a>
+</li>
+<li class="menu-label">Services</li>
+<li class="mm-active">
+<a href="{% url 'kar_gov_services' %}" class="active">
+<div class="parent-icon"><i class="fa-solid fa-landmark" style="color:#ffa94d;"></i></div>
+<div class="menu-title">Govt. Services</div>
+</a>
+</li>
+<li>
+<a href="{% url 'print_services' %}">
+<div class="parent-icon"><i class="fa-solid fa-print" style="color:#63e6be;"></i></div>
+<div class="menu-title">Print Services</div>
+</a>
+</li>
+<li>
+<a href="{% url 'other_services' %}">
+<div class="parent-icon"><i class="fa-solid fa-id-card" style="color:#b197fc;"></i></div>
+<div class="menu-title">Other Services</div>
+</a>
+</li>
+<li>
+<a href="{% url 'free_tools' %}">
+<div class="parent-icon"><i class="fa-solid fa-gift" style="color:#20c997;"></i></div>
+<div class="menu-title">Free Tools <span class="badge bg-success ms-1" style="font-size:9px;vertical-align:middle;">FREE</span></div>
+</a>
+</li>
+<li class="menu-label">Account &amp; Help</li>
+<li>
+<a href="{% url 'profile' %}">
+<div class="parent-icon"><i class="fa-solid fa-user-gear" style="color:#4dabf7;"></i></div>
+<div class="menu-title">Profile Settings</div>
+</a>
+</li>
+<li>
+<a href="{% url 'pricing' %}">
+<div class="parent-icon"><i class="fa-solid fa-indian-rupee-sign" style="color:#69db7c;"></i></div>
+<div class="menu-title">Pricing</div>
+</a>
+</li>
+<li>
+<a href="{% url 'retailer_logout' %}">
+<div class="parent-icon"><i class="fa-solid fa-right-from-bracket" style="color:#ff8787;"></i></div>
+<div class="menu-title">Logout</div>
+</a>
+</li>
+</ul>
+</div>
+<!--end sidebar-->
+
+<header>
+<div class="topbar d-flex align-items-center">
+<nav class="navbar navbar-expand gap-3 w-100 px-3">
+<div class="top-menu ms-auto d-flex align-items-center gap-3">
+<a class="wallet-pill" href="{% url 'wallet' %}" title="Wallet Balance">
+<i class="fa-solid fa-wallet"></i>
+<b>₹{{ retailer.wallet_balance }}</b>
+</a>
+<div class="user-box d-flex align-items-center gap-2">
+<div class="avatar" style="width:34px;height:34px;border-radius:50%;background:#e05e12;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">{{ retailer.full_name.0|upper }}</div>
+<div class="user-info d-none d-md-block">
+<p class="user-name mb-0" style="font-weight:700;color:#1f2d3d">{{ retailer.full_name }}</p>
+<p class="designattion mb-0 small" style="color:#8794a5">{{ retailer.user_id }}</p>
+</div>
+</div>
+</div>
+</nav>
+</div>
+</header>
+
+<!--start page wrapper -->
+<div class="page-wrapper">
+<div class="page-content p-4">
+<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+<div class="breadcrumb-title pe-3">Government Services</div>
+<div class="ps-3">
+<nav aria-label="breadcrumb">
+<ol class="breadcrumb mb-0 p-0">
+<li class="breadcrumb-item"><a href="{% url 'retailer_dashboard' %}">Dashboard</a></li>
+<li class="active" aria-current="page">Karnataka Government Schemes</li>
+</ol>
+</nav>
+</div>
+</div>
+
+<div class="row">
+<div class="col-12">
+<div class="card-body">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+<h5 class="mb-0 text-success"><i class="fa-solid fa-landmark me-2"></i>Karnataka Government Schemes</h5>
+<a href="{% url 'retailer_dashboard' %}" class="btn bg-light-warning">
+<i class="fa-solid fa-arrow-rotate-left me-1"></i> Go Back
+</a>
+</div>
+<hr>
+
+<div class="card border-0 shadow-sm">
+<div class="card-body">
+<div class="row g-3">
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'senior_citizen' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/senior_apply.jpg" alt="Senior Citizen" class="service-icon" loading="lazy" style="border: 3px solid #28a745;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">Senior Citizen</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹50.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'gruha_laxmi' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/gruhalaxmi.png" alt="Gruha Laxmi" class="service-icon" loading="lazy" style="border: 3px solid #e91e63;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">Gruha Laxmi</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹50.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'gruha_laxmi_status' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/gruhalaxmi.png" alt="Gruha Laxmi Status" class="service-icon" loading="lazy" style="border: 3px solid #e91e63;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">Gruha Laxmi Status</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹30.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'gruha_laxmi_kyc' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/gruhalaxmi.png" alt="Gruha Laxmi KYC" class="service-icon" loading="lazy" style="border: 3px solid #e91e63;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">Gruha Laxmi KYC</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹50.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'gruha_laxmi_sanction' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/gruhalaxmi.png" alt="GL Sanction Order" class="service-icon" loading="lazy" style="border: 3px solid #e91e63;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">GL Sanction Order</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹30.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'gruha_jyothi' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/grihajyothi.png" alt="Gruha Jyothi" class="service-icon" loading="lazy" style="border: 3px solid #ff9800;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">Gruha Jyothi</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹50.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'gruha_jyothi_dlink' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/grihajyothi.png" alt="Gruha Jyothi D-Link" class="service-icon" loading="lazy" style="border: 3px solid #ff9800;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">Gruha Jyothi D-Link</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹50.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'bhoomi_pahani_link' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/bhoomi_link.png" alt="Link Aadhaar &amp; Pahani" class="service-icon" loading="lazy" style="border: 3px solid #795548;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">Link Aadhaar &amp; Pahani</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹50.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'rtc_download' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/rtc_bhoomi.jpg" alt="Download RTC" class="service-icon" loading="lazy" style="border: 3px solid #795548;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">Download RTC</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹10.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'abha_card' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/ayush.png" alt="ABHA Card" class="service-icon" loading="lazy" style="border: 3px solid #17a2b8;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">ABHA Card</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹50.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'ayush_card' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/ayushcards.png" alt="Ayushman Card" class="service-icon" loading="lazy" style="border: 3px solid #17a2b8;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">Ayushman Card</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹100.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'ayush_dwnld' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/ayushcards.png" alt="AYUSH Download" class="service-icon" loading="lazy" style="border: 3px solid #17a2b8;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">AYUSH Download</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹50.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'eshram' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/eshram.png" alt="E-Shram" class="service-icon" loading="lazy" style="border: 3px solid #607d8b;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">E-Shram</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹50.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'eshram_dwnld' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/eshram_icon.png" alt="E-Shram Download" class="service-icon" loading="lazy" style="border: 3px solid #607d8b;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">E-Shram Download</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹50.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'pmkisan' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/pmkisan.jpg" alt="PM Kisan" class="service-icon" loading="lazy" style="border: 3px solid #4caf50;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">PM Kisan</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹30.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'naadakacheri_dwnld' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/naadakacheri.jpg" alt="Income / Caste" class="service-icon" loading="lazy" style="border: 3px solid #9c27b0;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">Income / Caste</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹50.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'yuvanidhi' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/yuvanidhi.png" alt="Yuva Nidhi" class="service-icon" loading="lazy" style="border: 3px solid #3f51b5;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">Yuva Nidhi</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹30.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'ssp_password_page' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/aadhaarkyc.png" alt="SSP Password" class="service-icon" loading="lazy" style="border: 3px solid #007bff;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">SSP Password</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹30.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="{% url 'ssp_mobile_page' %}">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/aadhaarkyc.png" alt="SSP Mobile Link" class="service-icon" loading="lazy" style="border: 3px solid #007bff;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">SSP Mobile Link</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹50.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+<div class="col-lg-2 col-md-3 col-sm-6 service-card">
+<a href="#" onclick="alert('Ration Correction service selected.'); return false;">
+<div class="box">
+<img src="https://www.smsevaone.com/user/assets/images/services_logo/aadhaarkyc.png" alt="Ration Correction" class="service-icon" loading="lazy" style="border: 3px solid #f44336;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
+<h6 class="service-title">Ration Correction</h6>
+<span class="service-badge manual">Manual Service</span>
+<div class="service-price">₹200.00</div>
+<div class="service-price-label">Per Application</div>
+<div class="service-time">24 ಗಂಟೆಗಳಲ್ಲಿ ಕ್ಲಿಯರ್<br>Within 24 Hours</div>
+</div>
+</a>
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<!--end page wrapper -->
+
+<footer class="page-footer text-center p-3 border-top">
+<p class="mb-0">Copyright © 2026 <a href="{% url 'retailer_dashboard' %}" style="color:#e05e12;font-weight:700;text-decoration:none;">SM Sevaone</a>. All rights reserved.</p>
+</footer>
+</div>
+</body>
+</html>

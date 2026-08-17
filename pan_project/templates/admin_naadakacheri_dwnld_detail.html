@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Process Naada Kacheri Application — Admin Portal</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:#0f172a;color:#fff;padding:.9rem 1.75rem;display:flex;align-items:center;justify-content:space-between}
+.brand{font-size:1.1rem;font-weight:700;color:#f97316;display:flex;align-items:center;gap:8px}
+.btn-logout{background:#dc2626;color:#fff;padding:.35rem .85rem;border-radius:6px;text-decoration:none;font-size:.8rem;font-weight:600}
+
+.main-wrap{display:flex;flex:1}
+.sidebar{width:230px;background:#ffffff;border-right:1px solid #e2e8f0;padding:1.25rem .85rem;display:flex;flex-direction:column;gap:.25rem}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;border-radius:8px;font-size:.85rem;color:#475569;text-decoration:none;font-family:inherit;transition:all 0.15s ease}
+.nav-item:hover{background:#f1f5f9;color:#0f172a}
+.nav-item.active{background:#fff7ed;color:#ea580c;font-weight:700;border:1px solid #ffedd5}
+
+.content{flex:1;padding:2rem;overflow-y:auto}
+.card{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.03);border:1px solid #e2e8f0;padding:1.75rem;margin-bottom:1.5rem}
+.card-title{font-size:1.1rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between}
+
+.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.5rem}
+.detail-item label{font-size:.72rem;color:#64748b;text-transform:uppercase;font-weight:700;letter-spacing:.05em;display:block;margin-bottom:.25rem}
+.detail-item div{font-size:.92rem;font-weight:600;color:#0f172a}
+
+.badge{display:inline-block;padding:.3rem .75rem;border-radius:12px;font-size:.8rem;font-weight:700}
+.badge-pending{background:#fef3c7;color:#d97706}
+.badge-completed{background:#dcfce7;color:#16a34a}
+.badge-rejected{background:#fee2e2;color:#dc2626}
+
+.btn-approve{background:#16a34a;color:#fff;padding:.6rem 1.25rem;border-radius:8px;border:none;font-weight:700;font-size:.88rem;cursor:pointer}
+.btn-approve:hover{background:#15803d}
+.btn-reject{background:#dc2626;color:#fff;padding:.6rem 1.25rem;border-radius:8px;border:none;font-weight:700;font-size:.88rem;cursor:pointer}
+.btn-reject:hover{background:#b91c1c}
+
+.form-group{margin-bottom:1.25rem}
+.form-group label{font-size:.82rem;font-weight:700;color:#334155;margin-bottom:.35rem;display:block}
+.form-control{width:100%;padding:.6rem .85rem;border:1px solid #cbd5e1;border-radius:8px;font-size:.88rem}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><i class="fa-solid fa-landmark"></i> SM Sevaone Admin</div>
+  <a href="{% url 'admin_logout' %}" class="btn-logout">Logout</a>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <a href="{% url 'admin_dashboard' %}" class="nav-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+    <a href="{% url 'admin_senior_list' %}" class="nav-item"><i class="fa-solid fa-landmark"></i> Senior Citizen</a>
+    <a href="{% url 'admin_gruha_laxmi_list' %}" class="nav-item"><i class="fa-solid fa-hand-holding-heart"></i> Gruha Laxmi</a>
+    <a href="{% url 'admin_gruha_jyothi_list' %}" class="nav-item"><i class="fa-solid fa-lightbulb"></i> Gruha Jyothi</a>
+    <a href="{% url 'admin_bhoomi_pahani_link_list' %}" class="nav-item"><i class="fa-solid fa-link"></i> Bhoomi Pahani Link</a>
+    <a href="{% url 'admin_rtc_download_list' %}" class="nav-item"><i class="fa-solid fa-file-invoice"></i> RTC Download</a>
+    <a href="{% url 'admin_abha_card_list' %}" class="nav-item"><i class="fa-solid fa-shield-halved"></i> ABHA Card</a>
+    <a href="{% url 'admin_ayush_card_list' %}" class="nav-item"><i class="fa-solid fa-id-card-clip"></i> Ayushman Card</a>
+    <a href="{% url 'admin_ayush_dwnld_list' %}" class="nav-item"><i class="fa-solid fa-download"></i> Ayushman Download</a>
+    <a href="{% url 'admin_eshram_list' %}" class="nav-item"><i class="fa-solid fa-id-card"></i> e-Shram Card</a>
+    <a href="{% url 'admin_eshram_dwnld_list' %}" class="nav-item"><i class="fa-solid fa-file-arrow-down"></i> e-Shram Download</a>
+    <a href="{% url 'admin_pmkisan_list' %}" class="nav-item"><i class="fa-solid fa-tractor"></i> PM Kisan</a>
+    <a href="{% url 'admin_naadakacheri_dwnld_list' %}" class="nav-item active"><i class="fa-solid fa-certificate"></i> Naada Kacheri</a>
+    <a href="{% url 'admin_other_services' %}" class="nav-item"><i class="fa-solid fa-layer-group"></i> All Services</a>
+  </div>
+
+  <div class="content">
+    <div style="margin-bottom:1rem">
+      <a href="{% url 'admin_naadakacheri_dwnld_list' %}" style="color:#2563eb;text-decoration:none;font-weight:600;font-size:.85rem"><i class="fa-solid fa-arrow-left me-1"></i> Back to Naada Kacheri List</a>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span><i class="fa-solid fa-certificate" style="color:#2563eb"></i> Application Details — {{ app_obj.order_id }}</span>
+        {% if app_obj.status == 'COMPLETED' %}
+          <span class="badge badge-completed">COMPLETED</span>
+        {% elif app_obj.status == 'REJECTED' %}
+          <span class="badge badge-rejected">REJECTED</span>
+        {% else %}
+          <span class="badge badge-pending">PENDING</span>
+        {% endif %}
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-item"><label>Order ID</label><div style="font-family:monospace">{{ app_obj.order_id }}</div></div>
+        <div class="detail-item"><label>Retailer</label><div>{{ app_obj.retailer.full_name }} ({{ app_obj.retailer.user_id }})</div></div>
+        <div class="detail-item"><label>RD Number</label><div style="font-family:monospace">{{ app_obj.rd_number }}</div></div>
+        <div class="detail-item"><label>Applicant Name</label><div>{{ app_obj.applicant_name }}</div></div>
+        <div class="detail-item"><label>Certificate Type</label><div style="color:#2563eb">{{ app_obj.certificate_type }}</div></div>
+        <div class="detail-item"><label>Amount Paid</label><div style="color:#2563eb">₹{{ app_obj.amount }}</div></div>
+        <div class="detail-item"><label>Applied Date</label><div>{{ app_obj.created_at|date:"d M Y, h:i A" }}</div></div>
+      </div>
+    </div>
+
+    <!-- Process Actions -->
+    <div class="card">
+      <div class="card-title"><span><i class="fa-solid fa-gears" style="color:#3b82f6"></i> Process Application</span></div>
+
+      <div id="statusAlert"></div>
+
+      <!-- Form 1: Approve & Upload Document -->
+      <form id="approveForm" style="margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid #e2e8f0">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="APPROVE">
+        <h4 style="font-size:.95rem;font-weight:700;color:#16a34a;margin-bottom:1rem"><i class="fa-solid fa-circle-check me-1"></i> Approve &amp; Upload Naada Kacheri Certificate</h4>
+
+        <div class="form-group">
+          <label>Upload Certificate PDF <span style="color:#dc2626">*</span></label>
+          <input type="file" name="output_pdf" class="form-control" accept=".pdf,image/*" required>
+        </div>
+
+        {% if app_obj.output_pdf %}
+          <div style="margin-bottom:1rem;font-size:.85rem;color:#16a34a">
+            <i class="fa-solid fa-file-pdf me-1"></i> Current Uploaded File: <a href="{{ app_obj.output_pdf.url }}" target="_blank" style="color:#2563eb;font-weight:700">View Uploaded Certificate</a>
+          </div>
+        {% endif %}
+
+        <button type="submit" class="btn-approve"><i class="fa-solid fa-upload me-1"></i> Approve &amp; Complete Application</button>
+      </form>
+
+      <!-- Form 2: Reject & Refund -->
+      <form id="rejectForm">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="REJECT">
+        <h4 style="font-size:.95rem;font-weight:700;color:#dc2626;margin-bottom:1rem"><i class="fa-solid fa-circle-xmark me-1"></i> Reject Application &amp; Refund ₹{{ app_obj.amount }}</h4>
+
+        <div class="form-group">
+          <label>Rejection Reason <span style="color:#dc2626">*</span></label>
+          <textarea name="rejection_reason" class="form-control" rows="3" placeholder="Enter reason for rejection (e.g. Invalid RD Number)" required>{{ app_obj.rejection_reason }}</textarea>
+        </div>
+
+        <button type="submit" class="btn-reject"><i class="fa-solid fa-rotate-left me-1"></i> Reject &amp; Refund ₹{{ app_obj.amount }} to Retailer Wallet</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('approveForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    fetch("{% url 'admin_naadakacheri_dwnld_process' app_obj.order_id %}", {
+        method: 'POST',
+        headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') },
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+        const box = document.getElementById('statusAlert');
+        if (data.success) {
+            box.innerHTML = `<div style="background:#dcfce7;color:#16a34a;padding:1rem;border-radius:8px;margin-bottom:1rem;font-weight:700"><i class="fa-solid fa-circle-check me-1"></i> ${data.message}</div>`;
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            box.innerHTML = `<div style="background:#fee2e2;color:#dc2626;padding:1rem;border-radius:8px;margin-bottom:1rem;font-weight:700"><i class="fa-solid fa-triangle-exclamation me-1"></i> ${data.error}</div>`;
+        }
+    });
+});
+
+document.getElementById('rejectForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!confirm('Are you sure you want to reject this application? ₹{{ app_obj.amount }} will be automatically refunded to the retailer wallet.')) return;
+    const formData = new FormData(this);
+    fetch("{% url 'admin_naadakacheri_dwnld_process' app_obj.order_id %}", {
+        method: 'POST',
+        headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') },
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+        const box = document.getElementById('statusAlert');
+        if (data.success) {
+            box.innerHTML = `<div style="background:#fee2e2;color:#dc2626;padding:1rem;border-radius:8px;margin-bottom:1rem;font-weight:700"><i class="fa-solid fa-circle-check me-1"></i> ${data.message}</div>`;
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            box.innerHTML = `<div style="background:#fee2e2;color:#dc2626;padding:1rem;border-radius:8px;margin-bottom:1rem;font-weight:700"><i class="fa-solid fa-triangle-exclamation me-1"></i> ${data.error}</div>`;
+        }
+    });
+});
+</script>
+
+</body>
+</html>

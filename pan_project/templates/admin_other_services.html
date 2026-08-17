@@ -102,6 +102,9 @@ tbody tr:hover td{background:#f8fafc}
       <a href="{% url 'admin_other_services' %}?service=cibil" class="tab-item {% if service_filter == 'cibil' %}active{% endif %}">
         📈 CIBIL Score <span style="background:rgba(0,0,0,0.06);padding:1px 6px;border-radius:10px;font-size:.7rem">{{ cibil_count }}</span>
       </a>
+      <a href="{% url 'admin_senior_list' %}" class="tab-item">
+        🛡️ Senior Citizen
+      </a>
       <a href="{% url 'admin_aadhaar_list' %}" class="tab-item">
         📄 Aadhaar PDF
       </a>

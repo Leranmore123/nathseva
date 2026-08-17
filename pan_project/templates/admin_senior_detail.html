@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Process Senior Citizen Application — SM Sevaone</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:#0f172a;color:#fff;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.topbar .brand{font-size:1.2rem;font-weight:700;color:#e05e12;display:flex;align-items:center;gap:.5rem}
+.topbar .btn-logout{background:#dc2626;color:#fff;padding:.4rem .9rem;border-radius:6px;text-decoration:none;font-size:.8rem;font-weight:600}
+
+.main-wrap{display:flex;flex:1}
+.sidebar{width:240px;background:#1e293b;padding:1.5rem 1rem;display:flex;flex-direction:column;gap:.5rem}
+.nav-item{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;border-radius:8px;color:#94a3b8;text-decoration:none;font-size:.88rem;font-weight:600}
+.nav-item:hover,.nav-item.active{background:#e05e12;color:#fff}
+
+.content{flex:1;padding:2rem;overflow-y:auto}
+
+.detail-card{background:#fff;border-radius:16px;padding:2rem;border:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,0.04);max-width:850px;margin:0 auto}
+.detail-header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;padding-bottom:1rem;margin-bottom:1.5rem}
+.detail-title{font-size:1.3rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px}
+.btn-back{background:#e2e8f0;color:#475569;padding:.45rem .95rem;border-radius:8px;text-decoration:none;font-size:.82rem;font-weight:700}
+
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem;background:#f8fafc;padding:1.25rem;border-radius:12px;border:1px solid #e2e8f0}
+.info-item{display:flex;flex-direction:column;gap:.25rem}
+.info-item.full-width{grid-column:span 2}
+.info-label{font-size:.75rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
+.info-value{font-size:.95rem;font-weight:700;color:#0f172a}
+
+.docs-section{background:#f8fafc;padding:1.25rem;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:1.5rem}
+.docs-title{font-size:.85rem;font-weight:700;color:#475569;text-transform:uppercase;margin-bottom:.85rem}
+.docs-grid{display:flex;flex-wrap:wrap;gap:1rem}
+.doc-btn{background:#fff;border:1px solid #cbd5e1;padding:.5rem 1rem;border-radius:8px;color:#0f172a;text-decoration:none;font-weight:700;font-size:.82rem;display:inline-flex;align-items:center;gap:6px}
+.doc-btn:hover{background:#f1f5f9;border-color:#94a3b8}
+
+.action-box{background:#ffffff;border:1px solid #cbd5e1;border-radius:12px;padding:1.5rem;margin-top:1.5rem}
+.action-title{font-size:1rem;font-weight:700;margin-bottom:1rem}
+
+.form-group{margin-bottom:1.25rem;display:flex;flex-direction:column;gap:.4rem}
+.form-group label{font-size:.82rem;font-weight:700;color:#334155}
+.form-control{padding:.65rem .85rem;border-radius:8px;border:1px solid #cbd5e1;font-size:.9rem}
+
+.btn-approve{background:#16a34a;color:#fff;border:none;padding:.75rem 1.5rem;border-radius:8px;font-weight:700;cursor:pointer}
+.btn-approve:hover{background:#15803d}
+.btn-reject{background:#dc2626;color:#fff;border:none;padding:.75rem 1.5rem;border-radius:8px;font-weight:700;cursor:pointer}
+.btn-reject:hover{background:#b91c1c}
+
+.alert-msg{padding:.75rem 1rem;border-radius:8px;font-size:.85rem;font-weight:600;margin-bottom:1rem;display:none}
+.alert-success{background:#ecfdf5;color:#16a34a;border:1px solid #a7f3d0}
+.alert-danger{background:#fef2f2;color:#dc2626;border:1px solid #fca5a5}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><i class="fa-solid fa-shield-halved"></i> SM Sevaone Admin</div>
+  <a href="{% url 'admin_logout' %}" class="btn-logout">Logout</a>
+</div>
+
+<div class="main-wrap">
+  <div class="sidebar">
+    <a href="{% url 'admin_dashboard' %}" class="nav-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+    <a href="{% url 'admin_senior_list' %}" class="nav-item active"><i class="fa-solid fa-person-cane"></i> Senior Citizen</a>
+    <a href="{% url 'admin_other_services' %}" class="nav-item"><i class="fa-solid fa-layer-group"></i> All Services</a>
+  </div>
+
+  <div class="content">
+    <div class="detail-card">
+      <div class="detail-header">
+        <div class="detail-title"><i class="fa-solid fa-shield-halved" style="color:#e05e12"></i> Senior Citizen Application {{ app.order_id }}</div>
+        <a href="{% url 'admin_senior_list' %}" class="btn-back">← Back to List</a>
+      </div>
+
+      <div id="alertBox" class="alert-msg"></div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Order ID</span>
+          <span class="info-value">{{ app.order_id }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Retailer User</span>
+          <span class="info-value">{{ app.retailer.user_id|default:"Direct" }} ({% if app.retailer %}{{ app.retailer.full_name }}{% else %}N/A{% endif %})</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Applicant Name</span>
+          <span class="info-value">{{ app.applicant_name }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Aadhaar Number</span>
+          <span class="info-value" style="letter-spacing:1px">{{ app.aadhaar_number }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Mobile Number</span>
+          <span class="info-value">{{ app.mobile }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Email ID</span>
+          <span class="info-value">{{ app.email }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Gender</span>
+          <span class="info-value">{{ app.gender }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Date of Birth</span>
+          <span class="info-value">{{ app.dob|date:"d/m/Y" }}</span>
+        </div>
+        <div class="info-item full-width">
+          <span class="info-label">Address</span>
+          <span class="info-value">{{ app.address }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Taluk</span>
+          <span class="info-value">{{ app.talluk }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">District / Pincode</span>
+          <span class="info-value">{{ app.district }} - {{ app.pincode }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Status</span>
+          <span class="info-value" style="color:{% if app.status == 'COMPLETED' %}#16a34a{% elif app.status == 'REJECTED' %}#dc2626{% else %}#d97706{% endif %}">{{ app.status }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Amount</span>
+          <span class="info-value">₹{{ app.amount }}</span>
+        </div>
+      </div>
+
+      <!-- Uploaded Documents -->
+      <div class="docs-section">
+        <div class="docs-title">📁 Uploaded Documents</div>
+        <div class="docs-grid">
+          {% if app.photo %}
+            <a href="{{ app.photo.url }}" target="_blank" class="doc-btn"><i class="fa-solid fa-image"></i> View Applicant Photo</a>
+          {% endif %}
+          {% if app.aadhaar_file %}
+            <a href="{{ app.aadhaar_file.url }}" target="_blank" class="doc-btn"><i class="fa-solid fa-file-pdf"></i> View Aadhaar PDF</a>
+          {% endif %}
+          {% if app.blood_file %}
+            <a href="{{ app.blood_file.url }}" target="_blank" class="doc-btn"><i class="fa-solid fa-file-pdf"></i> View Blood Group PDF</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Process Section -->
+      {% if app.status == 'PENDING' or app.status == 'PROCESSING' %}
+        <div class="action-box">
+          <div class="action-title">⚙️ Process Application</div>
+          
+          <form id="approveForm" style="margin-bottom:1.5rem" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="APPROVE">
+            <div class="form-group">
+              <label>Upload Generated Senior Citizen Card / Certificate (PDF/JPG)</label>
+              <input type="file" name="output_pdf" class="form-control" accept=".pdf, image/*">
+            </div>
+            <button type="submit" class="btn-approve"><i class="fa-solid fa-check"></i> Approve & Complete Application</button>
+          </form>
+
+          <hr style="margin:1.5rem 0;border:none;border-top:1px solid #e2e8f0">
+
+          <form id="rejectForm">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="REJECT">
+            <div class="form-group">
+              <label style="color:#dc2626">Rejection Reason</label>
+              <input type="text" name="rejection_reason" class="form-control" placeholder="Enter reason for rejection" required>
+            </div>
+            <button type="submit" class="btn-reject"><i class="fa-solid fa-xmark"></i> Reject Application (Refund ₹{{ app.amount }})</button>
+          </form>
+        </div>
+      {% else %}
+        <div class="action-box">
+          <div class="action-title">Application Status: {{ app.status }}</div>
+          {% if app.output_pdf %}
+            <p><a href="{{ app.output_pdf.url }}" target="_blank" class="doc-btn"><i class="fa-solid fa-download"></i> View Generated Senior Citizen Card</a></p>
+          {% endif %}
+          {% if app.rejection_reason %}
+            <p style="color:#dc2626;font-weight:600">Rejection Reason: {{ app.rejection_reason }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
+<script>
+function processApplication(formId) {
+  var alertBox = document.getElementById('alertBox');
+  var form = document.getElementById(formId);
+  var formData = new FormData(form);
+
+  fetch("{% url 'admin_senior_process' app.order_id %}", {
+    method: 'POST',
+    body: formData,
+    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alertBox.className = 'alert-msg alert-success';
+      alertBox.innerText = data.message;
+      alertBox.style.display = 'block';
+      setTimeout(() => window.location.reload(), 1200);
+    } else {
+      alertBox.className = 'alert-msg alert-danger';
+      alertBox.innerText = data.error || 'Failed to process application.';
+      alertBox.style.display = 'block';
+    }
+  })
+  .catch(err => {
+    alertBox.className = 'alert-msg alert-danger';
+    alertBox.innerText = 'Network error occurred.';
+    alertBox.style.display = 'block';
+  });
+}
+
+if (document.getElementById('approveForm')) {
+  document.getElementById('approveForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    processApplication('approveForm');
+  });
+}
+if (document.getElementById('rejectForm')) {
+  document.getElementById('rejectForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    processApplication('rejectForm');
+  });
+}
+</script>
+
+</body>
+</html>

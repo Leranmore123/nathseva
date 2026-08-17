@@ -70,18 +70,22 @@ tbody tr:hover td{background:#f8fafc}
     <div class="nav-section">Admin Portal</div>
     <a href="{% url 'admin_dashboard' %}" class="nav-item active"><span class="nav-icon">📊</span> Dashboard Overview</a>
     <div class="nav-section" style="margin-top:.5rem">Service Requests</div>
+    <a href="{% url 'admin_govt_services_list' %}" class="nav-item"><span class="nav-icon">🏛️</span> Govt. Services Boxes</a>
+    <a href="{% url 'admin_senior_list' %}" class="nav-item"><span class="nav-icon">👵</span> Senior Citizen</a>
+    <a href="{% url 'admin_gruha_laxmi_list' %}" class="nav-item"><span class="nav-icon">👩‍👦</span> Gruha Laxmi</a>
+    <a href="{% url 'admin_gruha_jyothi_list' %}" class="nav-item"><span class="nav-icon">💡</span> Gruha Jyothi</a>
+    <a href="{% url 'admin_ssp_password_list' %}" class="nav-item"><span class="nav-icon">🔑</span> SSP Password</a>
+    <a href="{% url 'admin_ssp_mobile_list' %}" class="nav-item"><span class="nav-icon">📱</span> SSP Mobile Link</a>
     <a href="{% url 'admin_other_services' %}" class="nav-item"><span class="nav-icon">🪪</span> Other Services</a>
-    <a href="{% url 'admin_pan_to_aadhaar_list' %}" class="nav-item"><span class="nav-icon">🔗</span> PAN to Aadhaar</a>
-    <a href="{% url 'admin_aadhaar_list' %}" class="nav-item"><span class="nav-icon">📄</span> Aadhaar PDF</a>
-    <a href="{% url 'admin_eid_list' %}" class="nav-item"><span class="nav-icon">🆔</span> EID to UID</a>
-    <a href="{% url 'admin_lms_list' %}" class="nav-item"><span class="nav-icon">🎓</span> LMS Certificate</a>
-    <a href="{% url 'admin_other_services' %}?status=PENDING" class="nav-item"><span class="nav-icon">⏳</span> Pending Apps</a>
     <div class="nav-section" style="margin-top:.5rem">System</div>
     <a href="{% url 'retailer_dashboard' %}" class="nav-item" target="_blank"><span class="nav-icon">🌐</span> Retailer View</a>
   </div>
 
   <div class="content">
-    <div style="font-size:1.2rem;font-weight:700;color:#0f172a;margin-bottom:1.25rem">System Dashboard Overview</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+      <div style="font-size:1.2rem;font-weight:700;color:#0f172a">System Dashboard Overview</div>
+      <a href="{% url 'admin_govt_services_list' %}" style="background:#e05e12;color:#fff;padding:.45rem .95rem;border-radius:8px;text-decoration:none;font-weight:700;font-size:.82rem"><i class="fa-solid fa-boxes-stacked me-1"></i> View All Govt Service Boxes →</a>
+    </div>
 
     <div class="stats-grid">
       <div class="stat-card">
@@ -90,9 +94,9 @@ tbody tr:hover td{background:#f8fafc}
         <div class="st-change">Registered Accounts</div>
       </div>
       <div class="stat-card">
-        <div class="st-label">Pending Computer Apps</div>
-        <div class="st-val" style="color:#2563eb">{{ computer_pending }}</div>
-        <div class="st-change">Tailoring Pending: {{ tailoring_pending }}</div>
+        <div class="st-label">Pending Applications</div>
+        <div class="st-val" style="color:#2563eb">{{ total_pending }}</div>
+        <div class="st-change">Across All Services</div>
       </div>
       <div class="stat-card">
         <div class="st-label">Completed Applications</div>
@@ -118,7 +122,7 @@ tbody tr:hover td{background:#f8fafc}
             <th>Order ID</th>
             <th>Applicant Name</th>
             <th>Mobile</th>
-            <th>State</th>
+            <th>State / District</th>
             <th>Status</th>
             <th>Date</th>
             <th>Action</th>
@@ -131,7 +135,7 @@ tbody tr:hover td{background:#f8fafc}
             <td>{{ app.order_id }}</td>
             <td>{{ app.applicant_name }}</td>
             <td>{{ app.mobile }}</td>
-            <td>{{ app.state }}</td>
+            <td>{{ app.location_display|default:"-" }}</td>
             <td>
               {% if app.status == 'COMPLETED' %}
                 <span class="pill pill-completed">Completed</span>
@@ -143,11 +147,7 @@ tbody tr:hover td{background:#f8fafc}
             </td>
             <td style="color:#64748b">{{ app.created_at|date:"d M Y, h:i A" }}</td>
             <td>
-              {% if app.detail_url_name == 'admin_computer_detail' %}
-                <a href="{% url 'admin_computer_detail' app.order_id %}" class="btn-process">Process / Review →</a>
-              {% else %}
-                <a href="{% url 'admin_tailoring_detail' app.order_id %}" class="btn-process">Process / Review →</a>
-              {% endif %}
+              <a href="{% url app.detail_url_name app.order_id %}" class="btn-process">Process / Review →</a>
             </td>
           </tr>
           {% empty %}
